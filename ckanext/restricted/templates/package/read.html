@@ -1,0 +1,14 @@
+{% ckan_extends %}
+
+{% block package_resources %}
+    {% if c.user %}
+        {{ super() }}
+    {% else %}
+        <p>Please log in or register to see resources!!</p>
+    {% endif%}
+
+    User Info Debug (ckanext-restricted): {{ c.user }}<br/>
+    {# Userobj Info Debug: {{ c.userobj }}<br/>#}
+
+{% endblock %}
+
