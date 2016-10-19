@@ -3,10 +3,6 @@
 {% block package_resources %}
   {% set restricted = c.pkg_dict.get('restricted', 'registered') %}
 
-  Restriction Info Debug (ckanext-restricted): {{ restricted }}<br/>
-  User Info Debug (ckanext-restricted): {{ c.user }}<br/>
-  {#Userobj Info Debug: {{ c.userobj }}<br/>#}
-
   {% set resources_accessible = h.restricted_check_user_resources_access(c.user, restricted) %}  
   {% if resources_accessible %}
     {{ super() }}
