@@ -6,8 +6,15 @@
   {% set resources_accessible = h.restricted_check_user_resources_access(c.user, restricted) %}  
   {% if resources_accessible %}
     {{ super() }}
-  {% else %}    
-      <p>RESOURCES ACCESS NOT AUTHORIZED: Please log in or register to see resources!!</p>
+  {% else %}
+      <section id="dataset-resources" class="resources">
+      <h3>{{ _('Data and Resources') }}</h3>
+      {% if c.user %}
+        <p class="empty">{{ _('Contact the administrator to access data resources') }}</p>
+      {% else %}    
+        <p class="empty">{{ _('Login or register to access data resources') }}</p>
+      {% endif %}
+      </section>
   {% endif %}
 
 {% endblock %}
