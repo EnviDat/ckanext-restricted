@@ -1,14 +1,18 @@
 {% ckan_extends %}
 
 {% block package_resources %}
-    {% if c.user %}
-        {{ super() }}
-    {% else %}
-        <p>Please log in or register to see resources!!</p>
-    {% endif%}
+  {% set restricted = c.pkg_dict.get('restricted', 'registered') %}
 
-    User Info Debug (ckanext-restricted): {{ c.user }}<br/>
-    {# Userobj Info Debug: {{ c.userobj }}<br/>#}
+  Restriction Info Debug (ckanext-restricted): {{ restricted }}<br/>
+  User Info Debug (ckanext-restricted): {{ c.user }}<br/>
+  {#Userobj Info Debug: {{ c.userobj }}<br/>#}
+
+  {% set resources_accessible = h.restricted_check_user_resources_access(c.user, restricted) %}  
+  {% if resources_accessible %}
+    {{ super() }}
+  {% else %}    
+      <p>RESOURCES ACCESS NOT AUTHORIZED: Please log in or register to see resources!!</p>
+  {% endif %}
 
 {% endblock %}
 

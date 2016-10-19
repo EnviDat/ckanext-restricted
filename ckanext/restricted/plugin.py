@@ -1,7 +1,11 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+
 from ckan.lib.mailer import mail_recipient, MailerException
 from ckan.logic.action.create import user_create
+
+from ckanext.restricted import helpers
+
 from pylons import config
 
 from logging import getLogger
@@ -36,6 +40,7 @@ def restricted_user_create_and_notify(context, data_dict):
 class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.ITemplateHelpers)
 
     # IConfigurer
 
@@ -47,5 +52,10 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     # IActions
 
     def get_actions(self):
-        return{'user_create': restricted_user_create_and_notify}
+        return { 'user_create': restricted_user_create_and_notify }
+
+    # ITemplateHelpers
+
+    def get_helpers(self):
+        return { 'restricted_check_user_resources_access': helpers.restricted_check_user_resources_access }
 
