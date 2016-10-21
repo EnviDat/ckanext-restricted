@@ -36,14 +36,46 @@ ckanext-restricted
    What does it do? What features does it have?
    Consider including some screenshots or embedding a video!
 
+CKAN extension to restrict the accessibility to the resources of a dataset.
+The resource access restriction level can be individualy defined for every package.
+It also includes notifying by mail on every new user registration.
 
 ------------
 Requirements
 ------------
 
-For example, you might want to mention here which versions of CKAN this
-extension works with.
+This extension has been developed for CKAN version 2.5.2.
 
+The resource access restriction level can be individualy defined for every package. This requires adding an extra field to package metadata with (some of) the possible values: "public",  "registered", "any_organization",  "same_organization" (as the package).
+
+If you use ckanext-scheming, this is the field definition in JSON:
+
+  {
+      "field_name": "restricted",
+      "label": "Restriction of Resources",
+      "preset": "select",
+      "choices": [
+              {
+                "value": "public",
+                "label": "Public"
+              },
+              {
+                "value": "registered",
+                "label": "Registered Users"
+              },
+              {
+                "value": "any_organization",
+                "label": "Any Organization Members (Trusted Users)"
+              },
+              {
+                "value": "same_organization",
+                "label": "Same Organization Members"
+              }
+         ]
+   }
+   
+The usage of this extension, regarding the level "any_organization", makes more sense if the CKAN administrator sets some users as members of an organization. In our case we created an organization called "trusted_users" where the mail accounts have been double checked. Therefore this extension sends a mail to the defined 'mail_to' in the CKAN config file at every new user registration. To swithch off this functionality, just comment out the code at:  
+https://github.com/espona/ckanext-restricted/blob/master/ckanext/restricted/plugin.py#L14
 
 ------------
 Installation
