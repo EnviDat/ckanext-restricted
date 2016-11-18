@@ -1,0 +1,18 @@
+{% ckan_extends %}
+
+{% set can_edit = h.check_access('package_update', {'id':pkg.id }) %}
+{% set url_action = 'resource_edit' if url_is_edit and can_edit else 'resource_read' %}
+{% set url = h.url_for(controller='package', action=url_action, id=pkg.name, resource_id=res.id) %}
+
+{% set authorized = h.check_access('resource_show',{'id':res.id, 'resource':res }) %}
+
+  {% block resource_item_title %}
+      {% if authorized %}
+         {{ super() }}
+      {% else %}
+        <a class="heading restricted" disabled="true" href="#" title="{{ res.name or res.description }}">
+          {{ h.resource_display_name(res) | truncate(50) }} (Not authorized)<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
+          {{ h.popular('views', res.tracking_summary.total, min=10) }}
+        </a>
+      {% endif %}
+  {% endblock %}

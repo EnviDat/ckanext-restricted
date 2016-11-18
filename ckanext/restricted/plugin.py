@@ -4,7 +4,12 @@ import ckan.plugins.toolkit as toolkit
 from ckan.lib.mailer import mail_recipient, MailerException
 from ckan.logic.action.create import user_create
 
-from ckanext.restricted import helpers
+from ckan.logic import side_effect_free, check_access
+from ckan.logic.action.get import package_show
+
+#from ckanext.restricted import helpers
+
+from ckanext.restricted import logic
 
 from pylons import config
 
@@ -36,11 +41,38 @@ def restricted_user_create_and_notify(context, data_dict):
 
     return (user_dict)
 
+@side_effect_free
+def restricted_package_show(context, data_dict):
+    package_metadata = package_show(context, data_dict)
+
+    restricted_resources_list = []
+    for resource in package_metadata.get('resources',[]):
+        authorized = restricted_resource_show(context, {'id':resource.get('id',''), 'resource':resource }).get('success', False)
+        log.debug(" * resource: " + resource.get('name', '') + ", \t restriction=" + resource.get('restricted', '') + ", \t auth=" + str(authorized) )
+        restricted_resource = resource
+        if not authorized:
+            restricted_resource['url'] = 'Not Authorized'
+        restricted_resources_list += [restricted_resource]
+
+    package_metadata['resources'] = restricted_resources_list
+    return (package_metadata)
+
+
+@toolkit.auth_allow_anonymous_access
+def restricted_resource_show(context, data_dict=None):
+    auth_user_obj = context.get('auth_user_obj', None)
+
+    resource = data_dict.get('resource', context.get('resource', {}))
+    if type(resource) is not dict:
+        resource = resource.as_dict()
+
+    return (logic.restricted_check_user_resource_access(auth_user_obj, resource))
 
 class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IAuthFunctions)
 
     # IConfigurer
 
@@ -52,10 +84,18 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     # IActions
 
     def get_actions(self):
-        return { 'user_create': restricted_user_create_and_notify }
+        return { 'user_create': restricted_user_create_and_notify,
+                 'package_show': restricted_package_show }
 
     # ITemplateHelpers
 
     def get_helpers(self):
-        return { 'restricted_check_user_resources_access': helpers.restricted_check_user_resources_access }
+        return { } 
 
+    # IAuthFunctions
+
+    def get_auth_functions(self):
+        return { 'resource_show': restricted_resource_show,
+                 #'resource_view_list': restricted_resource_show
+                 'resource_view_show': restricted_resource_show
+               }
