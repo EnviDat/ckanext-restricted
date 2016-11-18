@@ -14,8 +14,6 @@ def restricted_check_user_resource_access(user, resource_dict):
         extras = resource_dict.get('extras',{})
         restricted = resource_dict.get('restricted', extras.get('restricted', None))
 
-    logger.debug("RESTRICTED:" + str(restricted))
-
     # Public resources (DEFAULT)
     if not restricted or restricted == 'public':
         return {'success': True }

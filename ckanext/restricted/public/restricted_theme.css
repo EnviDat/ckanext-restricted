@@ -1,0 +1,14 @@
+span.restricted-item{
+   pointer-events: none;
+}
+
+a.heading.restricted-item{
+   color: grey;
+   font-style: italic;
+}
+
+.restricted-link{
+  font-size: 14px;
+  display: inline;
+  white-space: nowrap;
+}
