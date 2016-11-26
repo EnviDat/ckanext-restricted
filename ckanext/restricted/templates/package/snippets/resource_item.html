@@ -24,7 +24,7 @@
       {% else %} 
            {% if user_id %}
              <div class="dropdown btn-group">
-               <a href="{{ h.url_for('restricted_request_access', id=pkg.name, resource_id=res.id, user=user_id)}}" class="btn"><i class="icon-unlock-alt"></i>{{ _('Request Access')}}</a>
+               <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="icon-unlock-alt"></i>{{ _('Request Access')}}</a>
              </div>
            {% else %}
              <div class="dropdown btn-group restricted-link">

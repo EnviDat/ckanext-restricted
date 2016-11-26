@@ -8,10 +8,10 @@ from ckan.logic import side_effect_free, check_access
 from ckan.logic.action.get import package_show
 
 from ckanext.restricted import helpers
-
 from ckanext.restricted import logic
 
 from pylons import config
+import simplejson as json
 
 from logging import getLogger
 log = getLogger(__name__)
@@ -41,25 +41,27 @@ def restricted_user_create_and_notify(context, data_dict):
 
     return (user_dict)
 
-@side_effect_free
-def restricted_request_access(context, data_dict):
-    log.debug("restricted_request_access")
-    log.debug(data_dict)
-    return{'debug':'restricted_request_access'}
+#@side_effect_free
+#def restricted_request_access(context, data_dict):
+#    log.debug("restricted_request_access")
+#    log.debug(data_dict)
+#    return{'debug':'restricted_request_access'}
 
 @side_effect_free
 def restricted_package_show(context, data_dict):
     package_metadata = package_show(context, data_dict)
-
-    restricted_package_metadata = dict(package_metadata)
+    if (type(package_metadata) == type(dict())):
+        restricted_package_metadata = dict(package_metadata)
+    else:
+        package_metadata_json_str = str(package_metadata.for_json())
+        restricted_package_metadata = json.loads(package_metadata_json_str)
 
     restricted_resources_list = []
-    for resource in package_metadata.get('resources',[]):
+    for resource in restricted_package_metadata.get('resources',[]):
         authorized = restricted_resource_show(context, {'id':resource.get('id',''), 'resource':resource }).get('success', False)
-        log.debug(" * resource: " + resource.get('name', '') + ", \t restriction=" + resource.get('restricted', '') + ", \t auth=" + str(authorized) + ", \t url_orig=" + str(resource.get('url', '')) )
+        #log.debug(" * resource: " + resource.get('name', '') + ", \t restriction=" + resource.get('restricted', '') + ", \t auth=" + str(authorized) + ", \t url_orig=" + str(resource.get('url', '')) )
         restricted_resource = dict(resource)
         if not authorized:
-            log.debug("%%%%%%%%%% WARNING not authorized, should be setting url to Not Authorized")
             restricted_resource['url'] = 'Not Authorized'
         restricted_resources_list += [restricted_resource]
     restricted_package_metadata['resources'] = restricted_resources_list
@@ -84,7 +86,7 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IAuthFunctions)
-
+    plugins.implements(plugins.IRoutes, inherit=True)
     # IConfigurer
 
     def update_config(self, config_):
@@ -96,8 +98,9 @@ class RestrictedPlugin(plugins.SingletonPlugin):
 
     def get_actions(self):
         return { 'user_create': restricted_user_create_and_notify,
-                 'package_show': restricted_package_show,
-                 'restricted_request_access': restricted_request_access}
+                 'package_show': restricted_package_show
+                 #,'restricted_request_access': restricted_request_access
+        }
 
     # ITemplateHelpers
 
@@ -111,3 +114,13 @@ class RestrictedPlugin(plugins.SingletonPlugin):
                  #'resource_view_list': restricted_resource_show
                  'resource_view_show': restricted_resource_show
                }
+    # IRoutes
+
+    def before_map(self, map_):
+        map_.connect(
+            'restricted_request_access',
+            '/dataset/{package_id}/restricted_request_access/{resource_id}',
+            controller='ckanext.restricted.controller:RestrictedController',
+            action = 'restricted_request_access'
+        )
+        return map_

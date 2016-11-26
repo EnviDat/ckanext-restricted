@@ -1,0 +1,75 @@
+{% extends "package/base.html" %}
+
+{% import 'macros/form.html' as form %}
+{% set action = c.form_action or '' %}
+{% set license_title = pkg_dict.get('license_title', 'dataset license') %}
+{% set license_url = pkg_dict.get('license_url', '#') %}
+
+{% macro restricted_input_disabled(name, id='', label='', value='', placeholder='', type='text', error="", classes=[], attrs={}, is_required=false) %}
+  {%- set extra_html = caller() if caller -%}
+
+  {% call form.input_block(id or name, label or name, error, classes, extra_html=extra_html, is_required=is_required) %}
+    <input id="{{ id or name }}" type="{{ type }}" name="{{ name }}" value="{{ value | empty_and_escape }}" placeholder="{{ placeholder }}" {{ form.attributes(attrs) }} disabled />
+  {% endcall %}
+{% endmacro %}
+
+
+{% block subtitle %}{{ _('Request Access') }}{% endblock %}
+
+
+{% block breadcrumb_content %}
+    {% set dataset = pkg.title or pkg.name %}
+    {% if pkg.organization %}
+      {% set organization = pkg.organization.title or pkg.organization.name %}
+      <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
+      <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}</li>
+    {% else %}
+      <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+    {% endif %}
+    <li>{% link_for dataset|truncate(30), controller='package', action='read', id=pkg.name %}</li>
+    <li class="active" {{ self.breadcrumb_content_selected() }}><a href="">{{ _('Request Access') }}</a></li>
+{% endblock %}
+
+
+{% block primary_content_inner %}
+  <h2>{{ _('Request Access Form') }} "{{ data.resource_id }}" </h2>
+
+
+<form id="restricted-request-access" class="dataset-form form-horizontal" method="post" action="{{ action }}" data-module="basic-form">
+  {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
+
+  {% block basic_fields %}
+    {{ restricted_input_disabled('user', id='field-user', label=_('User'), value=data.user, error=errors.user, classes=['control-medium'] ) }}  
+    {{ restricted_input_disabled('package', id='field-package', label=_('Dataset'), value=data.package_id, error=errors.package, classes=['control-medium']) }}  
+    {{ restricted_input_disabled('resource', id='field-resource', label=_('Resource'), value=data.resource_id, error=errors.resource, classes=['control-full', 'control-medium']) }}  
+    {{ restricted_input_disabled('email', label=_('Contact Email'), id='field-maintainer-email', value=data.email, error=errors.email, classes=['control-medium']) }}
+    {{ form.markdown('notes', id='field-notes', label=_('Message'), placeholder=_('Message to request data'), value='', error=errors.notes, is_required = true) }}
+  {% endblock %}
+
+  {% block form_actions %}
+    <div class="form-actions">
+      {% block disclaimer %}
+        <p class="action-info small">
+          {%- trans -%}
+          The <i>data license</i> applies to the contents
+          of any resource files that you request from this dataset. By submitting
+          this form, you agree to usage restrictions under the
+          <a href={{ license_url }}>{{ license_title }}</a>.
+          {%- endtrans -%}
+        </p>
+      {% endblock %}
+      {% block confirm_button %}
+        <button class="btn btn-primary pull-left" type="submit" name="confirm">{{ _('Confirm') }}</button>
+      {% endblock %}
+      {% block cancel_button %}
+          <a class="btn btn-danger" href="{% url_for controller='package', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>
+      {% endblock %}
+    </div>
+  {% endblock %}
+</form>
+
+{% endblock %}
+ 
+{% block secondary_content %}
+  {% snippet 'package/snippets/info.html', pkg=pkg, hide_follow_button=true %}
+{% endblock %}
