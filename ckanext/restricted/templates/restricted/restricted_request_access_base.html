@@ -21,5 +21,20 @@
 {% endblock %}
  
 {% block secondary_content %}
-  {% snippet 'package/snippets/info.html', pkg=pkg, hide_follow_button=true %}
-{% endblock %}
+  <div class="module module-narrow module-shallow">
+    <h2 class="module-heading">
+      <i class="icon-info-sign"></i>
+      {{ _('How to get access to data resources?') }}
+  </h2>
+  <div class="module-content">
+    <p>
+      {% trans %}
+      Some data in EnviDat has restricted access due to 
+      embargo periods, sensitivity of the data, unpublished material, etc.
+      Please fill up this form to send a mail request to the dataset maintainer
+      indicating as detailed as possible who you are
+      and what do you plan to use the data for.
+      {% endtrans %}
+    </p>
+  </div>
+</div>{% endblock %}

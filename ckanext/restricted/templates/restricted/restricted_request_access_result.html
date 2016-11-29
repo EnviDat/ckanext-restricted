@@ -1,20 +1,34 @@
 {% extends "restricted/restricted_request_access_base.html" %}
-{% set resource_name = data.get('resource-name', 'none') %}
 
 {% block primary_content_inner %}
-  <h2>{{ _('Request Access Form Sent ') }} "{{ resource_name }}" </h2>
+  <h2 class="page-heading">{{ _('Request Access Form Sent  ') }} 
+     <i class="icon-envelope-alt restricted-icon-large"></i>
+  </h2>
+
   <article class="module">
     <div class="module-content">
-      <h1 class="page-heading">Thank you!</h1>
-      <p>Your request has been sent, we will answer you as soon as possible.</p>
-      <!-- <p> DATA: {{ data }} </p> -->
+      <p>Your request has been sent, please check your provided mail account.</p>
+      <div class="restricted-request-summary" >
+       <h4> Access Request Data </h4>
+       <ul>
+         <li><b>{{ _('User') }}:</b> {{ data.get('user_name') }}</li>
+         <li><b>{{ _('User Mail') }}:</b> {{ data.get('user_email') }}</li>
+         <li><b>{{ _('Dataset') }}:</b> {{ data.get('package_id') }}</li>
+         <li><b>{{ _('Resource') }}:</b> {{ data.get('resource_id') }}</li>
+         <li><b>{{ _('Contact Email') }}:</b> {{ data.get('maintainer_email') }}</li>
+         <li><b>{{ _('Message') }}:</b> {{ data.get('message') }}</li>
+       </ul>
+     </div>
     </div>
   </article>
       
   {% block form_actions %}
     <div class="form-actions">
       {% block confirm_button %}
-        <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='package', action='read', id=pkg.name %}" data-module="cancel-action" >{{ _('Done') }}</a>
+        <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='package', action='read', id=pkg.name %}" data-module="cancel-action" >
+         <i class="icon-ok"></i>
+         {{ _('Done') }} 
+        </a>
       {% endblock %}
     </div>
   {% endblock %}

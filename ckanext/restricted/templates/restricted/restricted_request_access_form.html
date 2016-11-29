@@ -19,20 +19,22 @@
 
 
 {% block primary_content_inner %}
-  <h2>{{ _('Request Access Form') }} "{{ data.resource_name }}" </h2>
+  <h2>{{ _('Request Access to ') }} "{{ data.resource_name }}" </h2>
 
 
 <form id="restricted-request-access" class="dataset-form form-horizontal" method="post" action="{{ action }}" >
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
 
   {% block basic_fields %}
-     <input id='field-package-name' name='package-name' type="hidden" value="{{ pkg.name }}" />
-     <input id='field-resource-name' name='resource-name' type="hidden" value="{{ data.resource_name }}" />
-    {{ restricted_input_disabled('user', id='field-user', label=_('User'), value=data.user_name + ' (' + data.user_email + ')', error=errors.user, classes=['control-medium'] ) }}  
-    {{ restricted_input_disabled('package', id='field-package', label=_('Dataset'), value=data.package_id, error=errors.package, classes=['control-medium']) }}  
-    {{ restricted_input_disabled('resource', id='field-resource', label=_('Resource'), value=data.resource_id, error=errors.resource, classes=['control-full', 'control-medium']) }}  
-    {{ restricted_input_disabled('email', label=_('Contact Email'), id='field-email', value=data.email, error=errors.email, classes=['control-medium']) }}
-    {{ form.markdown('notes', id='field-notes', label=_('Message'), placeholder=_('Message to request data'), value='', error=errors.notes, is_required = true) }}
+     <input id='field-package_name' name='package_name' type="hidden" value="{{ data.package_name }}" />
+     <input id='field-resource_name' name='resource_name' type="hidden" value="{{ data.resource_name }}" />
+     <input id='field-maintainer_name' name='maintainer_name' type="hidden" value="{{ data.maintainer_name }}" />
+    {{ restricted_input_disabled('user_name', id='field-user_name', label=_('User'), value=data.user_name, error=errors.user_name, classes=['control-medium'] ) }}  
+    {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-medium'] ) }}  
+    {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-medium']) }}  
+    {{ restricted_input_disabled('resource_id', id='field-resource_id', label=_('Resource'), value=data.resource_id, error=errors.resource_id, classes=['control-full', 'control-medium']) }}  
+    {{ restricted_input_disabled('maintainer_email', label=_('Contact Email'), id='field-maintainer_email', value=data.maintainer_email, error=errors.maintainer_email, classes=['control-medium']) }}
+    {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc)'), value='', error=errors.message, is_required = true) }}
      <!-- <div class="g-recaptcha" data-sitekey="6LcFTQ0UAAAAAPun5w7Q1tGttoIXfc2tsd-NF55L"></div> -->
      <div class="g-recaptcha" data-sitekey="6LeQTQ0UAAAAAIlBLmQ_i2UX5wSkXwuJCXTtnJGO"></div>
   {% endblock %}
@@ -50,7 +52,7 @@
         </p>
       {% endblock %}
       {% block confirm_button %}
-        <button class="btn btn-primary pull-left" type="submit" name="save">{{ _('Send Request') }}</button>
+        <button class="btn btn-primary pull-left" type="submit" name="save"><i class="icon-envelope-alt"> </i> {{ _(' Send Request') }}</button>
       {% endblock %}
       {% block cancel_button %}
           <a class="btn btn-danger" href="{% url_for controller='package', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>

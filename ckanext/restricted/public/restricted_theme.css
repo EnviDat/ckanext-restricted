@@ -22,3 +22,23 @@ a.heading.restricted-item{
 .btn-restricted{
   margin-bottom: 10px;
 }
+
+.restricted-request-summary{
+  border: inset 3px;
+  border-color: #22222;
+  background-color:#f0f0f0;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  color: #666666;
+}
+
+.restricted-request-summary p{
+    word-break: break-all;
+    font-size: 16px;
+}
+
+.restricted-icon-large{
+ vertical-align: 0.1%;
+ font-size:  1.01em;
+ padding-left: 2px;
+}

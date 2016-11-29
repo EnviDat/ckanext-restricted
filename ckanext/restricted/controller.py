@@ -44,16 +44,29 @@ class RestrictedController(toolkit.BaseController):
         except captcha.CaptchaError:
             error_msg = _(u'Bad Captcha. Please try again.')
             h.flash_error(error_msg)
-            return self.restricted_request_access_form(package_id=data_dict.get('package-name'), resource_id=data_dict.get('resource'), data=data_dict)
-
-        log.debug('_send_request')
-        log.debug('context = ' + repr (context))
-        log.debug('data_dict = ' + repr (data_dict))
+            return self.restricted_request_access_form(package_id=data_dict.get('package_name'), resource_id=data_dict.get('resource'), data=data_dict)
 
         try:
-            pkg = toolkit.get_action('package_show')(context, {'id': data_dict.get('package-name')})
+            pkg = toolkit.get_action('package_show')(context, {'id': data_dict.get('package_name')})
+            data_dict['pkg_dict'] = pkg
         except toolkit.ObjectNotFound:
             toolkit.abort(404, 'Dataset not found')
+        except:
+            toolkit.abort(404, 'Exception retrieving dataset to send mail')
+
+        # Validation
+        errors = {}
+        error_summary = {}
+
+        if (data_dict["message"] == ''):
+            errors['message'] = [u'Missing Value']
+            error_summary['message'] =  u'Missing Value'
+
+        if len(errors) > 0:
+            return self.restricted_request_access_form(package_id=data_dict.get('package-name'), resource_id=data_dict.get('resource'), errors=errors, error_summary=error_summary, data=data_dict)
+
+        log.debug("TODO: Send Mail")
+
 
         return render('restricted/restricted_request_access_result.html', extra_vars={'data': data_dict, 'pkg_dict': pkg } )
 
@@ -68,42 +81,52 @@ class RestrictedController(toolkit.BaseController):
             'save': 'save' in request.params
         }
 
-        if (context['save']) and not data:
-            return self._send_request(context)
-
         data = data or {}
         errors = errors or {}
         error_summary = error_summary or {}
 
-        data['package_id'] = package_id 
-        data['resource_id'] = resource_id
+        if (context['save']) and not data and not errors:
+            return self._send_request(context)
 
-        user = toolkit.get_action('user_show')(context, {'id': user_id})
-        data['user_name'] = user.get('display_name', user_id)
-        data['user_email'] = user.get('email', '')
+        if not data:
+            data['package_id'] = package_id
+            data['resource_id'] = resource_id
 
-        resource_name = ""
-        try:
-            pkg = toolkit.get_action('package_show')(context, {'id': package_id})
-            #log.debug('restricted_request_access package_show (' + package_id + ', ' +  resource_id +'):' + repr(pkg))
-            resources = pkg.get('resources', [])
-            for resource in resources:
-                if resource['id'] == resource_id:
-                    resource_name = resource['name']
-                    break
-            else:
-                toolkit.abort(404, 'Dataset resource not found')
-            # get mail
-            contact_email = pkg.get('maintainer_email', "")
-            if not contact_email:
-                contact_email = json.loads(pkg.get('maintainer', "{}")).get('email','')
-            if not contact_email:
-                contact_email = config.get('email_to')
-        except toolkit.ObjectNotFound:
-            toolkit.abort(404, 'Dataset not found')
+            user = toolkit.get_action('user_show')(context, {'id': user_id})
+            data['user_name'] = user.get('display_name', user_id)
+            data['user_email'] = user.get('email', '')
 
-        data['resource_name'] = resource_name
-        data['email'] = contact_email
+            resource_name = ""
+
+            try:
+                pkg = toolkit.get_action('package_show')(context, {'id': package_id})
+                data['package_name'] = pkg.get('name')
+                resources = pkg.get('resources', [])
+                for resource in resources:
+                    if resource['id'] == resource_id:
+                        resource_name = resource['name']
+                        break
+                else:
+                    toolkit.abort(404, 'Dataset resource not found')
+                # get mail
+                contact_email = pkg.get('maintainer_email', "")
+                contact_name = pkg.get('maintainer_name', "Dataset Maintainer")
+                if not contact_email:
+                    contact_email = json.loads(pkg.get('maintainer', "{}")).get('email','')
+                    contact_name = json.loads(pkg.get('maintainer', "{}")).get('name','Dataset Maintainer')
+                if not contact_email:
+                    contact_email = config.get('email_to')
+                    contact_name = "CKAN Admin"
+            except toolkit.ObjectNotFound:
+                toolkit.abort(404, 'Dataset not found')
+            except:
+                toolkit.abort(404, 'Exception retrieving dataset for the form')
+
+            data['resource_name'] = resource_name
+            data['maintainer_email'] = contact_email
+            data['maintainer_name'] = contact_name
+        else:
+            pkg = data.get('pkg_dict', {})
+
         extra_vars = {'pkg_dict':pkg, 'data': data, 'errors':errors, 'error_summary': error_summary}
-
         return render('restricted/restricted_request_access_form.html', extra_vars=extra_vars)
