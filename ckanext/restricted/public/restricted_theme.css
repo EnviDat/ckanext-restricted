@@ -18,3 +18,7 @@ a.heading.restricted-item{
  padding-left: 10px;
  align:right;
 }
+
+.btn-restricted{
+  margin-bottom: 10px;
+}

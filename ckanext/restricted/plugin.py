@@ -121,6 +121,6 @@ class RestrictedPlugin(plugins.SingletonPlugin):
             'restricted_request_access',
             '/dataset/{package_id}/restricted_request_access/{resource_id}',
             controller='ckanext.restricted.controller:RestrictedController',
-            action = 'restricted_request_access'
+            action = 'restricted_request_access_form'
         )
         return map_
