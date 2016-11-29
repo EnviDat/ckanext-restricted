@@ -5,6 +5,11 @@
 {% set license_title = pkg_dict.get('license_title', 'dataset license') %}
 {% set license_url = pkg_dict.get('license_url', '#') %}
 
+{% block head_extras %}
+  {{ super() }}
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
 {% macro restricted_input_disabled(name, id='', label='', value='', placeholder='', type='text', error="", classes=[], attrs={}, is_required=false) %}
   {%- set extra_html = caller() if caller -%}
 
@@ -44,6 +49,8 @@
     {{ restricted_input_disabled('resource', id='field-resource', label=_('Resource'), value=data.resource_id, error=errors.resource, classes=['control-full', 'control-medium']) }}  
     {{ restricted_input_disabled('email', label=_('Contact Email'), id='field-maintainer-email', value=data.email, error=errors.email, classes=['control-medium']) }}
     {{ form.markdown('notes', id='field-notes', label=_('Message'), placeholder=_('Message to request data'), value='', error=errors.notes, is_required = true) }}
+     <!-- <div class="g-recaptcha" data-sitekey="6LcFTQ0UAAAAAPun5w7Q1tGttoIXfc2tsd-NF55L"></div> -->
+     <div class="g-recaptcha" data-sitekey="6LeQTQ0UAAAAAIlBLmQ_i2UX5wSkXwuJCXTtnJGO"></div>
   {% endblock %}
 
   {% block form_actions %}

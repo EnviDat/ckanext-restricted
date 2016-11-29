@@ -12,3 +12,9 @@ a.heading.restricted-item{
   display: inline;
   white-space: nowrap;
 }
+
+.g-recaptcha {
+ margin-left: 30%;
+ padding-left: 10px;
+ align:right;
+}
