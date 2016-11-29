@@ -1,6 +1,7 @@
 import ckan.model as model
 import ckan.logic as logic
 import ckan.lib.base as base
+import ckan.lib.helpers as h
 
 import ckan.plugins.toolkit as toolkit
 from ckan.common import _, request, c
@@ -31,8 +32,19 @@ class RestrictedController(toolkit.BaseController):
             base.abort(401, _('Not authorized to see this page'))
 
     def _send_request(self, context):
-        data_dict = logic.clean_dict(unflatten(
-        logic.tuplize_dict(logic.parse_params(request.params))))
+
+        try:
+            data_dict = logic.clean_dict(unflatten(
+                logic.tuplize_dict(logic.parse_params(request.params))))
+
+            captcha.check_recaptcha(request)
+
+        except logic.NotAuthorized:
+            toolkit.abort(401, _('Not authorized to see this page'))
+        except captcha.CaptchaError:
+            error_msg = _(u'Bad Captcha. Please try again.')
+            h.flash_error(error_msg)
+            return self.restricted_request_access_form(package_id=data_dict.get('package-name'), resource_id=data_dict.get('resource'), data=data_dict)
 
         log.debug('_send_request')
         log.debug('context = ' + repr (context))
@@ -73,10 +85,12 @@ class RestrictedController(toolkit.BaseController):
         resource_name = ""
         try:
             pkg = toolkit.get_action('package_show')(context, {'id': package_id})
+            #log.debug('restricted_request_access package_show (' + package_id + ', ' +  resource_id +'):' + repr(pkg))
             resources = pkg.get('resources', [])
             for resource in resources:
                 if resource['id'] == resource_id:
                     resource_name = resource['name']
+                    break
             else:
                 toolkit.abort(404, 'Dataset resource not found')
             # get mail
