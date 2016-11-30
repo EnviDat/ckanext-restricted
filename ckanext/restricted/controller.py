@@ -2,15 +2,18 @@ import ckan.model as model
 import ckan.logic as logic
 import ckan.lib.base as base
 import ckan.lib.helpers as h
+import ckan.lib.captcha as captcha
+import ckan.lib.mailer as mailer
 
 import ckan.plugins.toolkit as toolkit
 from ckan.common import _, request, c
+from routes import url_for
 
 from logging import getLogger
 from pylons import config
+from email.header import Header
 
 import simplejson as json
-import ckan.lib.captcha as captcha
 
 import ckan.lib.navl.dictization_functions as dictization_functions
 DataError = dictization_functions.DataError
@@ -30,6 +33,29 @@ class RestrictedController(toolkit.BaseController):
             logic.check_access('site_read', context)
         except logic.NotAuthorized:
             base.abort(401, _('Not authorized to see this page'))
+
+    def _send_request_mail(self, data):
+        try:
+            email_dict = {data.get('maintainer_email'): data.get('maintainer_name', 'Maintainer'), data.get('user_email'):data.get('user_name','') , config.get('email_to'): 'EnviDat Admin'}
+            subject = 'Access Request to resource ' +  data.get('resource_name','') + ' (' +  data.get('package_name','')  + ') from ' + data.get('user_name','')
+            url = config.get('ckan.site_url') + url_for(controller='package', action='resource_read', id=data.get('package_name') , resource_id=data.get('resource_id'))
+            body = 'An user has requested access to your data in EnviDat: '
+            body += '\n\t * Resource: ' +  data.get('resource_name','') + '( ' + str(url) + ' )'
+            body += '\n\t * Dataset: ' +  data.get('package_name','')
+            body += '\n\t * User: ' + data.get('user_name','') + ' (' + data.get('user_email','') + ')'
+            body += '\n\t * Message: ' + data.get('message','')
+
+            headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
+            ## CC doesn't work and mailer cannot send to multiple addresses
+            for email, name in email_dict.iteritems():
+                mailer.mail_recipient(name, email, subject, body, headers)
+
+        except mailer.MailerException as mailer_exception:
+            log.error("Cannot access request mail after registration ")
+            log.error(mailer_exception)
+            pass
+
+        return
 
     def _send_request(self, context):
 
@@ -66,7 +92,7 @@ class RestrictedController(toolkit.BaseController):
             return self.restricted_request_access_form(package_id=data_dict.get('package-name'), resource_id=data_dict.get('resource'), errors=errors, error_summary=error_summary, data=data_dict)
 
         log.debug("TODO: Send Mail")
-
+        self._send_request_mail(data_dict)
 
         return render('restricted/restricted_request_access_result.html', extra_vars={'data': data_dict, 'pkg_dict': pkg } )
 

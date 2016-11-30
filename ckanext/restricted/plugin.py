@@ -41,12 +41,6 @@ def restricted_user_create_and_notify(context, data_dict):
 
     return (user_dict)
 
-#@side_effect_free
-#def restricted_request_access(context, data_dict):
-#    log.debug("restricted_request_access")
-#    log.debug(data_dict)
-#    return{'debug':'restricted_request_access'}
-
 @side_effect_free
 def restricted_package_show(context, data_dict):
     package_metadata = package_show(context, data_dict)
@@ -59,7 +53,6 @@ def restricted_package_show(context, data_dict):
     restricted_resources_list = []
     for resource in restricted_package_metadata.get('resources',[]):
         authorized = restricted_resource_show(context, {'id':resource.get('id',''), 'resource':resource }).get('success', False)
-        #log.debug(" * resource: " + resource.get('name', '') + ", \t restriction=" + resource.get('restricted', '') + ", \t auth=" + str(authorized) + ", \t url_orig=" + str(resource.get('url', '')) )
         restricted_resource = dict(resource)
         if not authorized:
             restricted_resource['url'] = 'Not Authorized'
@@ -87,6 +80,7 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IRoutes, inherit=True)
+
     # IConfigurer
 
     def update_config(self, config_):
