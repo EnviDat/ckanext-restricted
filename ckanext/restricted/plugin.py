@@ -1,5 +1,6 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import ckan.authz as authz
 
 from ckan.lib.mailer import mail_recipient, MailerException
 from ckan.logic.action.create import user_create
@@ -53,7 +54,9 @@ def restricted_package_show(context, data_dict):
     restricted_resources_list = []
     for resource in restricted_package_metadata.get('resources',[]):
         authorized = restricted_resource_show(context, {'id':resource.get('id',''), 'resource':resource }).get('success', False)
+        log.debug('restricted_package_show ' + resource.get('id','') + ', ' + resource.get('name','') + ' (' + str(resource.get('restricted', '')) + '): ' + str(authorized))
         restricted_resource = dict(resource)
+        log.debug(restricted_resource)
         if not authorized:
             restricted_resource['url'] = 'Not Authorized'
         restricted_resources_list += [restricted_resource]
@@ -67,8 +70,10 @@ def restricted_resource_show(context, data_dict=None):
     user_name = ""
     if auth_user_obj:
         user_name = auth_user_obj.as_dict().get('name','')
+    else:
+        if authz.get_user_id_for_username(context.get('user',''), allow_none=True):
+            user_name = context.get('user','')
     log.debug("restricted_resource_show: USER:" + user_name)
-
     resource = data_dict.get('resource', context.get('resource', {}))
     if type(resource) is not dict:
         resource = resource.as_dict()
