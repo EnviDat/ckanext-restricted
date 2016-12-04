@@ -1,28 +1,39 @@
 import logging
 
 import ckan.logic as logic
-from ckan.common import c
+
+import json
+
 
 logger = logging.getLogger(__name__)
 
 
 def restricted_check_user_resource_access(user, resource_dict, package_dict):
-    restricted = 'public'
+    restricted_level = 'public'
+    allowed_users  = []
 
+    print("   *** restricted_check_user_resource_access: resource = " + str(resource_dict))
     # check in resource_dict
     if resource_dict:
         extras = resource_dict.get('extras',{})
-        restricted = resource_dict.get('restricted', extras.get('restricted', None))
+        restricted = resource_dict.get('restricted', extras.get('restricted', {}))
+        if not isinstance(restricted, dict):
+            restricted = json.loads(restricted)
+        print("   *** restricted_check_user_resource_access: type = " + str(type(restricted)) + " value="  + str(restricted))
+        restricted_level = restricted.get('level', 'public')
+        allowed_users = restricted.get('allowed_users', [])
+    print("   *** restricted_check_user_resource_access: level = " + str(restricted_level))
+    print("   *** restricted_check_user_resource_access:  allowed_users = " + str(allowed_users))
 
     # Public resources (DEFAULT)
-    if not restricted or restricted == 'public':
+    if not restricted_level or restricted_level == 'public':
         return {'success': True }
 
     # Registered user
     if not user:
         return {'success': False, 'msg': "Resource access restricted to registered users" }
     else:
-        if restricted == 'registered' or not restricted:
+        if restricted_level == 'registered' or not restricted_level:
             return {'success': True }
 
     # Get organization list
@@ -46,9 +57,9 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     pkg_organization_id = package_dict.get('owner_org', '')
 
     # Same Organization Members
-    if restricted == 'same_organization':
+    if restricted_level == 'same_organization':
         if pkg_organization_id in user_organization_dict.keys():
             return {'success': True }
 
-    return {'success': False, 'msg': "Resource access restricted to " + pkg_organization_name + " members" }
+    return {'success': False, 'msg': "Resource access restricted to same organization (" + pkg_organization_id + ") members" }
 
