@@ -29,6 +29,7 @@
      <input id='field-package_name' name='package_name' type="hidden" value="{{ data.package_name }}" />
      <input id='field-resource_name' name='resource_name' type="hidden" value="{{ data.resource_name }}" />
      <input id='field-maintainer_name' name='maintainer_name' type="hidden" value="{{ data.maintainer_name }}" />
+     <input id='field-user_id' name='user_id' type="hidden" value="{{ data.user_id }}" />
     {{ restricted_input_disabled('user_name', id='field-user_name', label=_('User'), value=data.user_name, error=errors.user_name, classes=['control-medium'] ) }}  
     {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-medium'] ) }}  
     {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-medium']) }}  
