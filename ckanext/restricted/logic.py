@@ -12,18 +12,14 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     restricted_level = 'public'
     allowed_users  = []
 
-    print("   *** restricted_check_user_resource_access: resource = " + str(resource_dict))
     # check in resource_dict
     if resource_dict:
         extras = resource_dict.get('extras',{})
         restricted = resource_dict.get('restricted', extras.get('restricted', {}))
         if not isinstance(restricted, dict):
             restricted = json.loads(restricted)
-        print("   *** restricted_check_user_resource_access: type = " + str(type(restricted)) + " value="  + str(restricted))
         restricted_level = restricted.get('level', 'public')
-        allowed_users = restricted.get('allowed_users', [])
-    print("   *** restricted_check_user_resource_access: level = " + str(restricted_level))
-    print("   *** restricted_check_user_resource_access:  allowed_users = " + str(allowed_users))
+        allowed_users = restricted.get('allowed_users', "").split(',')
 
     # Public resources (DEFAULT)
     if not restricted_level or restricted_level == 'public':
@@ -35,6 +31,10 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     else:
         if restricted_level == 'registered' or not restricted_level:
             return {'success': True }
+
+    # Since we have a user, check if it is in the allowed list
+    if user in allowed_users:
+        return {'success': True }
 
     # Get organization list
     user_organization_dict = {}
