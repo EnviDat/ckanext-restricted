@@ -43,6 +43,33 @@ Users can request access to a dataset by pressing a button. The package owner ca
 allow individual users to access the resource.
 It also includes notifying by mail on every new user registration.
 
+restricted_resources_metadata.PNG
+restricted_resources_preview.PNG
+
+.. figure:: restricted_resources_preview.PNG
+    :scale: 20 %
+    :align: center
+    :alt: Package view with restricted resources
+    :figclass: align-center
+
+    Package view with restricted resources
+
+.. figure:: restricted_resources_metadata.PNG
+    :scale: 20 %
+    :align: center
+    :alt: Resource metadata including restriction configuration
+    :figclass: align-center
+
+    Resource metadata including restriction configuration
+    
+.. figure:: restricted_resources_request_form.PNG
+    :scale: 20 %
+    :align: center
+    :alt: Request form for restricted resources
+    :figclass: align-center
+
+    Request form for restricted resources
+
 ------------
 Requirements
 ------------
