@@ -47,7 +47,6 @@ restricted_resources_metadata.PNG
 restricted_resources_preview.PNG
 
 .. figure:: restricted_resources_preview.PNG
-    :scale: 20 %
     :align: center
     :alt: Package view with restricted resources
     :figclass: align-center
@@ -55,7 +54,6 @@ restricted_resources_preview.PNG
     Package view with restricted resources
 
 .. figure:: restricted_resources_metadata.PNG
-    :scale: 20 %
     :align: center
     :alt: Resource metadata including restriction configuration
     :figclass: align-center
@@ -63,7 +61,6 @@ restricted_resources_preview.PNG
     Resource metadata including restriction configuration
     
 .. figure:: restricted_resources_request_form.PNG
-    :scale: 20 %
     :align: center
     :alt: Request form for restricted resources
     :figclass: align-center
