@@ -37,8 +37,35 @@ ckanext-restricted
    Consider including some screenshots or embedding a video!
 
 CKAN extension to restrict the accessibility to the resources of a dataset.
+This way the package metadata is accesible but not the data itself (resource). 
 The resource access restriction level can be individualy defined for every package.
+Users can request access to a dataset by pressing a button. The package owner can
+allow individual users to access the resource.
 It also includes notifying by mail on every new user registration.
+
+restricted_resources_metadata.PNG
+restricted_resources_preview.PNG
+
+.. figure:: restricted_resources_preview.PNG
+    :align: center
+    :alt: Package view with restricted resources
+    :figclass: align-center
+
+    Package view with restricted resources
+
+.. figure:: restricted_resources_metadata.PNG
+    :align: center
+    :alt: Resource metadata including restriction configuration
+    :figclass: align-center
+
+    Resource metadata including restriction configuration
+    
+.. figure:: restricted_resources_request_form.PNG
+    :align: center
+    :alt: Request form for restricted resources
+    :figclass: align-center
+
+    Request form for restricted resources
 
 ------------
 Requirements
@@ -48,13 +75,31 @@ This extension has been developed for CKAN version 2.5.2.
 
 The resource access restriction level can be individualy defined for every package. This requires adding an extra field to package metadata with (some of) the possible values: "public",  "registered", "any_organization",  "same_organization" (as the package).
 
-If you use ckanext-scheming, this is the field definition in JSON:
+The allowed user list is also defined in an additional field that includes autocomplete.
 
-  {
-      "field_name": "restricted",
-      "label": "Restriction of Resources",
-      "preset": "select",
-      "choices": [
+If you use ckanext-scheming and ckanext-composite, this is the field definition in JSON:
+::
+     {
+     "scheming_version": 1,
+     "dataset_type": "dataset",
+     "about": "",
+     "about_url": "http://github.com/ckan/ckanext-scheming",
+     "dataset_fields": [...],
+     "resource_fields": [
+      [...]
+       {
+       "field_name": "restricted",
+       "label": "Access Restriction",
+       "preset": "composite",
+       "subfields":
+        [
+          {
+            "field_name": "level",
+            "label": "Level",
+            "preset": "select",
+            "form_include_blank_choice": false,
+            "required": true,
+            "choices": [
               {
                 "value": "public",
                 "label": "Public"
@@ -70,12 +115,24 @@ If you use ckanext-scheming, this is the field definition in JSON:
               {
                 "value": "same_organization",
                 "label": "Same Organization Members"
-              }
-         ]
-   }
-   
+               }
+             ]
+           },
+            {
+            "field_name": "allowed_users",
+             "label": "Allowed Users",
+             "preset": "tag_string_autocomplete",
+             "data-module-source":"/api/2/util/user/autocomplete?q=?"
+             }
+           ]
+         }
+       ]
+     }
+
 The usage of this extension, regarding the level "any_organization", makes more sense if the CKAN administrator sets some users as members of an organization. In our case we created an organization called "trusted_users" where the mail accounts have been double checked. Therefore this extension sends a mail to the defined 'mail_to' in the CKAN config file at every new user registration. To swithch off this functionality, just comment out the code at:  
 https://github.com/espona/ckanext-restricted/blob/master/ckanext/restricted/plugin.py#L14
+
+
 
 ------------
 Installation
