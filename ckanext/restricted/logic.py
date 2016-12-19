@@ -51,7 +51,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     # Any Organization Members (Trusted Users)
     if not user_organization_dict:
         return {'success': False, 'msg': "Resource access restricted to members of an organization" }
-    if restricted == 'any_organization':
+    if restricted_level == 'any_organization':
         return {'success': True }
 
     pkg_organization_id = package_dict.get('owner_org', '')
