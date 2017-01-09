@@ -79,7 +79,7 @@ def restricted_resource_show(context, data_dict=None):
         resource = resource.as_dict()
 
     if authz.is_authorized('package_update', context, {'id': resource.get('package_id')}).get('success'):
-        return resource_show(context, data_dict=None)
+        return ({'success': True })
 
     # custom retricted check
     auth_user_obj = context.get('auth_user_obj', None)
