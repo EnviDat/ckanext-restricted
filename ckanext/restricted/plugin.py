@@ -20,9 +20,9 @@ log = getLogger(__name__)
 def restricted_user_create_and_notify(context, data_dict):
 
     def body_from_user_dict(user_dict):
-         body = '\n'
+         body = u'\n'
          for key,value in user_dict.items():
-             body += ' \t - '+ str(key.upper()) + ': ' + str(value) + '\n'
+             body +=  ' \t - '+ key.upper() + ': ' + ( value if type(value) == str else unicode(value)) + '\n'
          return body
     user_dict = user_create(context, data_dict)
 
@@ -30,8 +30,8 @@ def restricted_user_create_and_notify(context, data_dict):
     try:
         name = 'CKAN System Administrator'
         email = config.get('email_to')
-        subject = 'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
-        body = 'A new user registered, please review the information: ' + body_from_user_dict(user_dict)
+        subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
+        body = u'A new user registered, please review the information: ' + body_from_user_dict(user_dict)
         log.debug('Mail sent to ' + email + ', subject: ' + subject)
         mail_recipient(name, email, subject, body)
 
