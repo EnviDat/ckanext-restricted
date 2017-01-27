@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import ckan.logic as logic
 
@@ -17,7 +18,11 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         extras = resource_dict.get('extras',{})
         restricted = resource_dict.get('restricted', extras.get('restricted', {}))
         if not isinstance(restricted, dict):
-            restricted = json.loads(restricted)
+            try:
+                restricted = json.loads(restricted)
+            except:
+                print("Unexpected error:", sys.exc_info()[0])
+                restricted = {}
         restricted_level = restricted.get('level', 'public')
         allowed_users = restricted.get('allowed_users', "").split(',')
 
