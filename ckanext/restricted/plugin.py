@@ -5,8 +5,9 @@ import ckan.authz as authz
 from ckan.lib.mailer import mail_recipient, MailerException
 from ckan.logic.action.create import user_create
 
+import ckan.logic
 from ckan.logic import side_effect_free, check_access
-from ckan.logic.action.get import package_show, resource_show
+from ckan.logic.action.get import package_show, resource_show, resource_view_list
 
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
@@ -15,6 +16,8 @@ from pylons import config
 import simplejson as json
 
 from logging import getLogger
+
+_get_or_bust = ckan.logic.get_or_bust
 log = getLogger(__name__)
 
 def restricted_user_create_and_notify(context, data_dict):
@@ -41,6 +44,19 @@ def restricted_user_create_and_notify(context, data_dict):
         pass
 
     return (user_dict)
+
+@side_effect_free
+def restricted_resource_view_list(context, data_dict):
+    model = context['model']
+    id = _get_or_bust(data_dict, 'id')
+    resource = model.Resource.get(id)
+    if not resource:
+        raise NotFound
+    authorized = restricted_resource_show(context, {'id':resource.get('id'), 'resource':resource }).get('success', False)
+    if not authorized:
+        return []
+    else:
+        return resource_view_list(context, data_dict)
 
 @side_effect_free
 def restricted_package_show(context, data_dict):
@@ -117,6 +133,7 @@ class RestrictedPlugin(plugins.SingletonPlugin):
 
     def get_actions(self):
         return { 'user_create': restricted_user_create_and_notify,
+                 'resource_view_list': restricted_resource_view_list,
                  'package_show': restricted_package_show
                  #,'restricted_request_access': restricted_request_access
         }
@@ -130,7 +147,7 @@ class RestrictedPlugin(plugins.SingletonPlugin):
 
     def get_auth_functions(self):
         return { 'resource_show': restricted_resource_show,
-                 #'resource_view_list': restricted_resource_show
+                # 'resource_view_list': restricted_resource_view_list,
                  'resource_view_show': restricted_resource_show
                }
     # IRoutes
