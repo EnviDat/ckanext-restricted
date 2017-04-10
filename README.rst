@@ -132,6 +132,11 @@ If you use ckanext-scheming and ckanext-composite, this is the field definition 
 The usage of this extension, regarding the level "any_organization", makes more sense if the CKAN administrator sets some users as members of an organization. In our case we created an organization called "trusted_users" where the mail accounts have been double checked. Therefore this extension sends a mail to the defined 'mail_to' in the CKAN config file at every new user registration. To swithch off this functionality, just comment out the code at:  
 https://github.com/espona/ckanext-restricted/blob/master/ckanext/restricted/plugin.py#L14
 
+It is also recommended to set up the recaptcha in the config file
+     # Restricted
+     ckan.recaptcha.version = 2
+     ckan.recaptcha.privatekey = 6LeQxxxxxxxxxxxxxxxxxxxxxxxxdN82ojuQAgBd
+     ckan.recaptcha.publickey =  6LeQxxxxxxxxxxxxxxxxxxxxxxxxdN82ojuQAgBd
 
 
 ------------
