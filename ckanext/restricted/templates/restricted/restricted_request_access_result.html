@@ -7,7 +7,11 @@
 
   <article class="module">
     <div class="module-content">
+      {% if success %}
       <p>Your request has been sent, please check your provided mail account.</p>
+      {% else %}
+      <p>WARNING: There were problems sending your request, please contact the administrator providing the information below.</p>
+      {% endif %}
       <div class="restricted-request-summary" >
        <h4> Access Request Data </h4>
        <ul>

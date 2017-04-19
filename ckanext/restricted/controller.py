@@ -35,9 +35,10 @@ class RestrictedController(toolkit.BaseController):
             base.abort(401, _('Not authorized to see this page'))
 
     def _send_request_mail(self, data):
+        success = False
         try:
             site_title = g.site_title
-            email_dict = {data.get('maintainer_email'): data.get('maintainer_name', 'Maintainer'), config.get('email_to'): site_title + ' Admin'}
+            email_dict = {data.get('maintainer_email'): data.get('maintainer_name', 'Maintainer'), config.get('email_to', 'email_to_undefined'): site_title + ' Admin'}
             subject = 'Access Request to resource ' +  data.get('resource_name','') + ' (' +  data.get('package_name','')  + ') from ' + data.get('user_name','')
             url = config.get('ckan.site_url') + url_for(controller='package', action='resource_read', id=data.get('package_name') , resource_id=data.get('resource_id'))
             edit_link = config.get('ckan.site_url') + url_for(controller='package', action='resource_edit', id=data.get('package_name') , resource_id=data.get('resource_id'))
@@ -48,7 +49,7 @@ class RestrictedController(toolkit.BaseController):
             body += '\n\t * Message: ' + data.get('message','')
             body += '\n\n You can allow this user to access you resource by adding ' + data.get('user_id','the user id')+ ' to the list of allowed users.'
             body += ' If you have editor rights, you can edit the resource in this link: ' + str(edit_link)
-            body += '\n\n If you have any questions about how to preceed with this request, please contact the ' + site_title + ' support at ' + config.get('email_to')
+            body += '\n\n If you have any questions about how to preceed with this request, please contact the ' + site_title + ' support at ' + config.get('email_to', 'email_to_undefined')
 
             headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
             ## CC doesn't work and mailer cannot send to multiple addresses
@@ -59,13 +60,14 @@ class RestrictedController(toolkit.BaseController):
             name = data.get('user_name','User')
             body_user = "Please find below a copy of the access request mail sent. \n\n >> " + body.replace("\n", "\n >> ").replace(edit_link, " [ ... ] ").replace(url, " [ ... ] ")
             mailer.mail_recipient(name, email, subject, body_user, headers)
+            success=True
 
         except mailer.MailerException as mailer_exception:
             log.error("Cannot access request mail after registration ")
             log.error(mailer_exception)
             pass
 
-        return
+        return success
 
     def _send_request(self, context):
 
@@ -101,10 +103,9 @@ class RestrictedController(toolkit.BaseController):
         if len(errors) > 0:
             return self.restricted_request_access_form(package_id=data_dict.get('package-name'), resource_id=data_dict.get('resource'), errors=errors, error_summary=error_summary, data=data_dict)
 
-        log.debug("TODO: Send Mail")
-        self._send_request_mail(data_dict)
+        success = self._send_request_mail(data_dict)
 
-        return render('restricted/restricted_request_access_result.html', extra_vars={'data': data_dict, 'pkg_dict': pkg } )
+        return render('restricted/restricted_request_access_result.html', extra_vars={'data': data_dict, 'pkg_dict': pkg, 'success': success } )
 
     def restricted_request_access_form(self, package_id, resource_id, data=None, errors=None, error_summary=None):
         '''Redirects to form
@@ -152,7 +153,7 @@ class RestrictedController(toolkit.BaseController):
                     contact_email = json.loads(pkg.get('maintainer', "{}")).get('email','')
                     contact_name = json.loads(pkg.get('maintainer', "{}")).get('name','Dataset Maintainer')
                 if not contact_email:
-                    contact_email = config.get('email_to')
+                    contact_email = config.get('email_to', 'email_to_undefined')
                     contact_name = "CKAN Admin"
             except toolkit.ObjectNotFound:
                 toolkit.abort(404, 'Dataset not found')
