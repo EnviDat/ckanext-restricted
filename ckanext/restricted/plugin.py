@@ -33,9 +33,11 @@ def restricted_user_create_and_notify(context, data_dict):
     try:
         name = 'CKAN System Administrator'
         email = config.get('email_to')
+        if not email:
+            raise MailerException('Missing "email-to" in config')
         subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
         body = u'A new user registered, please review the information: ' + body_from_user_dict(user_dict)
-        log.debug('Mail sent to ' + email + ', subject: ' + subject)
+        log.debug('Mail sent to ' + repr(email) + ', subject: ' + repr(subject))
         mail_recipient(name, email, subject, body)
 
     except MailerException as mailer_exception:
