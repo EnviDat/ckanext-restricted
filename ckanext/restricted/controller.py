@@ -88,9 +88,9 @@ class RestrictedController(toolkit.BaseController):
             pkg = toolkit.get_action('package_show')(context, {'id': data_dict.get('package_name')})
             data_dict['pkg_dict'] = pkg
         except toolkit.ObjectNotFound:
-            toolkit.abort(404, 'Dataset not found')
+            toolkit.abort(404, _('Dataset not found'))
         except:
-            toolkit.abort(404, 'Exception retrieving dataset to send mail')
+            toolkit.abort(404, _('Exception retrieving dataset to send mail'))
 
         # Validation
         errors = {}
@@ -111,6 +111,10 @@ class RestrictedController(toolkit.BaseController):
         '''Redirects to form
         '''
         user_id = toolkit.c.user
+        
+        if not user_id:
+            toolkit.abort(401, _('Access request form is available to logged in users only.'))
+            
         context = {
             'model': model,
             'session': model.Session,
@@ -129,14 +133,14 @@ class RestrictedController(toolkit.BaseController):
             data['package_id'] = package_id
             data['resource_id'] = resource_id
 
-            user = toolkit.get_action('user_show')(context, {'id': user_id})
-            data['user_id'] = user_id
-            data['user_name'] = user.get('display_name', user_id)
-            data['user_email'] = user.get('email', '')
-
-            resource_name = ""
-
             try:
+                user = toolkit.get_action('user_show')(context, {'id': user_id})
+                data['user_id'] = user_id
+                data['user_name'] = user.get('display_name', user_id)
+                data['user_email'] = user.get('email', '')
+
+                resource_name = ""
+
                 pkg = toolkit.get_action('package_show')(context, {'id': package_id})
                 data['package_name'] = pkg.get('name')
                 resources = pkg.get('resources', [])
@@ -156,9 +160,9 @@ class RestrictedController(toolkit.BaseController):
                     contact_email = config.get('email_to', 'email_to_undefined')
                     contact_name = "CKAN Admin"
             except toolkit.ObjectNotFound:
-                toolkit.abort(404, 'Dataset not found')
+                toolkit.abort(404, _('Dataset not found'))
             except:
-                toolkit.abort(404, 'Exception retrieving dataset for the form')
+                toolkit.abort(404, _('Exception retrieving dataset for the form'))
 
             data['resource_name'] = resource_name
             data['maintainer_email'] = contact_email
