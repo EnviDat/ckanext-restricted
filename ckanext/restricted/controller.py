@@ -49,7 +49,7 @@ class RestrictedController(toolkit.BaseController):
             body += '\n\t * Message: ' + data.get('message','')
             body += '\n\n You can allow this user to access you resource by adding ' + data.get('user_id','the user id')+ ' to the list of allowed users.'
             body += ' If you have editor rights, you can edit the resource in this link: ' + str(edit_link)
-            body += '\n\n If you have any questions about how to preceed with this request, please contact the ' + site_title + ' support at ' + config.get('email_to', 'email_to_undefined')
+            body += '\n\n If you have any questions about how to proceed with this request, please contact the ' + site_title + ' support at ' + config.get('email_to', 'email_to_undefined')
 
             headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
             ## CC doesn't work and mailer cannot send to multiple addresses
