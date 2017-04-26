@@ -8,6 +8,7 @@ from ckan.logic.action.create import user_create
 import ckan.logic
 from ckan.logic import side_effect_free, check_access
 from ckan.logic.action.get import package_show, resource_show, resource_view_list
+import ckan.logic.auth as logic_auth
 
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
@@ -16,9 +17,9 @@ from pylons import config
 import simplejson as json
 
 from logging import getLogger
+log = getLogger(__name__)
 
 _get_or_bust = ckan.logic.get_or_bust
-log = getLogger(__name__)
 
 def restricted_user_create_and_notify(context, data_dict):
 
@@ -78,9 +79,9 @@ def restricted_package_show(context, data_dict):
     restricted_resources_list = []
     for resource in restricted_package_metadata.get('resources',[]):
         authorized = restricted_resource_show(context, {'id':resource.get('id'), 'resource':resource, 'package': package_metadata }).get('success', False)
-        log.debug('restricted_package_show ' + resource.get('id','') + ', ' + resource.get('name','') + ' (' + str(resource.get('restricted', '')) + '): ' + str(authorized))
+        #log.debug('restricted_package_show ' + resource.get('id','') + ', ' + resource.get('name','') + ' (' + str(resource.get('restricted', '')) + '): ' + str(authorized))
         restricted_resource = dict(resource)
-        log.debug(restricted_resource)
+        #log.debug(restricted_resource)
         if not authorized:
             restricted_resource['url'] = 'Not Authorized'
         restricted_resources_list += [restricted_resource]
@@ -91,15 +92,17 @@ def restricted_package_show(context, data_dict):
 @toolkit.auth_allow_anonymous_access
 def restricted_resource_show(context, data_dict=None):
 
-    # Ensure user who can edit can see the resource
+    # Ensure user who can edit the package can see the resource
     resource = data_dict.get('resource', context.get('resource',{}))
+    if not resource:
+       resource = logic_auth.get_resource_object(context, data_dict)
     if type(resource) is not dict:
         resource = resource.as_dict()
 
     if authz.is_authorized('package_update', context, {'id': resource.get('package_id')}).get('success'):
         return ({'success': True })
 
-    # custom retricted check
+    # custom restricted check
     auth_user_obj = context.get('auth_user_obj', None)
     user_name = ""
     if auth_user_obj:
@@ -107,7 +110,7 @@ def restricted_resource_show(context, data_dict=None):
     else:
         if authz.get_user_id_for_username(context.get('user'), allow_none=True):
             user_name = context.get('user','')
-    log.debug("restricted_resource_show: USER:" + user_name)
+    #log.debug("restricted_resource_show: USER:" + user_name)
 
     package = data_dict.get('package', {})
     if not package:
