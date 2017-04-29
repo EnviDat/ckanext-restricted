@@ -1,0 +1,14 @@
+
+Dear {{ user_name }},
+
+You have requested access on {{ site_title }} to the resource '{{ resource_name }}'.
+The contact person of the package has granted you access.
+
+Please click the following link: {{ resource_link }}
+
+
+Best regards,
+{{ site_title }} Administrator
+
+--
+Message sent fromm {{ site_title }} ({{ site_url }})

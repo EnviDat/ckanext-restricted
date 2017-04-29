@@ -151,7 +151,7 @@ class RestrictedController(toolkit.BaseController):
                 else:
                     toolkit.abort(404, 'Dataset resource not found')
                 # get mail
-                contact_details = _get_contact_details(pkg)
+                contact_details = this._get_contact_details(pkg)
             except toolkit.ObjectNotFound:
                 toolkit.abort(404, _('Dataset not found'))
             except Exception as e:
@@ -169,28 +169,28 @@ class RestrictedController(toolkit.BaseController):
         extra_vars = {'pkg_dict':pkg, 'data': data, 'errors':errors, 'error_summary': error_summary}
         return render('restricted/restricted_request_access_form.html', extra_vars=extra_vars)
 
-def _get_contact_details(pkg_dict):
-    contact_email = ""
-    contact_name = ""
-    # Maintainer as Composite field
-    try:
-        contact_email = json.loads(pkg_dict.get('maintainer', "{}")).get('email','')
-        contact_name = json.loads(pkg_dict.get('maintainer', "{}")).get('name','Dataset Maintainer')
-    except:
-        pass
-    # Maintainer Directly defined
-    if not contact_email:
-        contact_email = pkg_dict.get('maintainer_email', "")
-        contact_name = pkg_dict.get('maintainer', "Dataset Maintainer")
-    # Author Directly defined
-    if not contact_email:
-        contact_email = pkg_dict.get('author', '')
-        contact_name = pkg_dict.get('author_email', '')
-    # CKAN instance Admin
-    if not contact_email:
-        contact_email = config.get('email_to', 'email_to_undefined')
-        contact_name = "CKAN Admin"
-    return {'contact_email':contact_email, 'contact_name':contact_name}
+    def _get_contact_details(self, pkg_dict):
+        contact_email = ""
+        contact_name = ""
+        # Maintainer as Composite field
+        try:
+            contact_email = json.loads(pkg_dict.get('maintainer', "{}")).get('email','')
+            contact_name = json.loads(pkg_dict.get('maintainer', "{}")).get('name','Dataset Maintainer')
+        except:
+            pass
+        # Maintainer Directly defined
+        if not contact_email:
+            contact_email = pkg_dict.get('maintainer_email', "")
+            contact_name = pkg_dict.get('maintainer', "Dataset Maintainer")
+        # Author Directly defined
+        if not contact_email:
+            contact_email = pkg_dict.get('author', '')
+            contact_name = pkg_dict.get('author_email', '')
+        # CKAN instance Admin
+        if not contact_email:
+            contact_email = config.get('email_to', 'email_to_undefined')
+            contact_name = "CKAN Admin"
+        return {'contact_email':contact_email, 'contact_name':contact_name}
 
 
 

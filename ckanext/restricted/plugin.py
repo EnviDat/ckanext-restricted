@@ -15,6 +15,9 @@ from ckanext.restricted import logic
 
 from pylons import config
 import simplejson as json
+import json
+
+from ckan.lib.base import render_jinja2
 
 from logging import getLogger
 log = getLogger(__name__)
@@ -36,9 +39,16 @@ def restricted_user_create_and_notify(context, data_dict):
         email = config.get('email_to')
         if not email:
             raise MailerException('Missing "email-to" in config')
+            
         subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
-        body = u'A new user registered, please review the information: ' + body_from_user_dict(user_dict)
-        log.debug('Mail sent to ' + repr(email) + ', subject: ' + repr(subject))
+
+        extra_vars = {
+            'site_title': config.get('ckan.site_title'),
+            'site_url': config.get('ckan.site_url'),
+            'user_info': body_from_user_dict(user_dict)
+        }
+        body = render_jinja2('restricted/emails/restricted_user_registered.txt', extra_vars)
+
         mail_recipient(name, email, subject, body)
 
     except MailerException as mailer_exception:
@@ -126,7 +136,8 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IRoutes, inherit=True)
-
+    plugins.implements(plugins.IResourceController, inherit=True)
+    
     # IConfigurer
 
     def update_config(self, config_):
@@ -140,7 +151,6 @@ class RestrictedPlugin(plugins.SingletonPlugin):
         return { 'user_create': restricted_user_create_and_notify,
                  'resource_view_list': restricted_resource_view_list,
                  'package_show': restricted_package_show
-                 #,'restricted_request_access': restricted_request_access
         }
 
     # ITemplateHelpers
@@ -152,11 +162,9 @@ class RestrictedPlugin(plugins.SingletonPlugin):
 
     def get_auth_functions(self):
         return { 'resource_show': restricted_resource_show,
-                # 'resource_view_list': restricted_resource_view_list,
                  'resource_view_show': restricted_resource_show
                }
     # IRoutes
-
     def before_map(self, map_):
         map_.connect(
             'restricted_request_access',
@@ -165,3 +173,13 @@ class RestrictedPlugin(plugins.SingletonPlugin):
             action = 'restricted_request_access_form'
         )
         return map_
+
+    # IResourceController
+    def before_update(self, context, current, resource):
+        context['__restricted_previous_value'] = current.get('restricted')
+
+    def after_update(self, context, resource):
+        previous_value = context.get('__restricted_previous_value')
+        logic.restricted_notify_allowed_users(previous_value, resource)
+
+    
