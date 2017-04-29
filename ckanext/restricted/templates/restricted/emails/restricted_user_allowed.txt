@@ -10,5 +10,5 @@ Please click the following link: {{ resource_link }}
 Best regards,
 {{ site_title }} Administrator
 
---
-Message sent fromm {{ site_title }} ({{ site_url }})
+----------------------------------------------------------
+Message sent from {{ site_title }} ({{ site_url }})

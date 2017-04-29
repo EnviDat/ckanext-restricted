@@ -5,5 +5,6 @@ A new user registered, please review the information:
 {{ user_info }}
 
 Have a nice day
---
-Message sent fromm {{ site_title }} ({{ site_url }})
+
+----------------------------------------------------------
+Message sent from {{ site_title }} ({{ site_url }})

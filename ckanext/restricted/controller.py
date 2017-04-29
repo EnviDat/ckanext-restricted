@@ -7,7 +7,7 @@ import ckan.lib.mailer as mailer
 
 import ckan.plugins.toolkit as toolkit
 from ckan.common import _, request, c, g
-from routes import url_for
+from ckan.lib.base import render_jinja2
 
 from logging import getLogger
 from pylons import config
@@ -37,19 +37,32 @@ class RestrictedController(toolkit.BaseController):
     def _send_request_mail(self, data):
         success = False
         try:
-            site_title = g.site_title
-            email_dict = {data.get('maintainer_email'): data.get('maintainer_name', 'Maintainer'), config.get('email_to', 'email_to_undefined'): site_title + ' Admin'}
+
+            resource_link = toolkit.url_for(controller='package', action='resource_read', 
+                                    id=data.get('package_name'), resource_id=data.get('resource_id'))
+            
+            resource_edit_link = toolkit.url_for(controller='package', action='resource_edit', 
+                                              id=data.get('package_name') , resource_id=data.get('resource_id'))
+
+            extra_vars = {
+                'site_title': config.get('ckan.site_title'),
+                'site_url': config.get('ckan.site_url'),
+                'maintainer_name': data.get('maintainer_name', 'Maintainer'),
+                'user_id': data.get('user_id','the user id'),
+                'user_name': data.get('user_name', ''),
+                'user_email': data.get('user_email', ''),
+                'resource_name': data.get('resource_name',''),
+                'resource_link': config.get('ckan.site_url') + resource_link,
+                'resource_edit_link': config.get('ckan.site_url') + resource_edit_link,
+                'package_name': data.get('resource_name',''),
+                'message': data.get('message',''),
+                'admin_email_to': config.get('email_to', 'email_to_undefined')
+                }
+
+            body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
             subject = 'Access Request to resource ' +  data.get('resource_name','') + ' (' +  data.get('package_name','')  + ') from ' + data.get('user_name','')
-            url = config.get('ckan.site_url') + url_for(controller='package', action='resource_read', id=data.get('package_name') , resource_id=data.get('resource_id'))
-            edit_link = config.get('ckan.site_url') + url_for(controller='package', action='resource_edit', id=data.get('package_name') , resource_id=data.get('resource_id'))
-            body = 'A user has requested access to your data in ' + site_title + ': '
-            body += '\n\t * Resource: ' +  data.get('resource_name','') + ' ( ' + str(url) + ' )'
-            body += '\n\t * Dataset: ' +  data.get('package_name','')
-            body += '\n\t * User: ' + data.get('user_name','') + ' (' + data.get('user_email','') + ')'
-            body += '\n\t * Message: ' + data.get('message','')
-            body += '\n\n You can allow this user to access you resource by adding ' + data.get('user_id','the user id')+ ' to the list of allowed users.'
-            body += ' If you have editor rights, you can edit the resource in this link: ' + str(edit_link)
-            body += '\n\n If you have any questions about how to proceed with this request, please contact the ' + site_title + ' support at ' + config.get('email_to', 'email_to_undefined')
+
+            email_dict = {data.get('maintainer_email'): extra_vars.get('maintainer_name'), extra_vars.get('admin_email_to'): extra_vars.get('site_title') + ' Admin'}
 
             headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
             ## CC doesn't work and mailer cannot send to multiple addresses
@@ -58,8 +71,12 @@ class RestrictedController(toolkit.BaseController):
             ## Special copy for the user (no links)
             email = data.get('user_email')
             name = data.get('user_name','User')
-            body_user = "Please find below a copy of the access request mail sent. \n\n >> " + body.replace("\n", "\n >> ").replace(edit_link, " [ ... ] ").replace(url, " [ ... ] ")
-            mailer.mail_recipient(name, email, subject, body_user, headers)
+            
+            extra_vars['resource_link'] = '[...]'
+            extra_vars['resource_edit_link'] = '[...]'
+            body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
+            body_user = "Please find below a copy of the access request mail sent. \n\n >> {0}".format( body.replace("\n", "\n >> "))
+            mailer.mail_recipient(name, email, 'Fwd: ' + subject, body_user, headers)
             success=True
 
         except mailer.MailerException as mailer_exception:
@@ -151,7 +168,7 @@ class RestrictedController(toolkit.BaseController):
                 else:
                     toolkit.abort(404, 'Dataset resource not found')
                 # get mail
-                contact_details = this._get_contact_details(pkg)
+                contact_details = self._get_contact_details(pkg)
             except toolkit.ObjectNotFound:
                 toolkit.abort(404, _('Dataset not found'))
             except Exception as e:
@@ -184,8 +201,16 @@ class RestrictedController(toolkit.BaseController):
             contact_name = pkg_dict.get('maintainer', "Dataset Maintainer")
         # Author Directly defined
         if not contact_email:
-            contact_email = pkg_dict.get('author', '')
-            contact_name = pkg_dict.get('author_email', '')
+            contact_email = pkg_dict.get('author_email', '')
+            contact_name = pkg_dict.get('author', '')
+        # First Author from Composite Repeating
+        if not contact_email:
+            try:
+                author = json.loads(pkg_dict.get('author'))[0]
+                contact_email = author.get('email','')
+                contact_name = author.get('name','Dataset Maintainer')
+            except:
+                pass
         # CKAN instance Admin
         if not contact_email:
             contact_email = config.get('email_to', 'email_to_undefined')
