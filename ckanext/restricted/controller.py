@@ -61,13 +61,13 @@ class RestrictedController(toolkit.BaseController):
 
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
             subject = 'Access Request to resource ' +  data.get('resource_name','') + ' (' +  data.get('package_name','')  + ') from ' + data.get('user_name','')
+            headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
 
             email_dict = {data.get('maintainer_email'): extra_vars.get('maintainer_name'), extra_vars.get('admin_email_to'): extra_vars.get('site_title') + ' Admin'}
-
-            headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
             ## CC doesn't work and mailer cannot send to multiple addresses
             for email, name in email_dict.iteritems():
                 mailer.mail_recipient(name, email, subject, body, headers)
+            
             ## Special copy for the user (no links)
             email = data.get('user_email')
             name = data.get('user_name','User')
@@ -199,7 +199,7 @@ class RestrictedController(toolkit.BaseController):
         if not contact_email:
             contact_email = pkg_dict.get('maintainer_email', "")
             contact_name = pkg_dict.get('maintainer', "Dataset Maintainer")
-        # Author Directly defined
+        # 1st Author Directly defined
         if not contact_email:
             contact_email = pkg_dict.get('author_email', '')
             contact_name = pkg_dict.get('author', '')
@@ -216,9 +216,5 @@ class RestrictedController(toolkit.BaseController):
             contact_email = config.get('email_to', 'email_to_undefined')
             contact_name = "CKAN Admin"
         return {'contact_email':contact_email, 'contact_name':contact_name}
-
-
-
-
 
 
