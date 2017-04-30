@@ -61,9 +61,10 @@ class RestrictedController(toolkit.BaseController):
 
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
             subject = 'Access Request to resource ' +  data.get('resource_name','') + ' (' +  data.get('package_name','')  + ') from ' + data.get('user_name','')
-            headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
 
             email_dict = {data.get('maintainer_email'): extra_vars.get('maintainer_name'), extra_vars.get('admin_email_to'): extra_vars.get('site_title') + ' Admin'}
+            headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
+
             ## CC doesn't work and mailer cannot send to multiple addresses
             for email, name in email_dict.iteritems():
                 mailer.mail_recipient(name, email, subject, body, headers)
