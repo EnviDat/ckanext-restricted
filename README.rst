@@ -117,7 +117,11 @@ If you use ckanext-scheming and ckanext-composite, this is the field definition 
               {
                 "value": "same_organization",
                 "label": "Same Organization Members"
-               }
+               },
+               {
+                "value": "only_allowed_users",
+                "label": "Allowed Users Only"
+              }
              ]
            },
             {
