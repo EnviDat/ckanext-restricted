@@ -140,7 +140,11 @@ It is also recommended to set up the recaptcha in the config file
      ckan.recaptcha.privatekey = 6LeQxxxxxxxxxxxxxxxxxxxxxxxxdN82ojuQAgBd
      ckan.recaptcha.publickey =  6LeQxxxxxxxxxxxxxxxxxxxxxxxxdN82ojuQAgBd
 
+The for mail notifications, the mail_to and smtp options in the ini file have to be configured. Please take a look to the following documentation: 
+- http://docs.ckan.org/en/latest/maintaining/configuration.html#email-settings
+- http://docs.ckan.org/en/latest/maintaining/email-notifications.html
 
+ 
 ------------
 Installation
 ------------
