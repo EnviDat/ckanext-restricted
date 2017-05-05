@@ -40,8 +40,10 @@ CKAN extension to restrict the accessibility to the resources of a dataset.
 This way the package metadata is accesible but not the data itself (resource). 
 The resource access restriction level can be individualy defined for every package.
 Users can request access to a dataset by pressing a button. The package owner can
-allow individual users to access the resource.
+allow individual users to access the resource. If the users allowed individually 
+will be notified by mail.
 It also includes notifying by mail on every new user registration.
+The mails are generated from templates that can be extended.
 
 restricted_resources_metadata.PNG
 restricted_resources_preview.PNG
@@ -115,7 +117,11 @@ If you use ckanext-scheming and ckanext-composite, this is the field definition 
               {
                 "value": "same_organization",
                 "label": "Same Organization Members"
-               }
+               },
+               {
+                "value": "only_allowed_users",
+                "label": "Allowed Users Only"
+              }
              ]
            },
             {
@@ -138,7 +144,12 @@ It is also recommended to set up the recaptcha in the config file
      ckan.recaptcha.privatekey = 6LeQxxxxxxxxxxxxxxxxxxxxxxxxdN82ojuQAgBd
      ckan.recaptcha.publickey =  6LeQxxxxxxxxxxxxxxxxxxxxxxxxdN82ojuQAgBd
 
+The for mail notifications, the mail_to and smtp options in the ini file have to be configured. Please take a look to the following documentation: 
 
+- http://docs.ckan.org/en/latest/maintaining/configuration.html#email-settings
+- http://docs.ckan.org/en/latest/maintaining/email-notifications.html
+
+ 
 ------------
 Installation
 ------------

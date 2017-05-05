@@ -46,6 +46,8 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     # Since we have a user, check if it is in the allowed list
     if user in allowed_users:
         return {'success': True }
+    elif  restricted_level == 'only_allowed_users':
+        return {'success': False, 'msg': 'Resource access restricted to allowed users only' }
 
     # Get organization list
     user_organization_dict = {}
