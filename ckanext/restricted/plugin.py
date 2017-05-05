@@ -83,8 +83,7 @@ def restricted_package_show(context, data_dict):
     if (type(package_metadata) == type(dict())):
         restricted_package_metadata = dict(package_metadata)
     else:
-        package_metadata_json_str = str(package_metadata.for_json())
-        restricted_package_metadata = json.loads(package_metadata_json_str)
+        restricted_package_metadata = dict(package_metadata.for_json())
 
     restricted_resources_list = []
     for resource in restricted_package_metadata.get('resources',[]):
