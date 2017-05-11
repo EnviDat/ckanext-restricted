@@ -76,7 +76,7 @@ class RestrictedController(toolkit.BaseController):
             extra_vars['resource_link'] = '[...]'
             extra_vars['resource_edit_link'] = '[...]'
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
-            body_user = "Please find below a copy of the access request mail sent. \n\n >> {0}".format( body.replace("\n", "\n >> "))
+            body_user = "Please find below a copy of the access request mail sent. \n\n >> %s" % body.replace("\n", "\n >> ")
             mailer.mail_recipient(name, email, 'Fwd: ' + subject, body_user, headers)
             success=True
 

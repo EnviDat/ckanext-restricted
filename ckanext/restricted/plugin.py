@@ -39,7 +39,6 @@ def restricted_user_create_and_notify(context, data_dict):
         email = config.get('email_to')
         if not email:
             raise MailerException('Missing "email-to" in config')
-            
         subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
 
         extra_vars = {
@@ -47,7 +46,7 @@ def restricted_user_create_and_notify(context, data_dict):
             'site_url': config.get('ckan.site_url'),
             'user_info': body_from_user_dict(user_dict)
         }
-        body = render_jinja2('restricted/emails/restricted_user_registered.txt', extra_vars)
+        body = render_jinja2('templates/restricted/emails/restricted_user_registered.txt', extra_vars)
 
         mail_recipient(name, email, subject, body)
 
@@ -181,4 +180,3 @@ class RestrictedPlugin(plugins.SingletonPlugin):
         previous_value = context.get('__restricted_previous_value')
         logic.restricted_notify_allowed_users(previous_value, resource)
 
-    
