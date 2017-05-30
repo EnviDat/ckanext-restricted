@@ -1,133 +1,17 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-import ckan.authz as authz
-
-from ckan.lib.mailer import mail_recipient, MailerException
-from ckan.logic.action.create import user_create
 
 import ckan.logic
-from ckan.logic import side_effect_free, check_access
-from ckan.logic.action.get import package_show, resource_show, resource_view_list
-import ckan.logic.auth as logic_auth
 
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
-
-from pylons import config
-import simplejson as json
-import json
-
-from ckan.lib.base import render_jinja2
+from ckanext.restricted import auth
+from ckanext.restricted import action
 
 from logging import getLogger
 log = getLogger(__name__)
 
 _get_or_bust = ckan.logic.get_or_bust
-
-def restricted_user_create_and_notify(context, data_dict):
-
-    def body_from_user_dict(user_dict):
-         body = u'\n'
-         for key,value in user_dict.items():
-             body +=  ' \t - '+ key.upper() + ': ' + ( value if type(value) == str else unicode(value)) + '\n'
-         return body
-    user_dict = user_create(context, data_dict)
-
-    # Send your email, check ckan.lib.mailer for params
-    try:
-        name = 'CKAN System Administrator'
-        email = config.get('email_to')
-        if not email:
-            raise MailerException('Missing "email-to" in config')
-            
-        subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
-
-        extra_vars = {
-            'site_title': config.get('ckan.site_title'),
-            'site_url': config.get('ckan.site_url'),
-            'user_info': body_from_user_dict(user_dict)
-        }
-        body = render_jinja2('restricted/emails/restricted_user_registered.txt', extra_vars)
-
-        mail_recipient(name, email, subject, body)
-
-    except MailerException as mailer_exception:
-        log.error("Cannot send mail after registration ")
-        log.error(mailer_exception)
-        pass
-
-    return (user_dict)
-
-@side_effect_free
-def restricted_resource_view_list(context, data_dict):
-    model = context['model']
-    id = _get_or_bust(data_dict, 'id')
-    resource = model.Resource.get(id)
-    if not resource:
-        raise NotFound
-    authorized = restricted_resource_show(context, {'id':resource.get('id'), 'resource':resource }).get('success', False)
-    if not authorized:
-        return []
-    else:
-        return resource_view_list(context, data_dict)
-
-@side_effect_free
-def restricted_package_show(context, data_dict):
-    package_metadata = package_show(context, data_dict)
-
-    # Ensure user who can edit can see the resource
-    if authz.is_authorized('package_update', context, package_metadata).get('success', False):
-        return package_metadata
-
-    # Custom authorization
-    if (type(package_metadata) == type(dict())):
-        restricted_package_metadata = dict(package_metadata)
-    else:
-        restricted_package_metadata = dict(package_metadata.for_json())
-
-    restricted_resources_list = []
-    for resource in restricted_package_metadata.get('resources',[]):
-        authorized = restricted_resource_show(context, {'id':resource.get('id'), 'resource':resource, 'package': package_metadata }).get('success', False)
-        #log.debug('restricted_package_show ' + resource.get('id','') + ', ' + resource.get('name','') + ' (' + str(resource.get('restricted', '')) + '): ' + str(authorized))
-        restricted_resource = dict(resource)
-        #log.debug(restricted_resource)
-        if not authorized:
-            restricted_resource['url'] = 'Not Authorized'
-        restricted_resources_list += [restricted_resource]
-    restricted_package_metadata['resources'] = restricted_resources_list
-
-    return (restricted_package_metadata)
-
-@toolkit.auth_allow_anonymous_access
-def restricted_resource_show(context, data_dict=None):
-
-    # Ensure user who can edit the package can see the resource
-    resource = data_dict.get('resource', context.get('resource',{}))
-    if not resource:
-       resource = logic_auth.get_resource_object(context, data_dict)
-    if type(resource) is not dict:
-        resource = resource.as_dict()
-
-    if authz.is_authorized('package_update', context, {'id': resource.get('package_id')}).get('success'):
-        return ({'success': True })
-
-    # custom restricted check
-    auth_user_obj = context.get('auth_user_obj', None)
-    user_name = ""
-    if auth_user_obj:
-        user_name = auth_user_obj.as_dict().get('name','')
-    else:
-        if authz.get_user_id_for_username(context.get('user'), allow_none=True):
-            user_name = context.get('user','')
-    #log.debug("restricted_resource_show: USER:" + user_name)
-
-    package = data_dict.get('package', {})
-    if not package:
-        model = context['model']
-        package = model.Package.get(resource.get('package_id'))
-        package = package.as_dict()
-
-    return (logic.restricted_check_user_resource_access(user_name, resource, package))
 
 class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -147,9 +31,11 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     # IActions
 
     def get_actions(self):
-        return { 'user_create': restricted_user_create_and_notify,
-                 'resource_view_list': restricted_resource_view_list,
-                 'package_show': restricted_package_show
+        return { 'user_create': action.restricted_user_create_and_notify,
+                 'resource_view_list': action.restricted_resource_view_list,
+                 'package_show': action.restricted_package_show,
+                 'resource_search': action.restricted_resource_search,
+                 'package_search': action.restricted_package_search
         }
 
     # ITemplateHelpers
@@ -160,8 +46,8 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     # IAuthFunctions
 
     def get_auth_functions(self):
-        return { 'resource_show': restricted_resource_show,
-                 'resource_view_show': restricted_resource_show
+        return { 'resource_show': auth.restricted_resource_show,
+                 'resource_view_show': auth.restricted_resource_show
                }
     # IRoutes
     def before_map(self, map_):
@@ -180,5 +66,3 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     def after_update(self, context, resource):
         previous_value = context.get('__restricted_previous_value')
         logic.restricted_notify_allowed_users(previous_value, resource)
-
-    

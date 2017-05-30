@@ -25,7 +25,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
             try:
                 restricted = json.loads(restricted)
             except:
-                print('Unexpected error:', sys.exc_info()[0])
+                log.info('Error loading restricted value: "{0}"'.format(restricted))
                 restricted = {}
 
         if restricted:
