@@ -64,8 +64,7 @@ def restricted_resource_view_list(context, data_dict):
 
 @side_effect_free
 def restricted_package_show(context, data_dict):
-    log.debug('restricted_package_show')
-    log.debug(data_dict)
+
     package_metadata = package_show(context, data_dict)
 
     # Ensure user who can edit can see the resource
@@ -99,8 +98,6 @@ def restricted_resource_search(context, data_dict):
 
 @side_effect_free
 def restricted_package_search(context, data_dict):
-    log.debug('restricted_package_search')
-    log.debug(data_dict)
     package_search_result = package_search(context, data_dict)
 
     restricted_package_search_result = {}
