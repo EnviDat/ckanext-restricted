@@ -10,7 +10,14 @@ from ckan.common import _, request, c, g
 from ckan.lib.base import render_jinja2
 
 from logging import getLogger
-from pylons import config
+
+try:
+    # CKAN 2.7 and later
+    from ckan.common import config
+except ImportError:
+    # CKAN 2.6 and earlier
+    from pylons import config
+
 from email.header import Header
 
 import simplejson as json
@@ -38,10 +45,10 @@ class RestrictedController(toolkit.BaseController):
         success = False
         try:
 
-            resource_link = toolkit.url_for(controller='package', action='resource_read', 
+            resource_link = toolkit.url_for(controller='package', action='resource_read',
                                     id=data.get('package_name'), resource_id=data.get('resource_id'))
-            
-            resource_edit_link = toolkit.url_for(controller='package', action='resource_edit', 
+
+            resource_edit_link = toolkit.url_for(controller='package', action='resource_edit',
                                               id=data.get('package_name') , resource_id=data.get('resource_id'))
 
             extra_vars = {
@@ -68,11 +75,11 @@ class RestrictedController(toolkit.BaseController):
             ## CC doesn't work and mailer cannot send to multiple addresses
             for email, name in email_dict.iteritems():
                 mailer.mail_recipient(name, email, subject, body, headers)
-            
+
             ## Special copy for the user (no links)
             email = data.get('user_email')
             name = data.get('user_name','User')
-            
+
             extra_vars['resource_link'] = '[...]'
             extra_vars['resource_edit_link'] = '[...]'
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
@@ -129,10 +136,10 @@ class RestrictedController(toolkit.BaseController):
         '''Redirects to form
         '''
         user_id = toolkit.c.user
-        
+
         if not user_id:
             toolkit.abort(401, _('Access request form is available to logged in users only.'))
-            
+
         context = {
             'model': model,
             'session': model.Session,
@@ -217,5 +224,3 @@ class RestrictedController(toolkit.BaseController):
             contact_email = config.get('email_to', 'email_to_undefined')
             contact_name = "CKAN Admin"
         return {'contact_email':contact_email, 'contact_name':contact_name}
-
-

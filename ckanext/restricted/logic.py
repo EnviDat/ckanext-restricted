@@ -8,7 +8,12 @@ import ckan.logic as logic
 from ckan.lib.base import render_jinja2
 import ckan.plugins.toolkit as toolkit
 
-from pylons import config
+try:
+    # CKAN 2.7 and later
+    from ckan.common import config
+except ImportError:
+    # CKAN 2.6 and earlier
+    from pylons import config
 
 from logging import getLogger
 log = getLogger(__name__)
@@ -16,7 +21,7 @@ log = getLogger(__name__)
 def restricted_check_user_resource_access(user, resource_dict, package_dict):
     restricted_level = 'public'
     allowed_users  = []
-    
+
     # check in resource_dict
     if resource_dict:
         extras = resource_dict.get('extras',{})
@@ -31,7 +36,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         if restricted:
             restricted_level = restricted.get('level', 'public')
             allowed_users = restricted.get('allowed_users', '').split(',')
-        
+
     # Public resources (DEFAULT)
     if not restricted_level or restricted_level == 'public':
         return {'success': True }
@@ -89,22 +94,22 @@ def restricted_mail_allowed_user(user_id, resource):
         resource_name = resource.get('name', resource['id'])
 
         # maybe check user[activity_streams_email_notifications]==True
-    
+
         mail_body = restricted_allowed_user_mail_body(user, resource)
         mail_subject = 'Access granted to resource {0}'.format(resource_name)
 
         # Send mail to user
         mailer.mail_recipient(user_name, user_email, mail_subject, mail_body)
-        
+
         # Sendo copy to admin
         mailer.mail_recipient('CKAN Admin', config.get('email_to'), 'Fwd: ' + mail_subject, mail_body)
-        
+
     except:
         log.warning('restricted_mail_allowed_user: Failed to send mail to "{0}"'.format(user_id))
 
 def restricted_allowed_user_mail_body(user, resource):
-        
-    resource_link = toolkit.url_for(controller='package', action='resource_read', 
+
+    resource_link = toolkit.url_for(controller='package', action='resource_read',
                                     id=resource.get('package_id'), resource_id=resource.get('id'))
     extra_vars = {
         'site_title': config.get('ckan.site_title'),
@@ -123,9 +128,9 @@ def restricted_notify_allowed_users(previous_value, updated_resource):
             return json.loads(json_string)
         except:
             return default
-            
+
     previous_restricted = _safe_json_loads(previous_value)
-    updated_restricted = _safe_json_loads(updated_resource.get('restricted', ''))        
+    updated_restricted = _safe_json_loads(updated_resource.get('restricted', ''))
 
     # compare restricted users_allowed values
     updated_allowed_users =  Set(updated_restricted.get('allowed_users','').split(','))
@@ -134,8 +139,3 @@ def restricted_notify_allowed_users(previous_value, updated_resource):
         for user_id in updated_allowed_users:
             if user_id not in previous_allowed_users:
                 restricted_mail_allowed_user(user_id, updated_resource)
-
-
-
-
-

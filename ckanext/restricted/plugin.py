@@ -20,7 +20,7 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
-    
+
     # IConfigurer
 
     def update_config(self, config_):
