@@ -1,9 +1,12 @@
+from ckan.lib.base import render_jinja2
+from ckan.lib.mailer import mail_recipient
+from ckan.lib.mailer import MailerException
 import ckan.logic
+from ckan.logic.action.create import user_create
 from ckan.logic import side_effect_free, check_access
 from ckan.logic.action.get import package_show, resource_show, resource_view_list, resource_search, package_search
 import ckan.logic.auth as logic_auth
 import ckan.authz as authz
-
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
 from ckanext.restricted import auth
@@ -17,6 +20,8 @@ except ImportError:
 
 from logging import getLogger
 log = getLogger(__name__)
+
+NotFound = ckan.logic.NotFound
 
 _get_or_bust = ckan.logic.get_or_bust
 
