@@ -1,17 +1,27 @@
+from ckan.lib.base import render_jinja2
+from ckan.lib.mailer import mail_recipient
+from ckan.lib.mailer import MailerException
 import ckan.logic
+from ckan.logic.action.create import user_create
 from ckan.logic import side_effect_free, check_access
 from ckan.logic.action.get import package_show, resource_show, resource_view_list, resource_search, package_search
 import ckan.logic.auth as logic_auth
 import ckan.authz as authz
-
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
 from ckanext.restricted import auth
 
-from pylons import config
+try:
+    # CKAN 2.7 and later
+    from ckan.common import config
+except ImportError:
+    # CKAN 2.6 and earlier
+    from pylons import config
 
 from logging import getLogger
 log = getLogger(__name__)
+
+NotFound = ckan.logic.NotFound
 
 _get_or_bust = ckan.logic.get_or_bust
 
@@ -30,7 +40,7 @@ def restricted_user_create_and_notify(context, data_dict):
         email = config.get('email_to')
         if not email:
             raise MailerException('Missing "email-to" in config')
-            
+
         subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
 
         extra_vars = {
@@ -87,7 +97,7 @@ def restricted_resource_search(context, data_dict):
     resource_search_result = resource_search(context, data_dict)
 
     restricted_resource_search_result = {}
-    
+
     for key,value in resource_search_result.items():
         if key == 'results':
             restricted_resource_search_result[key] = _restricted_resource_list_url(context, value)
@@ -101,7 +111,7 @@ def restricted_package_search(context, data_dict):
     package_search_result = package_search(context, data_dict)
 
     restricted_package_search_result = {}
-    
+
     for key,value in package_search_result.items():
         if key == 'results':
             restricted_package_search_result_list = []
@@ -122,4 +132,3 @@ def _restricted_resource_list_url(context, resource_list):
             restricted_resource['url'] = 'Not Authorized'
         restricted_resources_list += [restricted_resource]
     return restricted_resources_list
-
