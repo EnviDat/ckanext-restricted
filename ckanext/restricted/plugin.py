@@ -1,3 +1,4 @@
+from ckan.lib.plugins import DefaultTranslation
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
@@ -13,7 +14,8 @@ log = getLogger(__name__)
 
 _get_or_bust = ckan.logic.get_or_bust
 
-class RestrictedPlugin(plugins.SingletonPlugin):
+class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
+    plugins.implements(plugins.ITranslation)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)

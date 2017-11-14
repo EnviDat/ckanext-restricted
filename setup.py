@@ -93,6 +93,7 @@ setup(
             ('**.py', 'python', None),
             ('**.js', 'javascript', None),
             ('**/templates/**.html', 'ckan', None),
+            ('**/templates/**.text', 'ckan', None)
         ],
     }
 )

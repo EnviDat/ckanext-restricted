@@ -1,10 +1,9 @@
+{% trans %}Dear {{ site_title }} administrator,{% endtrans %}
 
-Dear {{ site_title }} administrator,
-
-A new user registered, please review the information: 
+{% trans %}A new user registered, please review the information:{% endtrans %}
 {{ user_info }}
 
-Have a nice day
+{% trans %}Have a nice day{% endtrans %}
 
 ----------------------------------------------------------
-Message sent from {{ site_title }} ({{ site_url }})
+{% trans %}Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}
