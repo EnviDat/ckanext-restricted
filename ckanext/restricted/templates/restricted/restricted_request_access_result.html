@@ -1,19 +1,19 @@
 {% extends "restricted/restricted_request_access_base.html" %}
 
 {% block primary_content_inner %}
-  <h2 class="page-heading">{{ _('Request Access Form Sent') }} 
+  <h2 class="page-heading">{{ _('Request Access Form Sent') }}
      <i class="fa fa-envelope-o restricted-icon-large"></i>
   </h2>
 
   <article class="module">
     <div class="module-content">
       {% if success %}
-      <p>Your request has been sent, please check your provided mail account.</p>
+      <p>{% trans %}Your request has been sent, please check your provided mail account.{% endtrans %}</p>
       {% else %}
-      <p>WARNING: There were problems sending your request, please contact the administrator providing the information below.</p>
+      <p>{% trans %}WARNING: There were problems sending your request, please contact the administrator providing the information below.{% endtrans %}</p>
       {% endif %}
       <div class="restricted-request-summary" >
-       <h4> Access Request Data </h4>
+       <h4>{% trans %}Access Request Data{% endtrans %}</h4>
        <ul>
          <li><b>{{ _('User') }}:</b> {{ data.get('user_name') }}</li>
          <li><b>{{ _('User Mail') }}:</b> {{ data.get('user_email') }}</li>
@@ -25,16 +25,15 @@
      </div>
     </div>
   </article>
-      
+
   {% block form_actions %}
     <div class="form-actions">
       {% block confirm_button %}
         <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='package', action='read', id=pkg.name %}" data-module="cancel-action" >
          <i class="icon-ok"></i>
-         {{ _('Done') }} 
+         {{ _('Done') }}
         </a>
       {% endblock %}
     </div>
   {% endblock %}
 {% endblock %}
- 

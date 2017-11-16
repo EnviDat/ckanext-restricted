@@ -96,7 +96,7 @@ def restricted_mail_allowed_user(user_id, resource):
         # maybe check user[activity_streams_email_notifications]==True
 
         mail_body = restricted_allowed_user_mail_body(user, resource)
-        mail_subject = 'Access granted to resource {0}'.format(resource_name)
+        mail_subject = _(u'Access granted to resource {0}').format(resource_name)
 
         # Send mail to user
         mailer.mail_recipient(user_name, user_email, mail_subject, mail_body)

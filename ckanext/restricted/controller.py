@@ -67,7 +67,11 @@ class RestrictedController(toolkit.BaseController):
                 }
 
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
-            subject = 'Access Request to resource ' +  data.get('resource_name','') + ' (' +  data.get('package_name','')  + ') from ' + data.get('user_name','')
+            subject = \
+                _(u'Access Request to resource {0} ({1}) from {2}').format(
+                    data.get('resource_name', u''),
+                    data.get('package_name', u''),
+                    data.get('user_name', u''))
 
             email_dict = {data.get('maintainer_email'): extra_vars.get('maintainer_name'), extra_vars.get('admin_email_to'): extra_vars.get('site_title') + ' Admin'}
             headers = {'CC': ",".join(email_dict.keys()),  'reply-to': data.get('user_email')}
@@ -83,7 +87,7 @@ class RestrictedController(toolkit.BaseController):
             extra_vars['resource_link'] = '[...]'
             extra_vars['resource_edit_link'] = '[...]'
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
-            body_user = u"Please find below a copy of the access request mail sent. \n\n >> {0}".format( body.replace("\n", "\n >> "))
+            body_user = _(u"Please find below a copy of the access request mail sent. \n\n >> {0}").format( body.replace("\n", "\n >> "))
             mailer.mail_recipient(name, email, 'Fwd: ' + subject, body_user, headers)
             success=True
 

@@ -36,12 +36,13 @@ def restricted_user_create_and_notify(context, data_dict):
 
     # Send your email, check ckan.lib.mailer for params
     try:
-        name = 'CKAN System Administrator'
+        name = _('CKAN System Administrator')
         email = config.get('email_to')
         if not email:
             raise MailerException('Missing "email-to" in config')
 
-        subject = u'New Registration: ' +  user_dict.get('name', 'new user') + ' (' +  user_dict.get('email') + ')'
+        subject = _(u'New Registration: {0} ({1})').format(
+            user_dict.get('name', _(u'new user')), user_dict.get('email'))
 
         extra_vars = {
             'site_title': config.get('ckan.site_title'),
