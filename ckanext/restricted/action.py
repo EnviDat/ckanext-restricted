@@ -1,3 +1,4 @@
+from ckan.common import _
 from ckan.lib.base import render_jinja2
 from ckan.lib.mailer import mail_recipient
 from ckan.lib.mailer import MailerException
