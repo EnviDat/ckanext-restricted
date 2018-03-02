@@ -1,17 +1,19 @@
-{% trans %}Dear {{ maintainer_name }},{% endtrans %}
+{% trans %}Dear {{ maintainer_name }},
 
-{% trans %}A user has requested access to your data in {{ site_title }}:{% endtrans %}
- * {% trans %}Resource: {{ resource_name }} ( {{ resource_link }} ){% endtrans %}
- * {% trans %}Dataset: {{ package_name }}{% endtrans %}
- * {% trans %}User: {{ user_name }} ( {{ user_email }} ){% endtrans %}
- * {% trans %}Message: {{ message }}{% endtrans %}
+A user has requested access to your data in {{ site_title }}:
+* Resource: {{ resource_name }} ({{ resource_link }})
+* Dataset: {{ package_name }}
+* User: {{ user_name }} ({{ user_email }})
+* Message: {{ message }}
 
-{% trans %}You can allow this user to access you resource by adding {{ user_id }} to the list of allowed users.{% endtrans %}
-{% trans %}If you have editor rights, you can edit the resource in this link: {{ resource_edit_link }}.{% endtrans %}
-{% trans %}If you have any questions about how to proceed with this request, please contact the {{ site_title }} support at {{ admin_email_to }}.{% endtrans %}
+You can allow this user to access you resource by adding {{ user_id }} to the list of allowed users.
+If you have editor rights, you can edit the resource in this link: {{ resource_edit_link }}.
+If you have any questions about how to proceed with this request, please contact the {{ site_title }} support at {{ admin_email_to }}.
 
-{% trans %}Best regards,{% endtrans %}
-{% trans %}{{ site_title }} Administrator{% endtrans %}
+Best regards,
+{{ site_title }} Administrator
 
-----------------------------------------------------------
-{% trans %}Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}
+
+This is an automatically generated e-mail, please do not reply to it.
+
+Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}

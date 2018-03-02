@@ -1,13 +1,14 @@
-{% trans %}Dear {{ user_name }},{% endtrans %}
+{% trans %}Dear {{ user_name }},
 
-{% trans %}You have requested access on {{ site_title }} to the resource '{{ resource_name }}'.{% endtrans %}
-{% trans %}The contact person of the package has granted you access.{% endtrans %}
+You have requested access on {{ site_title }} to the resource: {{ resource_name }}.
+The contact person of the package has granted you access.
 
-{% trans %}Please click the following link: {{ resource_link }}{% endtrans %}
+Please click the following link: {{ resource_link }}
+
+Best regards,
+{{ site_title }} Administrator
 
 
-{% trans %}Best regards,{% endtrans %}
-{% trans %}{{ site_title }} Administrator{% endtrans %}
+This is an automatically generated e-mail, please do not reply to it.
 
-----------------------------------------------------------
-{% trans %}Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}
+Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}

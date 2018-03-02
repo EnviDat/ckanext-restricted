@@ -1,18 +1,19 @@
 from ckan.lib.plugins import DefaultTranslation
+import ckan.logic
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
-import ckan.logic
-
+from ckanext.restricted import action
+from ckanext.restricted import auth
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
-from ckanext.restricted import auth
-from ckanext.restricted import action
 
 from logging import getLogger
 log = getLogger(__name__)
 
+
 _get_or_bust = ckan.logic.get_or_bust
+
 
 class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.ITranslation)
@@ -24,41 +25,35 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.IResourceController, inherit=True)
 
     # IConfigurer
-
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'restricted')
 
     # IActions
-
     def get_actions(self):
-        return { 'user_create': action.restricted_user_create_and_notify,
-                 'resource_view_list': action.restricted_resource_view_list,
-                 'package_show': action.restricted_package_show,
-                 'resource_search': action.restricted_resource_search,
-                 'package_search': action.restricted_package_search
-        }
+        return {'user_create': action.restricted_user_create_and_notify,
+                'resource_view_list': action.restricted_resource_view_list,
+                'package_show': action.restricted_package_show,
+                'resource_search': action.restricted_resource_search,
+                'package_search': action.restricted_package_search}
 
     # ITemplateHelpers
-
     def get_helpers(self):
-        return { 'restricted_get_user_id':helpers.restricted_get_user_id}
+        return {'restricted_get_user_id': helpers.restricted_get_user_id}
 
     # IAuthFunctions
-
     def get_auth_functions(self):
-        return { 'resource_show': auth.restricted_resource_show,
-                 'resource_view_show': auth.restricted_resource_show
-               }
+        return {'resource_show': auth.restricted_resource_show,
+                'resource_view_show': auth.restricted_resource_show}
+
     # IRoutes
     def before_map(self, map_):
         map_.connect(
             'restricted_request_access',
             '/dataset/{package_id}/restricted_request_access/{resource_id}',
             controller='ckanext.restricted.controller:RestrictedController',
-            action = 'restricted_request_access_form'
-        )
+            action='restricted_request_access_form')
         return map_
 
     # IResourceController

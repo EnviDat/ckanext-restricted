@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 from codecs import open  # To use a consistent encoding
 from os import path
@@ -80,8 +81,8 @@ setup(
     entry_points='''
         [ckan.plugins]
         restricted=ckanext.restricted.plugin:RestrictedPlugin
-	[babel.extractors]
-	ckan = ckan.lib.extract:extract_ckan
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
     ''',
 
     # If you are changing from the default layout of your extension, you may
@@ -93,7 +94,7 @@ setup(
             ('**.py', 'python', None),
             ('**.js', 'javascript', None),
             ('**/templates/**.html', 'ckan', None),
-            ('**/templates/**.text', 'ckan', None)
+            ('**/templates/**.txt', 'ckan', None)
         ],
     }
 )

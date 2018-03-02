@@ -3,38 +3,31 @@
 {% block subtitle %}{{ _('Request Access') }}{% endblock %}
 
 {% block breadcrumb_content %}
-    {% set dataset = pkg.title or pkg.name %}
-    {% if pkg.organization %}
-      {% set organization = pkg.organization.title or pkg.organization.name %}
-      <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
-      <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}</li>
-    {% else %}
-      <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
-    {% endif %}
-    <li>{% link_for dataset|truncate(30), controller='package', action='read', id=pkg.name %}</li>
-    <li class="active" {{ self.breadcrumb_content_selected() }}><a href="">{{ _('Request Access') }}</a></li>
+  {% set dataset = pkg.title or pkg.name %}
+  {% if pkg.organization %}
+    {% set organization = pkg.organization.title or pkg.organization.name %}
+    <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
+    <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}</li>
+  {% else %}
+    <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+  {% endif %}
+  <li>{% link_for dataset|truncate(30), controller='package', action='read', id=pkg.name %}</li>
+  <li class="active" {{ self.breadcrumb_content_selected() }}><a href="">{{ _('Request Access') }}</a></li>
 {% endblock %}
 
+{% block primary_content_inner %}{% endblock %}
 
-{% block primary_content_inner %}
-
-{% endblock %}
- 
 {% block secondary_content %}
   <div class="module module-narrow module-shallow">
-    <h2 class="module-heading">
-      <i class="icon-info-sign"></i>
-      {{ _('How to get access to data resources?') }}
-  </h2>
-  <div class="module-content">
-    <p>
-      {% trans %}
-      Some data in EnviDat has restricted access due to 
-      embargo periods, sensitivity of the data, unpublished material, etc.
-      Please fill up this form to send a mail request to the dataset maintainer
-      indicating as detailed as possible who you are
-      and what do you plan to use the data for.
-      {% endtrans %}
-    </p>
-  </div>
-</div>{% endblock %}
+    <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('How to get access to data resources?') }}</h2>
+    <div class="module-content">
+      <p>
+        {% trans %}Some data has restricted access due to
+        embargo periods, sensitivity of the data, unpublished material, etc.
+        Please fill up this form to send a mail request to the dataset maintainer
+        indicating as detailed as possible who you are
+        and what do you plan to use the data for.{% endtrans %}
+      </p>
+    </div>
+</div>
+{% endblock %}
