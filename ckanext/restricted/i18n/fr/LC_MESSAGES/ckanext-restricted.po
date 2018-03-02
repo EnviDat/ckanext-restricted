@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-restricted 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-03-02 10:05+0000\n"
+"POT-Creation-Date: 2018-03-02 13:16+0000\n"
 "PO-Revision-Date: 2018-03-02 10:53+0100\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -164,10 +164,10 @@ msgid "Message"
 msgstr "Message"
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:34
-msgid "Message to request data (project, research group, planned usage, etc)"
+msgid "Message to request data (project, research group, planned usage, etc.)"
 msgstr ""
 "Message pour demander l'accès à la données (projet, groupe de recherche, "
-"usage prévu, etc)"
+"usage prévu, etc.)"
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:44
 #, python-format
@@ -235,8 +235,8 @@ msgid "Message:"
 msgstr "Message :"
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:28
-msgid "Done"
-msgstr "Fait"
+msgid "Close"
+msgstr "Fermer"
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:1
 #, python-format
@@ -317,6 +317,3 @@ msgstr ""
 "Ceci est un message automatique. Merci de ne pas y répondre.\n"
 "\n"
 "Message envoyé par %(site_title)s (%(site_url)s)"
-
-#~ msgid ""
-#~ msgstr ""

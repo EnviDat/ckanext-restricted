@@ -31,7 +31,7 @@
     {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-full']) }}
     {{ restricted_input_disabled('resource_id', id='field-resource_id', label=_('Resource'), value=data.resource_id, error=errors.resource_id, classes=['control-full']) }}
     {{ restricted_input_disabled('maintainer_email', label=_('Contact Email'), id='field-maintainer_email', value=data.maintainer_email, error=errors.maintainer_email, classes=['control-full']) }}
-    {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc)'), value='', error=errors.message, is_required = true) }}
+    {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc.)'), value='', error=errors.message, is_required = true) }}
     {% if g.recaptcha_publickey %}
       {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
       <!-- <div class="g-recaptcha" data-sitekey="{{ g.recaptcha_publickey }}"></div> -->

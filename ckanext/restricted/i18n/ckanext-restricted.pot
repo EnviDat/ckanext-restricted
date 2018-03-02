@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-restricted 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-03-02 10:05+0000\n"
+"POT-Creation-Date: 2018-03-02 13:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,7 +152,7 @@ msgid "Message"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:34
-msgid "Message to request data (project, research group, planned usage, etc)"
+msgid "Message to request data (project, research group, planned usage, etc.)"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:44
@@ -214,7 +214,7 @@ msgid "Message:"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:28
-msgid "Done"
+msgid "Close"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:1

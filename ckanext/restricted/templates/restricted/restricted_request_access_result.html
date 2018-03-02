@@ -25,7 +25,7 @@
   {% block form_actions %}
   <div class="form-actions">
     {% block confirm_button %}
-    <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='package', action='read', id=pkg.name %}" data-module="cancel-action" ><i class="icon-ok"></i>{{ _('Done') }}</a>
+    <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='package', action='read', id=pkg.name %}" data-module="cancel-action" >{{ _('Close') }}</a>
     {% endblock %}
   </div>
   {% endblock %}
