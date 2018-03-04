@@ -8,23 +8,23 @@
 .. image:: https://coveralls.io/repos/espona/ckanext-restricted/badge.svg
   :target: https://coveralls.io/r/espona/ckanext-restricted
 
-.. image:: https://pypip.in/download/ckanext-restricted/badge.svg
+.. image:: https://img.shields.io/pypi/dm/ckanext-restricted.svg
     :target: https://pypi.python.org/pypi//ckanext-restricted/
     :alt: Downloads
 
-.. image:: https://pypip.in/version/ckanext-restricted/badge.svg
+.. image:: https://img.shields.io/pypi/v/ckanext-restricted.svg
     :target: https://pypi.python.org/pypi/ckanext-restricted/
     :alt: Latest Version
 
-.. image:: https://pypip.in/py_versions/ckanext-restricted/badge.svg
+.. image:: https://img.shields.io/pypi/pyversions/ckanext-restricted.svg
     :target: https://pypi.python.org/pypi/ckanext-restricted/
     :alt: Supported Python versions
 
-.. image:: https://pypip.in/status/ckanext-restricted/badge.svg
+.. image:: https://img.shields.io/pypi/status/ckanext-restricted.svg
     :target: https://pypi.python.org/pypi/ckanext-restricted/
     :alt: Development Status
 
-.. image:: https://pypip.in/license/ckanext-restricted/badge.svg
+.. image:: https://img.shields.io/pypi/l/ckanext-restricted.svg
     :target: https://pypi.python.org/pypi/ckanext-restricted/
     :alt: License
 
