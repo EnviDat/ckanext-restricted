@@ -146,6 +146,6 @@ def _restricted_resource_list_url(context, resource_list):
             context, {'id': resource.get('id'), 'resource': resource}).get('success', False)
         restricted_resource = dict(resource)
         if not authorized:
-            restricted_resource['url'] = 'Not Authorized'
+            restricted_resource['url'] = _('Not Authorized')
         restricted_resources_list += [restricted_resource]
     return restricted_resources_list
