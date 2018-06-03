@@ -30,7 +30,8 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
             try:
                 restricted = json.loads(restricted)
             except:
-                log.info('Error loading restricted value: "{0}"'.format(restricted))
+                log.info('Error loading restricted value: "{0}" in "dataset/{1}/resource/{2}"'.format(restricted, 
+                                 package_dict.get("name",''), resource_dict.get("id",'')))
                 restricted = {}
 
         if restricted:
