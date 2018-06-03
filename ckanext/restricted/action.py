@@ -11,6 +11,8 @@ from ckan.logic.action.get import resource_search
 from ckan.logic.action.get import resource_view_list
 from ckan.logic import side_effect_free
 from ckanext.restricted import auth
+from ckanext.restricted import logic
+import json
 
 try:
     # CKAN 2.7 and later
@@ -97,7 +99,9 @@ def restricted_package_show(context, data_dict):
     else:
         restricted_package_metadata = dict(package_metadata.for_json())
 
-    restricted_package_metadata['resources'] = _restricted_resource_list_url(
+    # restricted_package_metadata['resources'] = _restricted_resource_list_url(
+    #     context, restricted_package_metadata.get('resources', []))
+    restricted_package_metadata['resources'] = _restricted_resource_list_hide_fields(
         context, restricted_package_metadata.get('resources', []))
 
     return (restricted_package_metadata)
@@ -111,8 +115,10 @@ def restricted_resource_search(context, data_dict):
 
     for key, value in resource_search_result.items():
         if key == 'results':
+            # restricted_resource_search_result[key] = \
+            #     _restricted_resource_list_url(context, value)
             restricted_resource_search_result[key] = \
-                _restricted_resource_list_url(context, value)
+                _restricted_resource_list_hide_fields(context, value)
         else:
             restricted_resource_search_result[key] = value
 
@@ -129,8 +135,8 @@ def restricted_package_search(context, data_dict):
         if key == 'results':
             restricted_package_search_result_list = []
             for package in value:
-                restricted_package_search_result_list += [
-                    restricted_package_show(context, {'id': package.get('id')})]
+                restricted_package_search_result_list.append(
+                    restricted_package_show(context, {'id': package.get('id')}))
             restricted_package_search_result[key] = \
                 restricted_package_search_result_list
         else:
@@ -139,13 +145,44 @@ def restricted_package_search(context, data_dict):
     return restricted_package_search_result
 
 
-def _restricted_resource_list_url(context, resource_list):
+# def _restricted_resource_list_url(context, resource_list):
+#     restricted_resources_list = []
+#     for resource in resource_list:
+#         authorized = auth.restricted_resource_show(
+#             context, {'id': resource.get('id'), 'resource': resource}).get('success', False)
+#         restricted_resource = dict(resource)
+#         if not authorized:
+#             restricted_resource['url'] = _('Not Authorized')
+#         restricted_resources_list += [restricted_resource]
+#     return restricted_resources_list
+
+
+def _restricted_resource_list_hide_fields(context, resource_list):
     restricted_resources_list = []
     for resource in resource_list:
+        restricted_dict = logic.restricted_get_restricted_dict(resource)
+
+        # hide fields to unauthorized users
         authorized = auth.restricted_resource_show(
-            context, {'id': resource.get('id'), 'resource': resource}).get('success', False)
+            context, {'id': resource.get('id'), 'resource': resource}
+            ).get('success', False)
         restricted_resource = dict(resource)
         if not authorized:
-            restricted_resource['url'] = _('Not Authorized')
+            restricted_resource['url'] = 'Not Authorized'
+
+        # hide fields to everyone but dataset owner(s)
+        if not authz.is_authorized(
+                'package_update', context, {'id': resource.get('package_id')}
+                ).get('success'):
+
+            new_restricted = json.dumps(
+                {'level': restricted_dict.get('level', 'Not Authorized')})
+            extras_restricted = resource.get('extras', {}).get('restricted', {})
+            if (extras_restricted):
+                restricted_resource['extras']['restricted'] = new_restricted
+
+            field_restricted_field = resource.get('restricted', {})
+            if (field_restricted_field):
+                restricted_resource['restricted'] = new_restricted
         restricted_resources_list += [restricted_resource]
     return restricted_resources_list
