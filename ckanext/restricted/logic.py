@@ -18,6 +18,26 @@ except ImportError:
 from logging import getLogger
 log = getLogger(__name__)
 
+def restricted_get_restricted_dict(resource_dict):
+    restricted_dict = {"level":"public", "allowed_users":[]}
+
+    # check in resource_dict
+    if resource_dict:
+        extras = resource_dict.get('extras',{})
+        restricted = resource_dict.get('restricted', extras.get('restricted', {}))
+        if not isinstance(restricted, dict):
+            try:
+                restricted = json.loads(restricted)
+            except:
+                 restricted = {}
+
+        if restricted:
+            restricted_level = restricted.get('level', 'public')
+            allowed_users = restricted.get('allowed_users', '').split(',')
+            restricted_dict = {"level":restricted_level, "allowed_users":allowed_users}
+
+    return restricted_dict
+
 def restricted_check_user_resource_access(user, resource_dict, package_dict):
     restricted_level = 'public'
     allowed_users  = []
