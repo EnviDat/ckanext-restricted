@@ -146,10 +146,11 @@ def _restricted_resource_list_hide_fields(context, resource_list):
             # hide partially other allowed user_names (keep own)
             allowed_users = []
             for user in restricted_dict.get("allowed_users"):
-            	if user_name == user:
-            	    allowed_users += [user_name]
-            	else:
-            		allowed_users += [user[0:3] + '*****' + user[-2:]]
+                if len(user.strip()))>0:
+                    if user_name == user:
+                        allowed_users += [user_name]
+                    else:
+                        allowed_users += [user[0:3] + '*****' + user[-2:]]
                 
             new_restricted = json.dumps({"level": restricted_dict.get("level"),
                                           "allowed_users": ','.join(allowed_users)})
