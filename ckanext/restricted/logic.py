@@ -2,6 +2,8 @@ import sys
 import json
 from sets import Set
 
+import ckan.authz as authz
+
 import ckan.lib.mailer as mailer
 import ckan.logic as logic
 #from ckan.common import config
@@ -18,6 +20,18 @@ except ImportError:
 from logging import getLogger
 log = getLogger(__name__)
 
+def restricted_get_username_from_context(context):
+    user_name = ''
+
+    auth_user_obj = context.get('auth_user_obj', None)
+    user_name = ""
+    if auth_user_obj:
+        user_name = auth_user_obj.as_dict().get('name','')
+    else:
+        if authz.get_user_id_for_username(context.get('user'), allow_none=True):
+            user_name = context.get('user','')
+    return user_name
+
 def restricted_get_restricted_dict(resource_dict):
     restricted_dict = {"level":"public", "allowed_users":[]}
 
@@ -33,30 +47,18 @@ def restricted_get_restricted_dict(resource_dict):
 
         if restricted:
             restricted_level = restricted.get('level', 'public')
-            allowed_users = restricted.get('allowed_users', '').split(',')
+            allowed_users = restricted.get('allowed_users', '')
+            if not isinstance(allowed_users, list):
+                allowed_users=allowed_users.split(',')
             restricted_dict = {"level":restricted_level, "allowed_users":allowed_users}
 
     return restricted_dict
 
 def restricted_check_user_resource_access(user, resource_dict, package_dict):
-    restricted_level = 'public'
-    allowed_users  = []
-
-    # check in resource_dict
-    if resource_dict:
-        extras = resource_dict.get('extras',{})
-        restricted = resource_dict.get('restricted', extras.get('restricted', {}))
-        if not isinstance(restricted, dict):
-            try:
-                restricted = json.loads(restricted)
-            except:
-                log.info('Error loading restricted value: "{0}" in "dataset/{1}/resource/{2}"'.format(restricted, 
-                                 package_dict.get("name",''), resource_dict.get("id",'')))
-                restricted = {}
-
-        if restricted:
-            restricted_level = restricted.get('level', 'public')
-            allowed_users = restricted.get('allowed_users', '').split(',')
+    restricted_dict = restricted_get_restricted_dict(resource_dict)
+    
+    restricted_level = restricted_dict.get('level', 'public')
+    allowed_users = restricted_dict.get('allowed_users', [])
 
     # Public resources (DEFAULT)
     if not restricted_level or restricted_level == 'public':

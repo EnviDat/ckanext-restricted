@@ -23,16 +23,8 @@ def restricted_resource_show(context, data_dict=None):
     if authz.is_authorized('package_update', context, {'id': resource.get('package_id')}).get('success'):
         return ({'success': True })
 
-    # custom restricted check
-    auth_user_obj = context.get('auth_user_obj', None)
-    user_name = ""
-    if auth_user_obj:
-        user_name = auth_user_obj.as_dict().get('name','')
-    else:
-        if authz.get_user_id_for_username(context.get('user'), allow_none=True):
-            user_name = context.get('user','')
-    #log.debug("restricted_resource_show: USER:" + user_name)
-
+    user_name = logic.restricted_get_username_from_context(context)
+    
     package = data_dict.get('package', {})
     if not package:
         model = context['model']

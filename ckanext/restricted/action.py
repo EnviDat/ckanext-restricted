@@ -128,17 +128,27 @@ def restricted_package_search(context, data_dict):
 def _restricted_resource_list_hide_fields(context, resource_list):
     restricted_resources_list = []
     for resource in resource_list:
-        restricted_dict = logic.restricted_get_restricted_dict(resource)
+        restricted_resource = dict(resource)
+        restricted_dict = logic.restricted_get_restricted_dict(restricted_resource)
 
+        log.info(restricted_dict)
         # hide fields to unauthorized users
         authorized = auth.restricted_resource_show(context, {'id':resource.get('id'), 'resource':resource}).get('success', False)
-        restricted_resource = dict(resource)
         if not authorized:
             restricted_resource['url'] = 'Not Authorized'
             
         # hide fields to everyone but dataset owner(s)
         if not authz.is_authorized('package_update', context, {'id': resource.get('package_id')}).get('success'):
-            new_restricted = json.dumps({"level": restricted_dict.get("level", "Not Authorized")})
+            user_name = logic.restricted_get_username_from_context(context)
+            allowed_users = []
+            for user in restricted_dict.get("allowed_users"):
+            	if user_name == user:
+            	    allowed_users += [user_name]
+            	else:
+            		allowed_users += [user[0:3] + '*****' + user[-2:]]
+                
+            new_restricted = json.dumps({"level": restricted_dict.get("level"),
+                                          "allowed_users": ','.join(allowed_users)})
             extras_restricted = resource.get('extras',{}).get('restricted', {} )
             if (extras_restricted):
                 restricted_resource['extras']['restricted'] = new_restricted
