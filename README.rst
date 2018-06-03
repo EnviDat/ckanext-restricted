@@ -43,6 +43,7 @@ Users can request access to a dataset by pressing a button. The package owner ca
 allow individual users to access the resource. If the users allowed individually 
 will be notified by mail.
 It also includes notifying by mail on every new user registration.
+All information inside the restricted fields (except 'level') is hidden for users other than the ones who can edit the dataset.
 The mails are generated from templates that can be extended.
 
 restricted_resources_metadata.PNG
