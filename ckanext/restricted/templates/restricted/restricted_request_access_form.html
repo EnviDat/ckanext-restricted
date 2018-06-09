@@ -55,7 +55,7 @@
         </p>
       {% endblock %}
       {% block confirm_button %}
-        <button class="btn btn-primary pull-left" type="submit" name="save"><i class="icon-envelope-alt"> </i> {{ _(' Send Request') }}</button>
+        <button class="btn btn-primary pull-left" type="submit" name="save"><i class="fa fa-icon fa-envelope-o" style="margin-right: 8px;"> </i>{{ _('Send Request') }}</button>
       {% endblock %}
       {% block cancel_button %}
           <a class="btn btn-danger" href="{% url_for controller='package', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>

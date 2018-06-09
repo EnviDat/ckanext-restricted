@@ -24,13 +24,15 @@
       {% else %} 
            {% if user_id %}
              <div class="dropdown btn-group">
-               <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="icon-unlock-alt"></i>{{ _('Request Access')}}</a>
+               <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="fa fa-icon fa-unlock-alt" style="margin-right: 5px;"></i>{{ _('Request Access')}}</a>
              </div>
            {% else %}
              <div class="dropdown btn-group restricted-link">
-               <i class="icon-user"></i>
-               <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _(' or ') }} 
-               <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a>{{ _(' to access resource')}} 
+               <i class="fa fa-icon fa-user"></i>
+               {% block resource_item_unauthorized %}
+               		<a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _(' or ') }} 
+            	   	<a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a>{{ _(' to access resource')}} 
+			  {% endblock %}
              </div>
            {% endif%}
       {% endif %}
