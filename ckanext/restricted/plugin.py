@@ -66,3 +66,4 @@ class RestrictedPlugin(plugins.SingletonPlugin):
     def after_update(self, context, resource):
         previous_value = context.get('__restricted_previous_value')
         logic.restricted_notify_allowed_users(previous_value, resource)
+
