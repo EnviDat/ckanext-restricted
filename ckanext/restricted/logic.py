@@ -4,7 +4,6 @@ import ckan.lib.mailer as mailer
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import json
-from sets import Set
 
 try:
     # CKAN 2.7 and later
@@ -15,12 +14,14 @@ except ImportError:
 
 
 from logging import getLogger
+
 log = getLogger(__name__)
 
 
 def restricted_get_username_from_context(context):
     user_name = ''
 
+def restricted_get_username_from_context(context):
     auth_user_obj = context.get('auth_user_obj', None)
     user_name = ''
     if auth_user_obj:
@@ -34,14 +35,21 @@ def restricted_get_username_from_context(context):
 def restricted_get_restricted_dict(resource_dict):
     restricted_dict = {'level': 'public', 'allowed_users': []}
 
-    # check in resource_dict
+    # the ckan plugins ckanext-scheming and ckanext-composite
+    # change the structure of the resource dict and the nature of how
+    # to access our restricted field values
     if resource_dict:
+        # the dict might exist as a child inside the extras dict
         extras = resource_dict.get('extras', {})
+        # or the dict might exist as a direct descendant of the resource dict
         restricted = resource_dict.get('restricted', extras.get('restricted', {}))
         if not isinstance(restricted, dict):
+            # if the restricted property does exist, but not as a dict,
+            # we may need to parse it as a JSON string to gain access to the values.
+            # as is the case when making composite fields
             try:
                 restricted = json.loads(restricted)
-            except Exception:
+            except ValueError:
                 restricted = {}
 
         if restricted:
@@ -162,6 +170,7 @@ def restricted_allowed_user_mail_body(user, resource):
         'restricted/emails/restricted_user_allowed.txt', extra_vars)
 
 
+
 def restricted_notify_allowed_users(previous_value, updated_resource):
 
     def _safe_json_loads(json_string, default={}):
@@ -174,8 +183,7 @@ def restricted_notify_allowed_users(previous_value, updated_resource):
     updated_restricted = _safe_json_loads(updated_resource.get('restricted', ''))
 
     # compare restricted users_allowed values
-    updated_allowed_users = Set(
-        updated_restricted.get('allowed_users', '').split(','))
+    updated_allowed_users = set(updated_restricted.get('allowed_users', '').split(','))
     if updated_allowed_users:
         previous_allowed_users = previous_restricted.get('allowed_users', '').split(',')
         for user_id in updated_allowed_users:
