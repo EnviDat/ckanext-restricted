@@ -39,12 +39,13 @@ ckanext-restricted
 CKAN extension to restrict the accessibility to the resources of a dataset.
 This way the package metadata is accesible but not the data itself (resource). 
 The resource access restriction level can be individualy defined for every package.
-Users can request access to a dataset by pressing a button. The package owner can
+
+Users can request access to a dataset by pressing a button and filling up a simple form. The package owner can
 allow individual users to access the resource. If the users allowed individually 
-will be notified by mail.
-It also includes notifying by mail on every new user registration.
-All information inside the restricted fields (except 'level') is hidden for users other than the ones who can edit the dataset.
-The mails are generated from templates that can be extended.
+will be notified by mail. It also includes notifying by mail on every new user registration that can be disabled (expained later in this document). The mails are generated from templates that can be extended.
+
+All information inside the restricted fields (except 'level') is hidden for users other than the ones who can edit the dataset. We used this to keep a shared-secret key field for accessing remotely hosted resources (https://github.com/EnviDat/ckanext-envidat_theme/blob/4265ecfe90e10eb1f095e8e8d19fe43554ab6799/ckanext/envidat_theme/helpers.py#L28). 
+The allowed usernames are hidden partially to the non-editors, in our case was critical because they were very similar to the user emails (https://github.com/EnviDat/ckanext-restricted/blob/2d7b2915ef50249fe8d9ec43ceaf532918506539/ckanext/restricted/action.py#L153).
 
 restricted_resources_metadata.PNG
 restricted_resources_preview.PNG
@@ -136,7 +137,7 @@ If you use ckanext-scheming and ckanext-composite, this is the field definition 
        ]
      }
 
-The usage of this extension, regarding the level "any_organization", makes more sense if the CKAN administrator sets some users as members of an organization. In our case we created an organization called "trusted_users" where the mail accounts have been double checked. Therefore this extension sends a mail to the defined 'mail_to' in the CKAN config file at every new user registration. To swithch off this functionality, just comment out the code at:  
+The usage of this extension, regarding the level "any_organization", makes more sense if the CKAN administrator sets some users as members of an organization. In our case we created an organization called "trusted_users" where the mail accounts have been double checked. Therefore this extension sends a mail to the defined 'mail_to' in the CKAN config file at every new user registration. To switch off this functionality, just comment out the code at:  
 https://github.com/espona/ckanext-restricted/blob/master/ckanext/restricted/plugin.py#L14
 
 It is also recommended to set up the recaptcha in the config file
