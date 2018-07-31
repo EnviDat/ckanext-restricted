@@ -1,3 +1,6 @@
+# coding: utf8 
+
+
 from ckan.common import c
 
 

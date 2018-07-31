@@ -1,3 +1,6 @@
+# coding: utf8
+
+from __future__ import unicode_literals
 from ckan.common import _
 from ckan.common import request
 import ckan.lib.base as base
@@ -73,14 +76,14 @@ class RestrictedController(toolkit.BaseController):
 
             body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
             subject = \
-                _(u'Access Request to resource {0} ({1}) from {2}').format(
-                    data.get('resource_name', u''),
-                    data.get('package_name', u''),
-                    data.get('user_name', u''))
+                _('Access Request to resource {0} ({1}) from {2}').format(
+                    data.get('resource_name', ''),
+                    data.get('package_name', ''),
+                    data.get('user_name', ''))
 
             email_dict = {
                 data.get('maintainer_email'): extra_vars.get('maintainer_name'),
-                extra_vars.get('admin_email_to'): u'{} Admin'.format(extra_vars.get('site_title'))}
+                extra_vars.get('admin_email_to'): '{} Admin'.format(extra_vars.get('site_title'))}
 
             headers = {
                 'CC': ",".join(email_dict.keys()),
@@ -100,8 +103,8 @@ class RestrictedController(toolkit.BaseController):
                 'restricted/emails/restricted_access_request.txt', extra_vars)
 
             body_user = _(
-                u'Please find below a copy of the access '
-                u'request mail sent. \n\n >> {}'
+                'Please find below a copy of the access '
+                'request mail sent. \n\n >> {}'
             ).format(body.replace("\n", "\n >> "))
 
             mailer.mail_recipient(
@@ -109,7 +112,7 @@ class RestrictedController(toolkit.BaseController):
             success = True
 
         except mailer.MailerException as mailer_exception:
-            log.error(u"Can not access request mail after registration.")
+            log.error('Can not access request mail after registration.')
             log.error(mailer_exception)
 
         return success
@@ -125,7 +128,7 @@ class RestrictedController(toolkit.BaseController):
         except logic.NotAuthorized:
             toolkit.abort(401, _('Not authorized to see this page'))
         except captcha.CaptchaError:
-            error_msg = _(u'Bad Captcha. Please try again.')
+            error_msg = _('Bad Captcha. Please try again.')
             h.flash_error(error_msg)
             return self.restricted_request_access_form(
                 package_id=data_dict.get('package_name'),
@@ -145,8 +148,8 @@ class RestrictedController(toolkit.BaseController):
         errors = {}
         error_summary = {}
 
-        if (data_dict["message"] == ''):
-            msg = _(u'Missing Value')
+        if (data_dict['message'] == ''):
+            msg = _('Missing Value')
             errors['message'] = [msg]
             error_summary['message'] = msg
 
@@ -194,7 +197,7 @@ class RestrictedController(toolkit.BaseController):
                 data['user_name'] = user.get('display_name', user_id)
                 data['user_email'] = user.get('email', '')
 
-                resource_name = ""
+                resource_name = ''
 
                 pkg = toolkit.get_action('package_show')(context, {'id': package_id})
                 data['package_name'] = pkg.get('name')
@@ -234,15 +237,15 @@ class RestrictedController(toolkit.BaseController):
         # Maintainer as Composite field
         try:
             contact_email = json.loads(
-                pkg_dict.get('maintainer', "{}")).get('email', '')
+                pkg_dict.get('maintainer', '{}')).get('email', '')
             contact_name = json.loads(
-                pkg_dict.get('maintainer', "{}")).get('name', 'Dataset Maintainer')
+                pkg_dict.get('maintainer', '{}')).get('name', 'Dataset Maintainer')
         except Exception:
             pass
         # Maintainer Directly defined
         if not contact_email:
-            contact_email = pkg_dict.get('maintainer_email', "")
-            contact_name = pkg_dict.get('maintainer', "Dataset Maintainer")
+            contact_email = pkg_dict.get('maintainer_email', '')
+            contact_name = pkg_dict.get('maintainer', 'Dataset Maintainer')
         # 1st Author Directly defined
         if not contact_email:
             contact_email = pkg_dict.get('author_email', '')
@@ -258,5 +261,5 @@ class RestrictedController(toolkit.BaseController):
         # CKAN instance Admin
         if not contact_email:
             contact_email = config.get('email_to', 'email_to_undefined')
-            contact_name = "CKAN Admin"
+            contact_name = 'CKAN Admin'
         return {'contact_email': contact_email, 'contact_name': contact_name}

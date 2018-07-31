@@ -1,8 +1,10 @@
+# coding: utf8
+
+from __future__ import unicode_literals
 from ckan.lib.plugins import DefaultTranslation
 import ckan.logic
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-
 from ckanext.restricted import action
 from ckanext.restricted import auth
 from ckanext.restricted import helpers

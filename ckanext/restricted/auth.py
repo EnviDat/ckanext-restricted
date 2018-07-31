@@ -1,7 +1,9 @@
+# coding: utf8
+
+from __future__ import unicode_literals
 import ckan.authz as authz
 import ckan.logic.auth as logic_auth
 import ckan.plugins.toolkit as toolkit
-
 from ckanext.restricted import logic
 
 from logging import getLogger

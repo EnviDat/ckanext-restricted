@@ -1,3 +1,6 @@
+# coding: utf8
+
+from __future__ import unicode_literals
 import ckan.authz as authz
 from ckan.common import _
 from ckan.lib.base import render_jinja2
@@ -33,9 +36,9 @@ NotFound = ckan.logic.NotFound
 def restricted_user_create_and_notify(context, data_dict):
 
     def body_from_user_dict(user_dict):
-        body = u''
+        body = ''
         for key, value in user_dict.items():
-            body += u'* {0}: {1}\n'.format(
+            body += '* {0}: {1}\n'.format(
                 key.upper(), value if isinstance(value, str) else str(value))
         return body
 
@@ -43,12 +46,12 @@ def restricted_user_create_and_notify(context, data_dict):
 
     # Send your email, check ckan.lib.mailer for params
     try:
-        name = _(u'CKAN System Administrator')
+        name = _('CKAN System Administrator')
         email = config.get('email_to')
         if not email:
             raise MailerException('Missing "email-to" in config')
 
-        subject = _(u'New Registration: {0} ({1})').format(
+        subject = _('New Registration: {0} ({1})').format(
             user_dict.get('name', _(u'new user')), user_dict.get('email'))
 
         extra_vars = {
