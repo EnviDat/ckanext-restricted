@@ -27,7 +27,7 @@
   <div class="dropdown btn-group restricted-link">
     <i class="fa fa-icon fa-user"></i>
       {% block resource_item_unauthorized %}
-    <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a> {{ _(' to access resource')}}<a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _('or') }} <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a> {{ _('to access resource') }}.
+    <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _('or') }} <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a> {{ _('to access resource')}}
       {% endblock %}
   </div>
     {% endif%}
