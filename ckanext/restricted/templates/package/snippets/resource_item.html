@@ -1,40 +1,35 @@
 {% ckan_extends %}
 
-{% set can_edit = h.check_access('package_update', {'id':pkg.id }) %}
+{% set can_edit = h.check_access('package_update', {'id': pkg.id }) %}
 {% set url_action = 'resource_edit' if url_is_edit and can_edit else 'resource_read' %}
 {% set url = h.url_for(controller='package', action=url_action, id=pkg.name, resource_id=res.id) %}
-
-{% set authorized = h.check_access('resource_show',{'id':res.id, 'resource':res }) %}
+{% set authorized = h.check_access('resource_show', {'id': res.id, 'resource': res }) %}
 {% set user_id = h.restricted_get_user_id() %}
 
-  {% block resource_item_title %}
-      {% if authorized %}
-         {{ super() }}
-      {% else %}
-       <span class="restricted-item"> <a class="heading restricted-item" disabled="true" href="#" title="{{ res.name or res.description }}">
-          {{ h.resource_display_name(res) | truncate(35) }} (Unauthorized)<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
-          {{ h.popular('views', res.tracking_summary.total, min=10) }}
-        </a></span>
-      {% endif %}
-  {% endblock %}
+{% block resource_item_title %}
+  {% if authorized %}
+    {{ super() }}
+  {% else %}
+  <span class="restricted-item">
+    <a class="heading restricted-item" disabled="true" href="#" title="{{ res.name or res.description }}">{{ h.resource_display_name(res) | truncate(35) }} {{ _('Unauthorized') }} <span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>{{ h.popular('views', res.tracking_summary.total, min=10) }}</a></span>
+  {% endif %}
+{% endblock %}
 
- {% block resource_item_explore %}
-     {% if authorized %}
-         {{ super() }}
-      {% else %} 
-           {% if user_id %}
-             <div class="dropdown btn-group">
-               <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="fa fa-icon fa-unlock-alt" style="margin-right: 5px;"></i>{{ _('Request Access')}}</a>
-             </div>
-           {% else %}
-             <div class="dropdown btn-group restricted-link">
-               <i class="fa fa-icon fa-user"></i>
-               {% block resource_item_unauthorized %}
-               		<a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _(' or ') }} 
-            	   	<a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a>{{ _(' to access resource')}} 
-			  {% endblock %}
-             </div>
-           {% endif%}
-      {% endif %}
-  {% endblock %}
-
+{% block resource_item_explore %}
+  {% if authorized %}
+    {{ super() }}
+  {% else %}
+    {% if user_id %}
+  <div class="dropdown btn-group">
+    <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="fa fa-icon fa-unlock-alt" style="margin-right: 5px;"></i>{{ _('Request Access')}}</a>
+  </div>
+    {% else %}
+  <div class="dropdown btn-group restricted-link">
+    <i class="fa fa-icon fa-user"></i>
+      {% block resource_item_unauthorized %}
+    <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _('or') }} <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a> {{ _('to access resource')}}
+      {% endblock %}
+  </div>
+    {% endif%}
+  {% endif %}
+{% endblock %}

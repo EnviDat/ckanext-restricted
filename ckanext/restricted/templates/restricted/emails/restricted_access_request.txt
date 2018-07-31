@@ -1,11 +1,10 @@
-
-Dear {{ maintainer_name }},
+{% trans %}Dear {{ maintainer_name }},
 
 A user has requested access to your data in {{ site_title }}:
- * Resource: {{ resource_name }} ( {{ resource_link }} )
- * Dataset: {{ package_name }}
- * User: {{ user_name }} ( {{ user_email }} )
- * Message: {{ message }}
+* Resource: {{ resource_name }} ({{ resource_link }})
+* Dataset: {{ package_name }}
+* User: {{ user_name }} ({{ user_email }})
+* Message: {{ message }}
 
 You can allow this user to access you resource by adding {{ user_id }} to the list of allowed users.
 If you have editor rights, you can edit the resource in this link: {{ resource_edit_link }}.
@@ -14,5 +13,7 @@ If you have any questions about how to proceed with this request, please contact
 Best regards,
 {{ site_title }} Administrator
 
-----------------------------------------------------------
-Message sent from {{ site_title }} ({{ site_url }})
+
+This is an automatically generated e-mail, please do not reply to it.
+
+Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}

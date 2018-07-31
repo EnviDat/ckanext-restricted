@@ -8,28 +8,28 @@ a.heading.restricted-item{
 }
 
 .restricted-link{
-  font-size: 14px;
-  display: inline;
-  white-space: nowrap;
+    font-size: 14px;
+    display: inline;
+    white-space: nowrap;
 }
 
 .g-recaptcha {
- margin-left: 30%;
- padding-left: 10px;
- align:right;
+    margin-left: 30%;
+    padding-left: 10px;
+    align:right;
 }
 
 .btn-restricted{
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .restricted-request-summary{
-  border: inset 3px;
-  border-color: #22222;
-  background-color:#f0f0f0;
-  padding: 10px 20px 10px 20px;
-  border-radius: 5px;
-  color: #666666;
+    border: inset 3px;
+    border-color: #22222;
+    background-color:#f0f0f0;
+    padding: 10px 20px 10px 20px;
+    border-radius: 5px;
+    color: #666666;
 }
 
 .restricted-request-summary p{
@@ -38,7 +38,7 @@ a.heading.restricted-item{
 }
 
 .restricted-icon-large{
- vertical-align: 0.1%;
- font-size:  1.01em;
- padding-left: 2px;
+   vertical-align: 0.1%;
+   font-size:  1.01em;
+   padding-left: 2px;
 }

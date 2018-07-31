@@ -1,10 +1,12 @@
-import json
+# coding: utf8
 
+from __future__ import unicode_literals
 import ckan.authz as authz
+from ckan.lib.base import render_jinja2
 import ckan.lib.mailer as mailer
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
-from ckan.lib.base import render_jinja2
+import json
 
 try:
     # CKAN 2.7 and later
@@ -20,7 +22,7 @@ log = getLogger(__name__)
 
 def restricted_get_username_from_context(context):
     auth_user_obj = context.get('auth_user_obj', None)
-    user_name = ""
+    user_name = ''
     if auth_user_obj:
         user_name = auth_user_obj.as_dict().get('name', '')
     else:
@@ -30,7 +32,7 @@ def restricted_get_username_from_context(context):
 
 
 def restricted_get_restricted_dict(resource_dict):
-    restricted_dict = {"level": "public", "allowed_users": []}
+    restricted_dict = {'level': 'public', 'allowed_users': []}
 
     # the ckan plugins ckanext-scheming and ckanext-composite
     # change the structure of the resource dict and the nature of how
@@ -54,7 +56,9 @@ def restricted_get_restricted_dict(resource_dict):
             allowed_users = restricted.get('allowed_users', '')
             if not isinstance(allowed_users, list):
                 allowed_users = allowed_users.split(',')
-            restricted_dict = {"level": restricted_level, "allowed_users": allowed_users}
+            restricted_dict = {
+                'level': restricted_level,
+                'allowed_users': allowed_users}
 
     return restricted_dict
 
@@ -71,7 +75,9 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
 
     # Registered user
     if not user:
-        return {'success': False, 'msg': 'Resource access restricted to registered users'}
+        return {
+            'success': False,
+            'msg': 'Resource access restricted to registered users'}
     else:
         if restricted_level == 'registered' or not restricted_level:
             return {'success': True}
@@ -80,7 +86,9 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     if user in allowed_users:
         return {'success': True}
     elif restricted_level == 'only_allowed_users':
-        return {'success': False, 'msg': 'Resource access restricted to allowed users only'}
+        return {
+            'success': False,
+            'msg': 'Resource access restricted to allowed users only'}
 
     # Get organization list
     user_organization_dict = {}
@@ -96,7 +104,10 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
 
     # Any Organization Members (Trusted Users)
     if not user_organization_dict:
-        return {'success': False, 'msg': 'Resource access restricted to members of an organization'}
+        return {
+            'success': False,
+            'msg': 'Resource access restricted to members of an organization'}
+
     if restricted_level == 'any_organization':
         return {'success': True}
 
@@ -107,12 +118,13 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         if pkg_organization_id in user_organization_dict.keys():
             return {'success': True}
 
-    return {'success': False,
-            'msg': 'Resource access restricted to same organization (' + pkg_organization_id + ') members'}
-
+    return {
+        'success': False,
+        'msg': ('Resource access restricted to same '
+                'organization ({}) members').format(pkg_organization_id)}
 
 def restricted_mail_allowed_user(user_id, resource):
-    log.debug('restricted_mail_allowed_user notifying {0}'.format(user_id))
+    log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
     try:
         # Get user information
         context = {}
@@ -126,38 +138,43 @@ def restricted_mail_allowed_user(user_id, resource):
         # maybe check user[activity_streams_email_notifications]==True
 
         mail_body = restricted_allowed_user_mail_body(user, resource)
-        mail_subject = 'Access granted to resource {0}'.format(resource_name)
+        mail_subject = _('Access granted to resource {}').format(resource_name)
 
         # Send mail to user
         mailer.mail_recipient(user_name, user_email, mail_subject, mail_body)
 
-        # Sendo copy to admin
-        mailer.mail_recipient('CKAN Admin', config.get('email_to'), 'Fwd: ' + mail_subject, mail_body)
+        # Send copy to admin
+        mailer.mail_recipient(
+            'CKAN Admin', config.get('email_to'),
+            'Fwd: {}'.format(mail_subject), mail_body)
 
-    except:
-        log.warning('restricted_mail_allowed_user: Failed to send mail to "{0}"'.format(user_id))
+    except Exception:
+        log.warning(('restricted_mail_allowed_user: '
+                     'Failed to send mail to "{}"').format(user_id))
 
 
 def restricted_allowed_user_mail_body(user, resource):
-    resource_link = toolkit.url_for(controller='package', action='resource_read',
-                                    id=resource.get('package_id'), resource_id=resource.get('id'))
+    resource_link = toolkit.url_for(
+        controller='package', action='resource_read',
+        id=resource.get('package_id'), resource_id=resource.get('id'))
+
     extra_vars = {
         'site_title': config.get('ckan.site_title'),
         'site_url': config.get('ckan.site_url'),
         'user_name': user.get('display_name', user['name']),
         'resource_name': resource.get('name', resource['id']),
         'resource_link': config.get('ckan.site_url') + resource_link,
-        'resource_url': resource.get('url')
-    }
+        'resource_url': resource.get('url')}
 
-    return render_jinja2('restricted/emails/restricted_user_allowed.txt', extra_vars)
-
+    return render_jinja2(
+        'restricted/emails/restricted_user_allowed.txt', extra_vars)
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
+
     def _safe_json_loads(json_string, default={}):
         try:
             return json.loads(json_string)
-        except:
+        except Exception:
             return default
 
     previous_restricted = _safe_json_loads(previous_value)

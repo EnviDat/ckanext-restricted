@@ -13,56 +13,47 @@
 {% macro restricted_input_disabled(name, id='', label='', value='', placeholder='', type='text', error="", classes=[], attrs={}, is_required=false) %}
   {%- set extra_html = caller() if caller -%}
   {% call form.input_block(id or name, label or name, error, classes, extra_html=extra_html, is_required=is_required) %}
-    <input id="{{ id or name }}" type="{{ type }}" name="{{ name }}" value="{{ value | empty_and_escape }}" placeholder="{{ placeholder }}" {{ form.attributes(attrs) }} readonly="readonly" />
+  <input id="{{ id or name }}" type="{{ type }}" name="{{ name }}" value="{{ value | empty_and_escape }}" placeholder="{{ placeholder }}" {{ form.attributes(attrs) }} readonly="readonly" />
   {% endcall %}
 {% endmacro %}
 
-
 {% block primary_content_inner %}
-  <h2>{{ _('Request Access to ') }} "{{ data.resource_name }}" </h2>
-
-
-<form id="restricted-request-access" class="dataset-form form-horizontal" method="post" action="{{ action }}" >
+  <h2>{{ _('Request Access to: ') }} {{ data.resource_name }}</h2>
+  <form id="restricted-request-access" class="dataset-form form-horizontal" method="post" action="{{ action }}" >
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
-
   {% block basic_fields %}
-     <input id='field-package_name' name='package_name' type="hidden" value="{{ data.package_name }}" />
-     <input id='field-resource_name' name='resource_name' type="hidden" value="{{ data.resource_name }}" />
-     <input id='field-maintainer_name' name='maintainer_name' type="hidden" value="{{ data.maintainer_name }}" />
-     <input id='field-user_id' name='user_id' type="hidden" value="{{ data.user_id }}" />
-    {{ restricted_input_disabled('user_name', id='field-user_name', label=_('User'), value=data.user_name, error=errors.user_name, classes=['control-medium'] ) }}  
-    {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-medium'] ) }}  
-    {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-medium']) }}  
-    {{ restricted_input_disabled('resource_id', id='field-resource_id', label=_('Resource'), value=data.resource_id, error=errors.resource_id, classes=['control-full', 'control-medium']) }}  
-    {{ restricted_input_disabled('maintainer_email', label=_('Contact Email'), id='field-maintainer_email', value=data.maintainer_email, error=errors.maintainer_email, classes=['control-medium']) }}
-    {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc)'), value='', error=errors.message, is_required = true) }}
-  {% if g.recaptcha_publickey %}
-    {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
-     <!-- <div class="g-recaptcha" data-sitekey="{{g.recaptcha_publickey}}"></div> -->
-  {% endif %}
+    <input id='field-package_name' name='package_name' type="hidden" value="{{ data.package_name }}" />
+    <input id='field-resource_name' name='resource_name' type="hidden" value="{{ data.resource_name }}" />
+    <input id='field-maintainer_name' name='maintainer_name' type="hidden" value="{{ data.maintainer_name }}" />
+    <input id='field-user_id' name='user_id' type="hidden" value="{{ data.user_id }}" />
+    {{ restricted_input_disabled('user_name', id='field-user_name', label=_('User'), value=data.user_name, error=errors.user_name, classes=['control-full'] ) }}
+    {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-full'] ) }}
+    {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-full']) }}
+    {{ restricted_input_disabled('resource_id', id='field-resource_id', label=_('Resource'), value=data.resource_id, error=errors.resource_id, classes=['control-full']) }}
+    {{ restricted_input_disabled('maintainer_email', label=_('Contact Email'), id='field-maintainer_email', value=data.maintainer_email, error=errors.maintainer_email, classes=['control-full']) }}
+    {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc.)'), value='', error=errors.message, is_required = true) }}
+    {% if g.recaptcha_publickey %}
+      {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
+      <!-- <div class="g-recaptcha" data-sitekey="{{ g.recaptcha_publickey }}"></div> -->
+    {% endif %}
   {% endblock %}
-
   {% block form_actions %}
     <div class="form-actions">
       {% block disclaimer %}
         <p class="action-info small">
-          {%- trans -%}
-          The <i>data license</i> applies to the contents
+          {% trans %}The <i>data license</i> applies to the contents
           of any resource files that you request from this dataset. By submitting
           this form, you agree to usage restrictions under the
-          <a href={{ license_url }}>{{ license_title }}</a>.
-          {%- endtrans -%}
+          <a href={{ license_url }}>{{ license_title }}</a>.{% endtrans %}
         </p>
       {% endblock %}
       {% block confirm_button %}
-        <button class="btn btn-primary pull-left" type="submit" name="save"><i class="fa fa-icon fa-envelope-o" style="margin-right: 8px;"> </i>{{ _('Send Request') }}</button>
+        <button class="btn btn-primary" type="submit" name="save"><i class="fa fa-icon fa-envelope-o"></i> {{ _('Send Request') }}</button>
       {% endblock %}
       {% block cancel_button %}
-          <a class="btn btn-danger" href="{% url_for controller='package', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>
+        <a class="btn btn-danger" href="{% url_for controller='package', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>
       {% endblock %}
     </div>
   {% endblock %}
-</form>
-
+  </form>
 {% endblock %}
- 
