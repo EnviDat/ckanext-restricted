@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 import ckan.authz as authz
+from ckan.common import _
+
 from ckan.lib.base import render_jinja2
 import ckan.lib.mailer as mailer
 import ckan.logic as logic
@@ -148,9 +150,9 @@ def restricted_mail_allowed_user(user_id, resource):
             'CKAN Admin', config.get('email_to'),
             'Fwd: {}'.format(mail_subject), mail_body)
 
-    except Exception:
+    except Exception as e:
         log.warning(('restricted_mail_allowed_user: '
-                     'Failed to send mail to "{}"').format(user_id))
+                     'Failed to send mail to "{0}": {1}').format(user_id,e))
 
 
 def restricted_allowed_user_mail_body(user, resource):
