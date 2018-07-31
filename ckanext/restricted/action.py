@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 import ckan.authz as authz
 from ckan.common import _
+
 from ckan.lib.base import render_jinja2
 from ckan.lib.mailer import mail_recipient
 from ckan.lib.mailer import MailerException
@@ -147,7 +148,6 @@ def restricted_package_search(context, data_dict):
 
     return restricted_package_search_result
 
-
 # def _restricted_resource_list_url(context, resource_list):
 #     restricted_resources_list = []
 #     for resource in resource_list:
@@ -158,7 +158,6 @@ def restricted_package_search(context, data_dict):
 #             restricted_resource['url'] = _('Not Authorized')
 #         restricted_resources_list += [restricted_resource]
 #     return restricted_resources_list
-
 
 def _restricted_resource_list_hide_fields(context, resource_list):
     restricted_resources_list = []
@@ -173,9 +172,6 @@ def _restricted_resource_list_hide_fields(context, resource_list):
         authorized = auth.restricted_resource_show(
             context, {'id': resource.get('id'), 'resource': resource}
             ).get('success', False)
-        restricted_resource = dict(resource)
-        if not authorized:
-            restricted_resource['url'] = 'Not Authorized'
 
         # hide other fields in restricted to everyone but dataset owner(s)
         if not authz.is_authorized(
@@ -203,5 +199,6 @@ def _restricted_resource_list_hide_fields(context, resource_list):
             field_restricted_field = resource.get('restricted', {})
             if (field_restricted_field):
                 restricted_resource['restricted'] = new_restricted
+
         restricted_resources_list += [restricted_resource]
     return restricted_resources_list

@@ -16,6 +16,7 @@ except ImportError:
     from pylons import config
 
 from logging import getLogger
+
 log = getLogger(__name__)
 
 
@@ -106,6 +107,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         return {
             'success': False,
             'msg': 'Resource access restricted to members of an organization'}
+
     if restricted_level == 'any_organization':
         return {'success': True}
 
@@ -120,7 +122,6 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         'success': False,
         'msg': ('Resource access restricted to same '
                 'organization ({}) members').format(pkg_organization_id)}
-
 
 def restricted_mail_allowed_user(user_id, resource):
     log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
@@ -156,6 +157,7 @@ def restricted_allowed_user_mail_body(user, resource):
     resource_link = toolkit.url_for(
         controller='package', action='resource_read',
         id=resource.get('package_id'), resource_id=resource.get('id'))
+
     extra_vars = {
         'site_title': config.get('ckan.site_title'),
         'site_url': config.get('ckan.site_url'),
@@ -166,7 +168,6 @@ def restricted_allowed_user_mail_body(user, resource):
 
     return render_jinja2(
         'restricted/emails/restricted_user_allowed.txt', extra_vars)
-
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
 
