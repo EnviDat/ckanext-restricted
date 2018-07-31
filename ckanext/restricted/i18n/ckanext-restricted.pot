@@ -251,4 +251,4 @@ msgid ""
 "from %(site_title)s (%(site_url)s)"
 msgstr ""
 
-(default) root@ckan.dev.idgo.neogeo.fr:/usr/lib/ckan/default/src/ckanext-restricted-develop#
+#(default) root@ckan.dev.idgo.neogeo.fr:/usr/lib/ckan/default/src/ckanext-restricted-develop#
