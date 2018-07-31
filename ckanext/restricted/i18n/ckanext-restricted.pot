@@ -250,5 +250,3 @@ msgid ""
 " an automatically generated e-mail, please do not reply to it. Message sent "
 "from %(site_title)s (%(site_url)s)"
 msgstr ""
-
-# (default) root@ckan.dev.idgo.neogeo.fr:/usr/lib/ckan/default/src/ckanext-restricted-develop#
