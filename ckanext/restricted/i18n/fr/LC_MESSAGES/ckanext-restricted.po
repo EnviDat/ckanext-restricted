@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-restricted 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-03-07 14:17+0000\n"
+"POT-Creation-Date: 2018-07-31 13:58+0200\n"
 "PO-Revision-Date: 2018-03-02 10:53+0100\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -19,31 +19,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: ckanext/restricted/action.py:44
+#: ckanext/restricted/action.py:49
 msgid "CKAN System Administrator"
 msgstr "Administrateur CKAN"
 
-#: ckanext/restricted/action.py:49
+#: ckanext/restricted/action.py:54
 msgid "New Registration: {0} ({1})"
 msgstr "Nouvel enregistrement : {0} ({1})"
 
-#: ckanext/restricted/action.py:50
+#: ckanext/restricted/action.py:55
 msgid "new user"
 msgstr "Nouvel utilisateur"
 
-#: ckanext/restricted/action.py:149
-msgid "Not Authorized"
-msgstr "Non autorisé"
-
-#: ckanext/restricted/controller.py:42 ckanext/restricted/controller.py:126
+#: ckanext/restricted/controller.py:45 ckanext/restricted/controller.py:129
 msgid "Not authorized to see this page"
 msgstr "Vous n'avez pas les droits nécessaires pour consulter cette page"
 
-#: ckanext/restricted/controller.py:76
+#: ckanext/restricted/controller.py:79
 msgid "Access Request to resource {0} ({1}) from {2}"
 msgstr "Demande d'accès à la ressource {0} ({1}) par {2}"
 
-#: ckanext/restricted/controller.py:102
+#: ckanext/restricted/controller.py:105
 msgid ""
 "Please find below a copy of the access request mail sent. \n"
 "\n"
@@ -53,39 +49,39 @@ msgstr ""
 "\n"
 " >> {}"
 
-#: ckanext/restricted/controller.py:128
+#: ckanext/restricted/controller.py:131
 msgid "Bad Captcha. Please try again."
 msgstr "CAPTCHA incorrect. Essayez à nouveau."
 
-#: ckanext/restricted/controller.py:140 ckanext/restricted/controller.py:211
+#: ckanext/restricted/controller.py:143 ckanext/restricted/controller.py:214
 msgid "Dataset not found"
 msgstr "Jeu de données non trouvé"
 
-#: ckanext/restricted/controller.py:142
+#: ckanext/restricted/controller.py:145
 msgid "Exception retrieving dataset to send mail"
 msgstr "Erreur lors de la récupération du jeu de données pour envoyer l'e-mail"
 
-#: ckanext/restricted/controller.py:149
+#: ckanext/restricted/controller.py:152
 msgid "Missing Value"
 msgstr "Valeur manquante"
 
-#: ckanext/restricted/controller.py:173
+#: ckanext/restricted/controller.py:176
 msgid "Access request form is available to logged in users only."
 msgstr ""
 "Le formulaire de demande d'accès n'est accessible qu'aux utilisateurs "
 "identifiés."
 
-#: ckanext/restricted/controller.py:214
+#: ckanext/restricted/controller.py:217
 msgid "Exception retrieving dataset for the form ({})"
 msgstr "Erreur lors de la récupération du jeu de données pour le formulaire ({})"
 
-#: ckanext/restricted/controller.py:216
+#: ckanext/restricted/controller.py:219
 msgid "Unknown exception retrieving dataset for the form"
 msgstr ""
 "Erreur inconnue lors de la récupération du jeu de données pour le "
 "formulaire"
 
-#: ckanext/restricted/logic.py:109
+#: ckanext/restricted/logic.py:140
 msgid "Access granted to resource {}"
 msgstr "Accès autorisée à la ressource {}"
 
@@ -99,19 +95,19 @@ msgstr "(non autorisé)"
 msgid "Request Access"
 msgstr "Demande d'accès"
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:29
+#: ckanext/restricted/templates/package/snippets/resource_item.html:30
 msgid "Log in"
 msgstr "S'identifier"
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:29
+#: ckanext/restricted/templates/package/snippets/resource_item.html:30
 msgid "or"
 msgstr "ou"
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:29
+#: ckanext/restricted/templates/package/snippets/resource_item.html:30
 msgid "Register"
 msgstr "s'inscrire"
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:29
+#: ckanext/restricted/templates/package/snippets/resource_item.html:30
 msgid "to access resource"
 msgstr "afin d'accéder à la ressource"
 
@@ -313,7 +309,8 @@ msgid ""
 msgstr ""
 "Cher administrateur %(site_title)s,\n"
 "\n"
-"Un nouvel utilisateur a été enregistré, merci de vérifier l'information :\n"
+"Un nouvel utilisateur a été enregistré, merci de vérifier l'information :"
+"\n"
 "%(user_info)s\n"
 "\n"
 "Cordialement,\n"
