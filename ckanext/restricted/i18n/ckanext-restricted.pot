@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-restricted 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-07-31 13:58+0200\n"
+"POT-Creation-Date: 2018-08-01 11:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,46 +30,46 @@ msgstr ""
 msgid "new user"
 msgstr ""
 
-#: ckanext/restricted/controller.py:45 ckanext/restricted/controller.py:129
+#: ckanext/restricted/controller.py:45 ckanext/restricted/controller.py:130
 msgid "Not authorized to see this page"
 msgstr ""
 
-#: ckanext/restricted/controller.py:79
+#: ckanext/restricted/controller.py:80
 msgid "Access Request to resource {0} ({1}) from {2}"
 msgstr ""
 
-#: ckanext/restricted/controller.py:105
+#: ckanext/restricted/controller.py:106
 msgid ""
 "Please find below a copy of the access request mail sent. \n"
 "\n"
 " >> {}"
 msgstr ""
 
-#: ckanext/restricted/controller.py:131
+#: ckanext/restricted/controller.py:132
 msgid "Bad Captcha. Please try again."
 msgstr ""
 
-#: ckanext/restricted/controller.py:143 ckanext/restricted/controller.py:214
+#: ckanext/restricted/controller.py:144 ckanext/restricted/controller.py:215
 msgid "Dataset not found"
 msgstr ""
 
-#: ckanext/restricted/controller.py:145
+#: ckanext/restricted/controller.py:146
 msgid "Exception retrieving dataset to send mail"
 msgstr ""
 
-#: ckanext/restricted/controller.py:152
+#: ckanext/restricted/controller.py:153
 msgid "Missing Value"
 msgstr ""
 
-#: ckanext/restricted/controller.py:176
+#: ckanext/restricted/controller.py:177
 msgid "Access request form is available to logged in users only."
 msgstr ""
 
-#: ckanext/restricted/controller.py:217
+#: ckanext/restricted/controller.py:218
 msgid "Exception retrieving dataset for the form ({})"
 msgstr ""
 
-#: ckanext/restricted/controller.py:219
+#: ckanext/restricted/controller.py:220
 msgid "Unknown exception retrieving dataset for the form"
 msgstr ""
 
@@ -189,6 +189,7 @@ msgstr ""
 msgid "Access Request Data"
 msgstr ""
 
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:6
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:15
 msgid "User:"
 msgstr ""
@@ -197,10 +198,12 @@ msgstr ""
 msgid "User Mail:"
 msgstr ""
 
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:5
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:17
 msgid "Dataset:"
 msgstr ""
 
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:4
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:18
 msgid "Resource:"
 msgstr ""
@@ -209,6 +212,7 @@ msgstr ""
 msgid "Contact Email:"
 msgstr ""
 
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:7
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:20
 msgid "Message:"
 msgstr ""
@@ -218,35 +222,79 @@ msgid "Close"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:1
-#, python-format
-msgid ""
-"Dear %(maintainer_name)s, A user has requested access to your data in "
-"%(site_title)s: * Resource: %(resource_name)s (%(resource_link)s) * Dataset: "
-"%(package_name)s * User: %(user_name)s (%(user_email)s) * Message: "
-"%(message)s You can allow this user to access you resource by adding "
-"%(user_id)s to the list of allowed users. If you have editor rights, you can "
-"edit the resource in this link: %(resource_edit_link)s. If you have any "
-"questions about how to proceed with this request, please contact the "
-"%(site_title)s support at %(admin_email_to)s. Best regards, %(site_title)s "
-"Administrator This is an automatically generated e-mail, please do not reply "
-"to it. Message sent from %(site_title)s (%(site_url)s)"
-msgstr ""
-
 #: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:1
-#, python-format
-msgid ""
-"Dear %(user_name)s, You have requested access on %(site_title)s to the "
-"resource: %(resource_name)s. The contact person of the package has granted "
-"you access. Please click the following link: %(resource_link)s Best regards, "
-"%(site_title)s Administrator This is an automatically generated e-mail, "
-"please do not reply to it. Message sent from %(site_title)s (%(site_url)s)"
+#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:1
+msgid "Dear"
 msgstr ""
 
-#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:1
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:3
+#, python-format
+msgid "A user has requested access to your data in %(site_title)s:"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:9
 #, python-format
 msgid ""
-"Dear %(site_title)s administrator, A new user registered, please review the "
-"information: %(user_info)s Best regards, %(site_title)s Administrator This is"
-" an automatically generated e-mail, please do not reply to it. Message sent "
-"from %(site_title)s (%(site_url)s)"
+"You can allow this user to access you resource by adding %(user_id)s to the "
+"list of allowed users."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:10
+#, python-format
+msgid ""
+"If you have editor rights, you can edit the resource in this link: "
+"%(resource_edit_link)s."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:11
+#, python-format
+msgid ""
+"If you have any questions about how to proceed with this request, please "
+"contact the %(site_title)s support at %(admin_email_to)s."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:13
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:8
+#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:6
+msgid "Best regards,"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:14
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:9
+#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:7
+#, python-format
+msgid "%(site_title)s Administrator"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:17
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:12
+#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:10
+msgid "This is an automatically generated e-mail, please do not reply to it."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:19
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:14
+#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:12
+#, python-format
+msgid "Message sent from %(site_title)s (%(site_url)s)"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:3
+#, python-format
+msgid ""
+"You have requested access on %(site_title)s to the resource: "
+"%(resource_name)s."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:4
+msgid "The contact person of the package has granted you access."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:6
+#, python-format
+msgid "Please click the following link: %(resource_link)s"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:3
+msgid "A new user registered, please review the information:"
 msgstr ""
