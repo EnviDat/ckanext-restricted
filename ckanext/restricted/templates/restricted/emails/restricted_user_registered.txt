@@ -1,12 +1,13 @@
-{% trans %}Dear {{ site_title }} administrator,
+{% trans %}Dear{% endtrans %} {{ site_title }} administrator,
 
-A new user registered, please review the information:
+{% trans %}A new user registered, please review the information:{% endtrans %}
 {{ user_info }}
 
-Best regards,
-{{ site_title }} Administrator
+{% trans %}Best regards,{% endtrans %}
+{% trans %}{{ site_title }} Administrator{% endtrans %}
 
 
-This is an automatically generated e-mail, please do not reply to it.
+{% trans %}This is an automatically generated e-mail, please do not reply to it.{% endtrans %}
 
-Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}
+{% trans %}Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}
+
