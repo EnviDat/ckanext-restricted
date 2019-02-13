@@ -75,7 +75,12 @@ restricted_resources_preview.PNG
 Requirements
 ------------
 
-This extension has been developed for CKAN version 2.5.2 and is compatible up to 2.7.x.
+This extension has been oruginally developed for CKAN version 2.5.2 and is compatible up to 2.8.x.
+
+Recommends the following extensions (otherwise the configuration is more complicated):
+* ckanext-scheming
+* ckanext-repeating
+* ckanext-composite
 
 The resource access restriction level can be individualy defined for every package. This requires adding an extra field to package metadata with (some of) the possible values: "public",  "registered", "any_organization",  "same_organization" (as the package).
 
