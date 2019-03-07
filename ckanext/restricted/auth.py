@@ -12,7 +12,6 @@ log = getLogger(__name__)
 
 @toolkit.auth_allow_anonymous_access
 def restricted_resource_show(context, data_dict=None):
-
     # Ensure user who can edit the package can see the resource
     resource = data_dict.get('resource', context.get('resource', {}))
     if not resource:

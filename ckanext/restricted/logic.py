@@ -34,8 +34,7 @@ def restricted_get_username_from_context(context):
 
 
 def restricted_get_restricted_dict(resource_dict):
-    restricted_dict = {'level': 'public', 'allowed_users': []}
-
+    restricted_dict = {'level': 'restricted', 'allowed_users': [], 'allowed_organization': []}
     # the ckan plugins ckanext-scheming and ckanext-composite
     # change the structure of the resource dict and the nature of how
     # to access our restricted field values
@@ -54,44 +53,41 @@ def restricted_get_restricted_dict(resource_dict):
                 restricted = {}
 
         if restricted:
-            restricted_level = restricted.get('level', 'public')
+            restricted_level = restricted.get('level', 'restricted')
             allowed_users = restricted.get('allowed_users', '')
+            allowed_organizations = restricted.get('allowed_organizations', '')
             if not isinstance(allowed_users, list):
                 allowed_users = allowed_users.split(',')
             restricted_dict = {
                 'level': restricted_level,
-                'allowed_users': allowed_users}
+                'allowed_users': allowed_users,
+                'allowed_organizations': allowed_organizations}
 
     return restricted_dict
 
 
 def restricted_check_user_resource_access(user, resource_dict, package_dict):
+
+    # Check access to package
+    logic.check_access('package_show', {'user': user},
+                       {'id': package_dict['id']})
     restricted_dict = restricted_get_restricted_dict(resource_dict)
 
-    restricted_level = restricted_dict.get('level', 'public')
+    restricted_level = restricted_dict.get('level', 'restricted')
     allowed_users = restricted_dict.get('allowed_users', [])
-
-    # Public resources (DEFAULT)
-    if not restricted_level or restricted_level == 'public':
+    allowed_organizations = restricted_dict.get('allowed_organizations', [])
+    # Public resources
+    if restricted_level == 'public':
         return {'success': True}
-
     # Registered user
     if not user:
         return {
             'success': False,
             'msg': 'Resource access restricted to registered users'}
-    else:
-        if restricted_level == 'registered' or not restricted_level:
-            return {'success': True}
-
     # Since we have a user, check if it is in the allowed list
     if user in allowed_users:
         return {'success': True}
-    elif restricted_level == 'only_allowed_users':
-        return {
-            'success': False,
-            'msg': 'Resource access restricted to allowed users only'}
-
+   
     # Get organization list
     user_organization_dict = {}
 
@@ -104,26 +100,14 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         if name and id:
             user_organization_dict[id] = name
 
-    # Any Organization Members (Trusted Users)
-    if not user_organization_dict:
-        return {
-            'success': False,
-            'msg': 'Resource access restricted to members of an organization'}
-
-    if restricted_level == 'any_organization':
-        return {'success': True}
-
     pkg_organization_id = package_dict.get('owner_org', '')
-
     # Same Organization Members
-    if restricted_level == 'same_organization':
-        if pkg_organization_id in user_organization_dict.keys():
+    for org_id, org_name in user_organization_dict.items():
+        if org_id != "" and (org_id == pkg_organization_id or org_name in allowed_organizations):
             return {'success': True}
-
     return {
         'success': False,
-        'msg': ('Resource access restricted to same '
-                'organization ({}) members').format(pkg_organization_id)}
+        'msg': ('Resource access restricted')}
 
 def restricted_mail_allowed_user(user_id, resource):
     log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
