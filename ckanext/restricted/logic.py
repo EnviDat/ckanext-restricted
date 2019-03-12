@@ -77,13 +77,13 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     allowed_users = restricted_dict.get('allowed_users', [])
     allowed_organizations = restricted_dict.get('allowed_organizations', [])
     # Public resources
-    if restricted_level == 'public':
-        return {'success': True}
-    # Registered user
+      # Only Registered users have access to data
     if not user:
         return {
             'success': False,
             'msg': 'Resource access restricted to registered users'}
+    if restricted_level == 'public':
+        return {'success': True}
     # Since we have a user, check if it is in the allowed list
     if user in allowed_users:
         return {'success': True}
