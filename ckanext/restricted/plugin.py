@@ -9,6 +9,7 @@ from ckanext.restricted import action
 from ckanext.restricted import auth
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
+import json
 
 from logging import getLogger
 log = getLogger(__name__)
@@ -30,7 +31,7 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic', 'restricted')
+        toolkit.add_resource('fanstatic'.encode("ascii"), 'ckanext-restricted'.encode("ascii"))
 
     # IActions
     def get_actions(self):
@@ -42,7 +43,8 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
     # ITemplateHelpers
     def get_helpers(self):
-        return {'restricted_get_user_id': helpers.restricted_get_user_id}
+        return {'restricted_get_user_id': helpers.restricted_get_user_id,
+                'restricted_json_loads': load_json}
 
     # IAuthFunctions
     def get_auth_functions(self):
@@ -66,3 +68,5 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
         previous_value = context.get('__restricted_previous_value')
         logic.restricted_notify_allowed_users(previous_value, resource)
 
+def load_json(json_string):
+    return json.loads(json_string)
