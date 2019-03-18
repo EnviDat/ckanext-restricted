@@ -9,6 +9,7 @@ from ckanext.restricted import action
 from ckanext.restricted import auth
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
+from ckanext.scheming.validation import scheming_validator
 import json
 
 from logging import getLogger
@@ -17,6 +18,18 @@ log = getLogger(__name__)
 
 _get_or_bust = ckan.logic.get_or_bust
 
+@scheming_validator
+def restricted_json(field, schema):
+    def validator(key, data, errors, context):
+        extra = data.get(key[:-1] + ('__extras',), {})
+        value = {
+            "level": extra.get("restricted_level", ""),
+            "allowed_users": extra.get("restricted_allowed_users", ""),
+            "allowed_organisations": extra.get("restricted_allowed_organisations", "")
+            }
+        extra = {}
+        data[key] = json.dumps(value)
+    return validator
 
 class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.ITranslation)
@@ -69,4 +82,7 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
         logic.restricted_notify_allowed_users(previous_value, resource)
 
 def load_json(json_string):
-    return json.loads(json_string)
+    if json_string:
+        return json.loads(json_string)
+    else:
+        return {}
