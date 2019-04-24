@@ -1,0 +1,41 @@
+{% extends "restricted/restricted_request_access_base.html" %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Organizations'), controller='organization', action='index', named_route='organization_index' %}</li>
+  {% block breadcrumb_content_inner %}
+    <li class="active">{% link_for _('Request Organization'), controller='ckanext.restricted.controller:RestrictedController', action='restricted_request_organization_form', named_route='restricted_request_organization' %}</li>
+  {% endblock %}
+{% endblock %}
+
+{% block page_header %}
+{% endblock %}
+
+{% block primary_content_inner %}
+  <h2 class="page-heading">{{ _('Request Access Form Sent') }}</h2>
+  <article class="module">
+    <div class="module-content">
+      {% if success %}
+      <p>{{ _('Your request has been sent, please check your provided mail account.') }}</p>
+      {% else %}
+      <p>{{ _('WARNING: There were problems sending your request, please contact the administrator providing the information below.') }}</p>
+      {% endif %}
+      <div class="restricted-request-summary" >
+        <h4>{{ _('Access Request Data') }}</h4>
+        <ul>
+          <li><b>{{ _('User:') }}</b> {{ data.get('user_name') }}</li>
+          <li><b>{{ _('User Mail:') }}</b> {{ data.get('user_email') }}</li>
+          <li><b>{{ _('Organization Name:') }}</b> {{ data.get('organization_name') }} ({{data.get('organization_web')}})</li>
+          <li><b>{{ _('Organization Description:') }}</b> {{ data.get('organization_description') }}</li>
+          <li><b>{{ _('Reason for joining:') }}</b> {{ data.get('reason') }}</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+  {% block form_actions %}
+  <div class="form-actions">
+    {% block confirm_button %}
+    <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='organization', action='index' %}" data-module="cancel-action" >{{ _('Close') }}</a>
+    {% endblock %}
+  </div>
+  {% endblock %}
+{% endblock %}

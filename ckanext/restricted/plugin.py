@@ -18,6 +18,7 @@ log = getLogger(__name__)
 
 _get_or_bust = ckan.logic.get_or_bust
 
+
 @scheming_validator
 def restricted_json(field, schema):
     def validator(key, data, errors, context):
@@ -34,9 +35,8 @@ def restricted_json(field, schema):
         log.warning(extra)
         log.warning(data[key])
 
-
-        
     return validator
+
 
 class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.ITranslation)
@@ -69,7 +69,8 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # IAuthFunctions
     def get_auth_functions(self):
         return {'resource_show': auth.restricted_resource_show,
-                'resource_view_show': auth.restricted_resource_show}
+                'resource_view_show': auth.restricted_resource_show,
+                'logged_in': auth.logged_in}
 
     # IRoutes
     def before_map(self, map_):
@@ -78,6 +79,11 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
             '/dataset/{package_id}/restricted_request_access/{resource_id}',
             controller='ckanext.restricted.controller:RestrictedController',
             action='restricted_request_access_form')
+        map_.connect(
+            'restricted_request_organization',
+            '/request_organization',
+            controller='ckanext.restricted.controller:RestrictedController',
+            action='restricted_request_organization_form')
         return map_
 
     # IResourceController
@@ -87,6 +93,7 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def after_update(self, context, resource):
         previous_value = context.get('__restricted_previous_value')
         logic.restricted_notify_allowed_users(previous_value, resource)
+
 
 def load_json(json_string):
     if json_string:

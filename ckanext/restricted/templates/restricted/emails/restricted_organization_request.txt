@@ -1,0 +1,16 @@
+{% trans %}{{ user_name }} ({{ user_email }}) has requested that you create a new organization for {{ site_title }}:{% endtrans %}
+
+ - {% trans %}Name:{% endtrans %} {{ organization_name }} ({{ organization_web }})
+
+ - {% trans %}Description:{% endtrans %} {{ organization_description }}
+
+ - {% trans %}Reason:{% endtrans %} {{ reason }}
+
+{% trans %}If you have any questions about how to proceed with this request, please contact the {{ site_title }} support at {{ admin_email_to }}.{% endtrans %}
+
+{% trans %}Best regards,{% endtrans %}
+{% trans %}{{ site_title }} Administrator{% endtrans %}
+
+--
+{% trans %}This is an automatically generated e-mail, please do not reply to it.{% endtrans %}
+{% trans %}Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}

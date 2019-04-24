@@ -34,3 +34,11 @@ def restricted_resource_show(context, data_dict=None):
 
     return (logic.restricted_check_user_resource_access(
         user_name, resource, package))
+
+
+def logged_in(context, data_dict=None):
+    log.warning(context['user'])
+    if context['user']:
+        return {'success': True, 'msg': 'No one is allowed to create groups'}
+    else:
+        return {'success': False, 'msg': 'You must be logged in to see this'}

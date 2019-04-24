@@ -231,6 +231,151 @@ class RestrictedController(toolkit.BaseController):
             'restricted/restricted_request_access_form.html',
             extra_vars=extra_vars)
 
+    def _send_organization_request(self, context):
+
+        try:
+            data_dict = logic.clean_dict(unflatten(
+                logic.tuplize_dict(logic.parse_params(request.params))))
+
+            captcha.check_recaptcha(request)
+
+        except logic.NotAuthorized:
+            toolkit.abort(401, _('Not authorized to see this page'))
+        except captcha.CaptchaError:
+            error_msg = _('Bad Captcha. Please try again.')
+            h.flash_error(error_msg)
+            return self.restricted_request_organization_form(
+                data=data_dict
+            )
+
+        # Validation
+        errors = {}
+        error_summary = {}
+
+        text_fields = [
+            "organization_name",
+            "organization_web",
+            "organization_description",
+            "reason",
+        ]
+
+        for field in text_fields:
+            if data_dict.get(field, '') == '':
+                msg = _('Missing Value')
+                errors[field] = [msg]
+                error_summary[field] = msg
+
+        if len(errors) > 0:
+            return self.restricted_request_organization_form(
+                data=data_dict,
+                errors=errors,
+                error_summary=error_summary
+            )
+
+        success = self._send_organization_request_mail(data_dict)
+
+        return render(
+            'restricted/restricted_request_organization_result.html',
+            extra_vars={'data': data_dict, 'success': success}
+        )
+
+    def _send_organization_request_mail(self, data):
+        success = False
+        try:
+
+            extra_vars = {
+                'site_title': config.get('ckan.site_title'),
+                'site_url': config.get('ckan.site_url'),
+                'user_id': data.get('user_id', 'the user id'),
+                'user_name': data.get('user_name', ''),
+                'user_email': data.get('user_email', ''),
+                'organization_name': data.get('organization_name', ''),
+                'organization_description': data.get('organization_description', ''),
+                'organization_web': data.get('organization_web', ''),
+                'reason': data.get('reason', ''),
+                'admin_email_to': config.get('email_to', 'email_to_undefined')
+            }
+
+            body = render_jinja2(
+                'restricted/emails/restricted_organization_request.txt',
+                extra_vars
+            )
+            subject = _('Request to create new organisation {0}').format(
+                data.get('organization_name', '')
+            )
+            email_dict = {
+                extra_vars.get('admin_email_to'): '{} Admin'.format(
+                    extra_vars.get('site_title')
+                )
+            }
+            headers = {
+                'CC': ",".join(email_dict.keys()),
+                'reply-to': data.get('user_email')
+            }
+
+            # CC doesn't work and mailer cannot send to multiple addresses
+            for email, name in email_dict.iteritems():
+                mailer.mail_recipient(name, email, subject, body, headers)
+
+            # Special copy for the user (no links)
+            email = data.get('user_email')
+            name = data.get('user_name', 'User')
+
+            body = render_jinja2(
+                'restricted/emails/restricted_organization_request.txt', extra_vars)
+
+            body_user = _(
+                'Please find below a copy of the new organization request '
+                'sent to the system administrators. \n\n >> {}'
+            ).format(body.replace("\n", "\n >> "))
+
+            mailer.mail_recipient(
+                name, email, 'Fwd: ' + subject, body_user, headers)
+            success = True
+
+        except mailer.MailerException as mailer_exception:
+            log.error('Can not access request mail after registration.')
+            log.error(mailer_exception)
+
+        return success
+
+    def restricted_request_organization_form(self, data=None, errors=None,
+                                             error_summary=None):
+        """Redirects to form."""
+        user_id = toolkit.c.user
+        if not user_id:
+            toolkit.abort(
+                401,
+                _('Request organization form is available to logged in users only.')
+            )
+
+        context = {'model': model,
+                   'session': model.Session,
+                   'user': user_id,
+                   'save': 'save' in request.params}
+
+        data = data or {}
+        errors = errors or {}
+        error_summary = error_summary or {}
+
+        if (context['save']) and not data and not errors:
+            log.warning(data)
+            return self._send_organization_request(data)
+
+        user = toolkit.get_action('user_show')(context, {'id': user_id})
+        data['user_id'] = user_id
+        data['user_name'] = user.get('display_name', user_id)
+        data['user_email'] = user.get('email', '')
+
+        extra_vars = {
+            'data': data, 'group_type': "organization",
+            'errors': errors, 'error_summary': error_summary
+        }
+        return render(
+            'restricted/restricted_request_organization_form.html',
+            extra_vars=extra_vars
+        )
+
     def _get_contact_details(self, pkg_dict):
         contact_email = ""
         contact_name = ""
