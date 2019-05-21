@@ -23,7 +23,7 @@ fi
 if [ -f requirement-setuptools.txt ]
 then
     echo "Updating setuptools..."
-    pip install -r requirement-setuptools.txt
+    pip install --user -r requirement-setuptools.txt
 fi
 
 if [ $CKANVERSION == '2.7' ]

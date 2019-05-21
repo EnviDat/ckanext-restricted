@@ -4,7 +4,7 @@
 # see https://github.com/travis-ci/travis-ci/issues/8897
 dist: trusty
 group: deprecated-2017Q4
-sudo: False
+
 # matrix
 python:
   - 2.7
