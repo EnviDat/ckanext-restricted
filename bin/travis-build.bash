@@ -22,8 +22,8 @@ fi
 # install the recommended version of setuptools
 if [ -f requirement-setuptools.txt ]
 then
-    echo "Updating setuptools..."
-    pip install --user -r requirement-setuptools.txt
+    echo "Sudo Updating setuptools..."
+    sudo pip install -r requirement-setuptools.txt
 fi
 
 if [ $CKANVERSION == '2.7' ]
