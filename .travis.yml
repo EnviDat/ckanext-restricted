@@ -9,8 +9,8 @@ group: deprecated-2017Q4
 python:
   - 2.7
 env:
-  - CKANVERSION=2.8
-
+  - CKANVERSION=2.8.2
+  - CKANVERSION=master
 # tests
 services:
   - postgresql
