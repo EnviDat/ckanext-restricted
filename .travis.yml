@@ -4,13 +4,11 @@
 # see https://github.com/travis-ci/travis-ci/issues/8897
 dist: trusty
 group: deprecated-2017Q4
-
+sudo: required
 # matrix
 python:
   - 2.7
 env:
-  - CKANVERSION=master
-  - CKANVERSION=2.7
   - CKANVERSION=2.8
 
 # tests
