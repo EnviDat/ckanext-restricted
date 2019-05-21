@@ -159,6 +159,7 @@ def restricted_package_search(context, data_dict):
 #         restricted_resources_list += [restricted_resource]
 #     return restricted_resources_list
 
+
 def _restricted_resource_list_hide_fields(context, resource_list):
     restricted_resources_list = []
     for resource in resource_list:
@@ -169,9 +170,9 @@ def _restricted_resource_list_hide_fields(context, resource_list):
         restricted_dict = logic.restricted_get_restricted_dict(restricted_resource)
 
         # hide fields to unauthorized users
-        authorized = auth.restricted_resource_show(
+        auth.restricted_resource_show(
             context, {'id': resource.get('id'), 'resource': resource}
-            ).get('success', False)
+        ).get('success', False)
 
         # hide other fields in restricted to everyone but dataset owner(s)
         if not authz.is_authorized(

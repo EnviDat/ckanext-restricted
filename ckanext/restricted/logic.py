@@ -77,7 +77,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     allowed_users = restricted_dict.get('allowed_users', [])
     allowed_organizations = restricted_dict.get('allowed_organizations', [])
     # Public resources
-      # Only Registered users have access to data
+    # Only Registered users have access to data
     if not user:
         return {
             'success': False,
@@ -87,7 +87,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     # Since we have a user, check if it is in the allowed list
     if user in allowed_users:
         return {'success': True}
-   
+
     # Get organization list
     user_organization_dict = {}
 
@@ -108,6 +108,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
     return {
         'success': False,
         'msg': ('Resource access restricted')}
+
 
 def restricted_mail_allowed_user(user_id, resource):
     log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
@@ -136,7 +137,7 @@ def restricted_mail_allowed_user(user_id, resource):
 
     except Exception as e:
         log.warning(('restricted_mail_allowed_user: '
-                     'Failed to send mail to "{0}": {1}').format(user_id,e))
+                     'Failed to send mail to "{0}": {1}').format(user_id, e))
 
 
 def restricted_allowed_user_mail_body(user, resource):
@@ -154,6 +155,7 @@ def restricted_allowed_user_mail_body(user, resource):
 
     return render_jinja2(
         'restricted/emails/restricted_user_allowed.txt', extra_vars)
+
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
 

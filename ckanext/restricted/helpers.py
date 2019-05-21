@@ -1,5 +1,4 @@
-# coding: utf8 
-
+# coding: utf8
 
 from ckan.common import c
 
