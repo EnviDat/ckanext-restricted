@@ -20,17 +20,17 @@ else
 fi
 
 # install the recommended version of setuptools
-if [ -f requirement-setuptools.txt ]
-then
-    echo "Updating setuptools..."
-    pip install -r requirement-setuptools.txt
-fi
-
-if [ $CKANVERSION == '2.7' ]
-then
-    echo "Installing setuptools"
-    pip install setuptools==39.0.1
-fi
+# if [ -f requirement-setuptools.txt ]
+# then
+#     echo "Updating setuptools..."
+#     pip install -r requirement-setuptools.txt
+# fi
+#
+# if [ $CKANVERSION == '2.7' ]
+# then
+#     echo "Installing setuptools"
+#     pip install setuptools==39.0.1
+#fi
 
 python setup.py develop
 pip install -r requirements.txt
