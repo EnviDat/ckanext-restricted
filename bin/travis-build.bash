@@ -23,19 +23,19 @@ fi
 if [ -f requirement-setuptools.txt ]
 then
     echo "Sudo Updating setuptools..."
-    sudo pip install -r requirement-setuptools.txt
+    pip install --user -r requirement-setuptools.txt
 fi
 
 if [ $CKANVERSION == '2.7' ]
 then
     echo "Installing setuptools"
-    sudo pip install setuptools==39.0.1
+    pip install --user setuptools==39.0.1
 fi
 
 sudo python setup.py develop
-sudo pip install -r requirements.txt
-sudo pip install -r dev-requirements.txt
-sudo pip install flake8
+pip install --user -r requirements.txt
+pip install --user -r dev-requirements.txt
+pip install --user flake8
 cd -
 
 echo "Creating the PostgreSQL user and database..."
@@ -57,7 +57,7 @@ cd -
 
 echo "Installing ckanext-restricted and its requirements..."
 sudo python setup.py develop
-sudo pip install -r dev-requirements.txt
+pip install --user -r dev-requirements.txt
 
 echo "Moving test.ini into a subdir..."
 mkdir subdir
