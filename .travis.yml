@@ -1,47 +1,40 @@
-# use an older trusty image, because the newer images cause build errors with
-# psycopg2 that comes with CKAN<2.8:
-#   "Error: could not determine PostgreSQL version from '10.1'"
-# see https://github.com/travis-ci/travis-ci/issues/8897
 dist: trusty
 group: deprecated-2017Q4
-language: python 
-# matrix
 python:
-  - 2.7
+- 2.7
 env:
-  - CKANVERSION=2.8.2
-  - CKANVERSION=master
-# tests
+- CKANVERSION=2.8.2
+- CKANVERSION=master
 services:
-  - postgresql
-  - redis-server
+- postgresql
+- redis-server
 install:
-  - bash bin/travis-build.bash
-  - pip install coveralls
+- bash bin/travis-build.bash
+- pip install coveralls
 script: sh bin/travis-run.sh
 after_success:
-  - coveralls
-
-# additional jobs
+- coveralls
 matrix:
   include:
-    - name: "Flake8 on Python 3.7"
-      dist: xenial    # required for Python 3.7
-      cache: pip
-      install: pip install --user flake8
-      script:
-        - flake8 --version
-        - flake8 . --count --max-complexity=10 --max-line-length=127 --statistics --exclude ckan,{{ project }}
-      python: 3.7
-      # overwrite matrix
-      env:
-        - FLAKE8=true
-        - CKANVERSION=master
+  - name: Flake8 on Python 3.7
+    dist: xenial
+    cache: pip
+    install: pip install --user flake8
+    script:
+    - flake8 --version
+    - flake8 . --count --max-complexity=10 --max-line-length=127 --statistics --exclude
+      ckan,{{ project }}
+    python: 3.7
+    env:
+    - FLAKE8=true
+    - CKANVERSION=master
 notifications:
   slack:
-    secure: u5ZLC2z7j4clJSEpImV7iQ+S2Au/BSkVoGZ8/d93q1EfXnQFwFCsS6ZlRB4w8F5PoQDrfznivKcqcSrUSj9EG9CSuVliYxlLp9zFIn0aAZ4Abcqf7NyLI1enx9RcwWQq98CWYv7MZzldc8laoTeUXpzcsXerG5RU5bqJptobrMls2OT/rl2sow6DPiKslpIrTzmo4cTDxvSqARGXSylMn9+35J3FGZf0QeZ2mhVGR9D5okmQ+iJCB//ZvDM8kHKrgqRLPhx3D/vpOUsw1cM/qwtpOaPkdLQSDjhdC0wx5ZyzY3fNVIEwnH3auCqO0Rr2S+IT/wytoeEYqmFo0yZhRyTTaGTasTeoOOjPCI23xHN177bCEoprA1ok6qurQLqUGKhUqpxymRIxfy7GmM+xZjqsFbz7oFhW7gcpRVPovSgSszQrrJIXdLihMpzWNlifgDt1KjFBZrmGsUE5wrnFeo+97eRq/jIBzpmiB21wedkXDQkXTOn2ECCweeYO7JaZiPp33hfZCNu0JfWGYDLyxa1/32sNh/4Q9gGPdKDy+zVL+BwR6kO23WMtGlwvFC7kbek7/YHZ8zjfVvFQtPH6JIgT+jXNpmWA4QZgWLvmmRWKGZ1vWoE0Cm9crnc3OTyyvEy2w1drlrhM/+PPBym9/Fv+VRhH4f1x+jwoPBb0XFc=
     on_success: change
     on_failure: always
+    on_pull_requests: false
+    rooms:
+      - secure: bqpXjyCJa7b5HXBfwQdDTz3+IozGJTLDP3FzmTDepxwC0n869Y0g7JgodUVcovvlzblBdeuH7vPAH4I3FJK/9ySj5tvFL5sW/waz8aGJ0EkCCiUsp3NceFkndGUZlmdV1I1x1ArZI0EkXdV9C3Br1OTEBK+99VP5J7nQs9fLaLQEvZUcJYILygWLcfSo1Ar3jqNFeYGVtcgq4pUkNC8PgT8KJG3fyZ+H2qnLn3GbRXN1rdfOITDjAJQDK7CdUaxFOV+HrFvapEdOJzoH3UaQjGCfL8Rl/Ic/W9FfH/jUN9kwHihGavuqOdxh/WaaYg/RC0KcgPhEYslGYVQxTp6QVp+8gZg/+bDfiFyz2clGxmR5QunNJkL7YF2ikqYhfqfmE7xbJ3QjT8mjDQzhwdk+0UNN2tWnY/WQjgBVteD/YG+kZge+IuM1YtkjlKdqP1/zUoara3T/47/H7QLnf73UXsUZvkELZfwOsZ3p+HelZnerA2n1vRKQ0ZAHTKF+5PDwL7Mr6qIKCjMlBgxRgeCKD5TcmywX2DIkvsv+X2pWAub7bBh8IVdGuhTLUsWNf1CLKzY41sNIJIIZCWnH0/7xM3wponi6Grx+TauOYdn8v0GClqY03GvLQcSgXMyCZF5J7ldZeg1OXcycrr1WqyqA+yc2YgLrgAUwAaNS29f3QX4=
   email:
     on_success: never
     on_failure: never
