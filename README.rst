@@ -188,12 +188,7 @@ To install ckanext-restricted:
 Config Settings
 ---------------
 
-Document any optional config settings here. For example::
-
-    # The minimum number of hours to wait before re-checking a resource
-    # (optional, default: 24).
-    ckanext.restricted.some_setting = some_default_value
-
+Only the scheming configuration is needed (JSON file defining your schema).
 
 ------------------------
 Development Installation
