@@ -148,6 +148,28 @@ def restricted_package_search(context, data_dict):
 
     return restricted_package_search_result
 
+@side_effect_free
+def restricted_check_access(context, data_dict):
+
+    package_id = data_dict.get('package_id', False)
+    resource_id = data_dict.get('resource_id', False)
+
+    user_name = logic.restricted_get_username_from_context(context)
+
+    if not package_id:
+        raise ckan.logic.ValidationError('Missing package_id')
+    if not resource_id:
+        raise ckan.logic.ValidationError('Missing resource_id')
+
+    log.debug("action.restricted_check_access: user_name = " + str(user_name))
+
+    log.debug("checking package " + str(package_id))
+    package_dict = ckan.logic.get_action('package_show')(dict(context, return_type='dict'), {'id': package_id})
+    log.debug("checking resource")
+    resource_dict = ckan.logic.get_action('resource_show')(dict(context, return_type='dict'), {'id': resource_id})
+
+    return logic.restricted_check_user_resource_access(user_name, resource_dict, package_dict)
+
 # def _restricted_resource_list_url(context, resource_list):
 #     restricted_resources_list = []
 #     for resource in resource_list:
