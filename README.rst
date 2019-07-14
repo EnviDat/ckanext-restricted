@@ -75,7 +75,12 @@ restricted_resources_preview.PNG
 Requirements
 ------------
 
-This extension has been developed for CKAN version 2.5.2 and is compatible up to 2.7.x.
+This extension has been oruginally developed for CKAN version 2.5.2 and is compatible up to 2.8.x.
+
+Recommends the following extensions (otherwise the configuration is more complicated):
+* ckanext-scheming
+* ckanext-repeating
+* ckanext-composite
 
 The resource access restriction level can be individualy defined for every package. This requires adding an extra field to package metadata with (some of) the possible values: "public",  "registered", "any_organization",  "same_organization" (as the package).
 
@@ -183,12 +188,7 @@ To install ckanext-restricted:
 Config Settings
 ---------------
 
-Document any optional config settings here. For example::
-
-    # The minimum number of hours to wait before re-checking a resource
-    # (optional, default: 24).
-    ckanext.restricted.some_setting = some_default_value
-
+Only the scheming configuration is needed (JSON file defining your schema).
 
 ------------------------
 Development Installation
