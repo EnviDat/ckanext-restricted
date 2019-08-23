@@ -1,15 +1,12 @@
 {% import 'macros/form.html' as form %}
 
 <fieldset class="composite-fieldset">
-    <legend>
-      Access Restriction
-    </legend>
-    
+  
 <div class="composite-subfield-group" data-field="restricted" data-group-index="0">
 
 {% resource 'ckanext-restricted/restricted_ui.js' %}
 {%- set options=[] -%}
-{% set restricted = h.restricted_json_loads(data.get("restricted")) %}  
+{% set restricted = h.restricted_json_loads(data.get("restricted")) %}
 {%- for c in h.scheming_field_choices(field) -%}
   {%- if not form_restrict_choices_to or c.value in form_restrict_choices_to -%}
     {%- do options.append({
