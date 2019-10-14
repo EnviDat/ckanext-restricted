@@ -7,10 +7,13 @@ ckan.module('restricted_popup', function ($) {
   return {
     initialize: function () {
       console.log("Initialize", this.el);
-      this.el.popover({title: this.options.title,
-                       content: this.options.content,
-		       html: true,
-                       placement: 'left'});
+      this.el.popover({
+        title: this.options.title,
+        content: this.options.content,
+		    html: true,
+        placement: 'left',
+        trigger: 'hover'
+      });
     }
   };
 });

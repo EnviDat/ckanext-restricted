@@ -14,20 +14,19 @@
   {{ super() }}
   {% if can_edit %}
     {% if "restricted" not in res  or pkg["private"] %}
-     {{_('Only accessible by users in your organisation')}}
+      {{_('(Only accessible by users in your organisation)')}}
+    {% else %}
+      {% set restricted = h.restricted_json_loads(res["restricted"]) %}
+      {% if restricted["level"] == "public" %}
+        {{_('(Public)')}}
       {% else %}
-       {% set restricted = h.restricted_json_loads(res["restricted"]) %}
-       {% if restricted["level"] == "public" %}
-        {{_('Accessible by all registered users')}}
-       {% else %}
-
         {% set org_string = "<br />".join(restricted.get("allowed_organisations", "None").split(",") + [pkg.organization.title]) %}
-       {% set usr_string = "<br />".join(restricted.get("allowed_users", "None").split(",")) %}
+        {% set usr_string = "<br />".join(restricted.get("allowed_users", "None").split(",")) %}
 
-      {{_('Accsesible by specified ')}} <a href="#" data-module="restricted_popup" data-module-title="Access granted to organizations" data-module-content="{{org_string}}">organisations</a> and <a href="#" data-module="restricted_popup" data-module-title="Access granted to users" data-module-content="{{usr_string}}">users</a>.
-       {% endif %}
-   {% endif %}
-  {% endif%}
+        {{_('Accsesible by specified ')}} <a href="#" data-module="restricted_popup" data-module-title="Access granted to organizations" data-module-content="{{org_string}}">organisations</a> and <a href="#" data-module="restricted_popup" data-module-title="Access granted to users" data-module-content="{{usr_string}}">users</a>.
+      {% endif %}
+    {% endif %}
+  {% endif %}
   {% else %}
   <span class="restricted-item">
     <a class="heading restricted-item" disabled="true" href="#" title="{{ res.name or res.description }}">{{ h.resource_display_name(res) | truncate(35) }} {{ _('Unauthorized') }} <span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>{{ h.popular('views', res.tracking_summary.total, min=10) }}</a></span>
@@ -52,5 +51,3 @@
   {% endif%}
   {% endif %}
   {% endblock %}
-
-
