@@ -8,7 +8,7 @@ import ckan.tests.factories as factories
 import ckan.logic as logic
 
 
-class TestRestrictedPlugin(object):
+class TestExampleIAuthFunctionsPluginV6ParentAuthFunctions(object):
     '''Tests for the ckanext.example_iauthfunctions.plugin module.
 
     Specifically tests that overriding parent auth functions will cause
@@ -37,24 +37,13 @@ class TestRestrictedPlugin(object):
         # tests that run after ours.
         ckan.plugins.unload('restricted')
 
-    def test_only_registered_users_can_access(self):
-        '''
-        Non registered users should not have access to and resources even if the package is public.
-        '''
-
-        owner = factories.User()
-        owner_org = factories.Organization(
-            users=[{'name': owner['id'], 'capacity': 'admin'}]
-        )
-        dataset = factories.Dataset(owner_org=owner_org['id'], private=False)
-        resource = factories.Resource(package_id=dataset['id'])
-        logic.check_access('package_show', {"user": None}, {'id': dataset['id']})
-        with assert_raises(logic.NotAuthorized):
-            logic.check_access('resource_show', {"user": None},  {'id': resource['id']})
-
     def test_basic_access(self):
-        '''
-        Checking that non owners can not access resources from private packages.
+        '''Normally organization admins can delete resources
+        Our plugin prevents this by blocking delete organization.
+
+        Ensure the delete button is not displayed (as only resource delete
+        is checked for showing this)
+
         '''
 
         owner = factories.User()
@@ -73,8 +62,12 @@ class TestRestrictedPlugin(object):
             logic.check_access('resource_show', {'user': access['name']}, {'id': resource['id']})
 
     def test_public_package_restricted_resource(self):
-        '''
-        Checking that non org users can not access resource from public package without permission
+        '''Normally organization admins can delete resources
+        Our plugin prevents this by blocking delete organization.
+
+        Ensure the delete button is not displayed (as only resource delete
+        is checked for showing this)
+
         '''
 
         owner = factories.User()
@@ -94,8 +87,12 @@ class TestRestrictedPlugin(object):
             logic.check_access('resource_show', {'user': access['name']}, {'id': resource['id']})
 
     def test_public_resource(self):
-        '''
-        Testing that all registered users can access public resources in public packages.
+        '''Normally organization admins can delete resources
+        Our plugin prevents this by blocking delete organization.
+
+        Ensure the delete button is not displayed (as only resource delete
+        is checked for showing this)
+
         '''
 
         owner = factories.User()
@@ -112,8 +109,11 @@ class TestRestrictedPlugin(object):
         assert logic.check_access('resource_show', {'user': access['name']}, {'id': resource['id']})
 
     def test_allow_users(self):
-        '''
-        Testing granting access to individual users.
+        '''Normally organization admins can delete resources
+        Our plugin prevents this by blocking delete organization.
+
+        Ensure the delete button is not displayed (as only resource delete
+        is checked for showing this)
 
         '''
 
@@ -134,8 +134,11 @@ class TestRestrictedPlugin(object):
             logic.check_access('resource_show', {'user': access2['name']}, {'id': resource['id']})
 
     def test_allow_organizations(self):
-        '''
-        Testing granting access to organisations.
+        '''Normally organization admins can delete resources
+        Our plugin prevents this by blocking delete organization.
+
+        Ensure the delete button is not displayed (as only resource delete
+        is checked for showing this)
 
         '''
 
