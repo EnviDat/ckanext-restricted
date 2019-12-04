@@ -1,7 +1,7 @@
 {% import 'macros/form.html' as form %}
 
 <fieldset class="composite-fieldset">
-  
+
 <div class="composite-subfield-group" data-field="restricted" data-group-index="0">
 
 {% resource 'ckanext-restricted/restricted_ui.js' %}
@@ -55,7 +55,7 @@
     id='field-' + org_field_name,
     label=h.scheming_language_text('Allowed Organisations'),
   value=
-  restricted.get("allowed_organisations"),
+  restricted.get("allowed_organizations"),
     error=errors[org_field_name],
     classes=["control-medium"],
     attrs=field.get("form_attrs_orgs", {}),

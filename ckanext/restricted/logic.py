@@ -34,7 +34,7 @@ def restricted_get_username_from_context(context):
 
 
 def restricted_get_restricted_dict(resource_dict):
-    restricted_dict = {'level': 'restricted', 'allowed_users': [], 'allowed_organization': []}
+    restricted_dict = {'level': 'restricted', 'allowed_users': [], 'allowed_organizations': []}
     # the ckan plugins ckanext-scheming and ckanext-composite
     # change the structure of the resource dict and the nature of how
     # to access our restricted field values
@@ -58,6 +58,8 @@ def restricted_get_restricted_dict(resource_dict):
             allowed_organizations = restricted.get('allowed_organizations', '')
             if not isinstance(allowed_users, list):
                 allowed_users = allowed_users.split(',')
+            if not isinstance(allowed_organizations, list):
+                allowed_organizations = allowed_organizations.split(',')
             restricted_dict = {
                 'level': restricted_level,
                 'allowed_users': allowed_users,
@@ -67,7 +69,6 @@ def restricted_get_restricted_dict(resource_dict):
 
 
 def restricted_check_user_resource_access(user, resource_dict, package_dict):
-
     # Check access to package
     logic.check_access('package_show', {'user': user},
                        {'id': package_dict['id']})

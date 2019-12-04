@@ -190,9 +190,16 @@ def _restricted_resource_list_hide_fields(context, resource_list):
                     else:
                         allowed_users.append(user[0:3] + '*****' + user[-2:])
 
+            allowed_orgs = []
+            for org in restricted_dict.get('allowed_organizations', []):
+                if len(org.strip()) > 0:
+                    allowed_orgs.append(org)
+
             new_restricted = json.dumps({
                 'level': restricted_dict.get("level"),
-                'allowed_users': ','.join(allowed_users)})
+                'allowed_users': ','.join(allowed_users),
+                'allowed_organizations': ','.join(allowed_orgs)
+            })
             extras_restricted = resource.get('extras', {}).get('restricted', {})
             if (extras_restricted):
                 restricted_resource['extras']['restricted'] = new_restricted
