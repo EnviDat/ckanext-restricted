@@ -41,7 +41,7 @@
       </p>
       <p>
         {% trans %}
-          New organizations can only be created by system administrators.  If you would like your organization to join the AIDS data exchange, please submit a request via this form and a system administrator will contact you via email with any further queries.
+          New organizations can only be created by system administrators.  If you would like your organization to join the AIDS Data Repository, please submit a request via this form and a system administrator will contact you via email with any further queries.
         {% endtrans %}
       </p>
     </div>
@@ -60,7 +60,7 @@
     {{ form.input('organization_web', label=_('New Organization Website'), placeholder=_('e.g. https://unaids.org'), error=errors.organization_web,
     is_required = true, value=data.organization_web) }}
     {{ form.markdown('organization_description', id='field-organization_description', label=_('Organization Description'), placeholder=_('A brief description of the new organisation (location, purpose, parent organizations, etc...)'), value=data.organization_description, error=errors.organization_description, is_required = true) }}
-    {{ form.markdown('reason', id='field-reason', label=_('Reason for joining'), placeholder=_('A brief explanation of why your organization would like to join the AIDS Data Exchange, and what sort of data the organisation will share through the platform.'), value=data.reason, error=errors.reason, is_required = true) }}
+    {{ form.markdown('reason', id='field-reason', label=_('Reason for joining'), placeholder=_('A brief explanation of why your organization would like to join the AIDS Data Repository, and what sort of data the organisation will share through the platform.'), value=data.reason, error=errors.reason, is_required = true) }}
     {% if g.recaptcha_publickey %}
       {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
       <!-- <div class="g-recaptcha" data-sitekey="{{ g.recaptcha_publickey }}"></div> -->
@@ -70,7 +70,9 @@
     <div class="form-actions">
       {% block disclaimer %}
         <p class="small">
-        By submitting this form you agree to abide by the terms and conditions of use for The AIDS Data Exchange and also confirm that you are duly authorized by the organization in question to administer all of their affairs concerning The AIDS Data Exchange.
+        {% trans %}
+        By submitting this form you agree to abide by the terms and conditions of use for The AIDS Data Repository and also confirm that you are duly authorized by the organization in question to administer all of their affairs concerning The AIDS Data Repository.
+        {% endtrans %}
         </p>
       {% endblock %}
       {% block confirm_button %}
