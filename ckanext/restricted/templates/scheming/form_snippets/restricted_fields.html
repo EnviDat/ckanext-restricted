@@ -3,7 +3,6 @@
 <fieldset class="composite-fieldset">
 
 <div class="composite-subfield-group" data-field="restricted" data-group-index="0">
-
 {% resource 'ckanext-restricted/restricted_ui.js' %}
 {%- set options=[] -%}
 {% set restricted = h.restricted_json_loads(data.get("restricted")) %}
@@ -38,7 +37,7 @@
     user_field_name,
     id='field-' + user_field_name,
     label=h.scheming_language_text('Allowed Users'),
-    value=restricted.get("allowed_users"),
+    value=restricted.get("allowed_users", field.get("default_users")),
     error=errors[user_field_name],
     classes=["control-medium"],
     attrs=field.get("form_attrs_users", {}),
@@ -54,8 +53,7 @@
     org_field_name,
     id='field-' + org_field_name,
     label=h.scheming_language_text('Allowed Organisations'),
-  value=
-  restricted.get("allowed_organizations"),
+    value=restricted.get("allowed_organizations", field.get("default_organizations")),
     error=errors[org_field_name],
     classes=["control-medium"],
     attrs=field.get("form_attrs_orgs", {}),
