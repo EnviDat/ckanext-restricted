@@ -87,7 +87,6 @@ msgid "Request to create new organisation {0}"
 msgstr "Untranslated French"
 
 #: ckanext/restricted/controller.py:327
-#, fuzzy
 msgid ""
 "Please find below a copy of the new organization request sent to the "
 "system administrators. \n"
@@ -99,7 +98,6 @@ msgstr ""
 " >> {}"
 
 #: ckanext/restricted/controller.py:349
-#, fuzzy
 msgid "Request organization form is available to logged in users only."
 msgstr ""
 "Le formulaire de demande d'accès n'est accessible qu'aux utilisateurs "
@@ -110,14 +108,12 @@ msgid "Access granted to resource {}"
 msgstr "Accès autorisée à la ressource {}"
 
 #: ckanext/restricted/templates/organization/index.html:5
-#, fuzzy
 msgid "Add Organization"
 msgstr "Organisations"
 
 #: ckanext/restricted/templates/organization/index.html:7
 #: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:9
 #: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:6
-#, fuzzy
 msgid "Request Organization"
 msgstr "Organisations"
 
@@ -130,19 +126,16 @@ msgid "(Public)"
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/package/snippets/resource_item.html:31
-#, fuzzy
 #| msgid "Accsesible by specified "
 msgid "Accessible by specified "
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/package/snippets/resource_item.html:31
-#, fuzzy
 #| msgid "Access granted to resource {}"
 msgid "Access granted to organizations"
 msgstr "Accès autorisée à la ressource {}"
 
 #: ckanext/restricted/templates/package/snippets/resource_item.html:31
-#, fuzzy
 #| msgid "Organizations"
 msgid "organisations"
 msgstr "Organisations"
@@ -152,13 +145,11 @@ msgid "and"
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/package/snippets/resource_item.html:31
-#, fuzzy
 #| msgid "Access granted to resource {}"
 msgid "Access granted to users"
 msgstr "Accès autorisée à la ressource {}"
 
 #: ckanext/restricted/templates/package/snippets/resource_item.html:31
-#, fuzzy
 #| msgid "User"
 msgid "users"
 msgstr "Utilisateur"
@@ -334,7 +325,6 @@ msgid "Close"
 msgstr "Fermer"
 
 #: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:32
-#, fuzzy
 msgid "What are Organizations?"
 msgstr "Organisations"
 
@@ -358,7 +348,6 @@ msgid "Request a New Organization"
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:58
-#, fuzzy
 msgid "New Organization Name"
 msgstr "Organisations"
 
@@ -367,7 +356,6 @@ msgid "The name of the new organization."
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:60
-#, fuzzy
 msgid "New Organization Website"
 msgstr "Organisations"
 
@@ -376,7 +364,6 @@ msgid "e.g. https://unaids.org"
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:62
-#, fuzzy
 msgid "Organization Description"
 msgstr "Organisations"
 
@@ -406,12 +393,10 @@ msgid ""
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:27
-#, fuzzy
 msgid "Organization Name:"
 msgstr "Organisations"
 
 #: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:28
-#, fuzzy
 msgid "Organization Description:"
 msgstr "Organisations"
 
@@ -538,6 +523,5 @@ msgid "Allowed Users"
 msgstr "Untranslated French"
 
 #: ckanext/restricted/templates/scheming/form_snippets/restricted_fields.html:55
-#, fuzzy
 msgid "Allowed Organisations"
 msgstr "Untranslated French"
