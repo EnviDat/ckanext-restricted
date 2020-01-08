@@ -1,15 +1,15 @@
 # Translations template for ckanext-restricted.
-# Copyright (C) 2018 ORGANIZATION
+# Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the ckanext-restricted
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-restricted 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-08-01 11:22+0200\n"
+"POT-Creation-Date: 2020-01-07 17:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,92 +18,153 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: ckanext/restricted/action.py:49
+#: ckanext/restricted/action.py:50
 msgid "CKAN System Administrator"
 msgstr ""
 
-#: ckanext/restricted/action.py:54
+#: ckanext/restricted/action.py:55
 msgid "New Registration: {0} ({1})"
 msgstr ""
 
-#: ckanext/restricted/action.py:55
+#: ckanext/restricted/action.py:56
 msgid "new user"
 msgstr ""
 
-#: ckanext/restricted/controller.py:45 ckanext/restricted/controller.py:130
+#: ckanext/restricted/controller.py:45 ckanext/restricted/controller.py:129
+#: ckanext/restricted/controller.py:243
 msgid "Not authorized to see this page"
 msgstr ""
 
-#: ckanext/restricted/controller.py:80
+#: ckanext/restricted/controller.py:79
 msgid "Access Request to resource {0} ({1}) from {2}"
 msgstr ""
 
-#: ckanext/restricted/controller.py:106
+#: ckanext/restricted/controller.py:105
 msgid ""
 "Please find below a copy of the access request mail sent. \n"
 "\n"
 " >> {}"
 msgstr ""
 
-#: ckanext/restricted/controller.py:132
+#: ckanext/restricted/controller.py:131 ckanext/restricted/controller.py:245
 msgid "Bad Captcha. Please try again."
 msgstr ""
 
-#: ckanext/restricted/controller.py:144 ckanext/restricted/controller.py:215
+#: ckanext/restricted/controller.py:143 ckanext/restricted/controller.py:214
 msgid "Dataset not found"
 msgstr ""
 
-#: ckanext/restricted/controller.py:146
+#: ckanext/restricted/controller.py:145
 msgid "Exception retrieving dataset to send mail"
 msgstr ""
 
-#: ckanext/restricted/controller.py:153
+#: ckanext/restricted/controller.py:152 ckanext/restricted/controller.py:264
 msgid "Missing Value"
 msgstr ""
 
-#: ckanext/restricted/controller.py:177
+#: ckanext/restricted/controller.py:176
 msgid "Access request form is available to logged in users only."
 msgstr ""
 
-#: ckanext/restricted/controller.py:218
+#: ckanext/restricted/controller.py:217
 msgid "Exception retrieving dataset for the form ({})"
 msgstr ""
 
-#: ckanext/restricted/controller.py:220
+#: ckanext/restricted/controller.py:219
 msgid "Unknown exception retrieving dataset for the form"
 msgstr ""
 
-#: ckanext/restricted/logic.py:140
+#: ckanext/restricted/controller.py:303
+msgid "Request to create new organisation {0}"
+msgstr ""
+
+#: ckanext/restricted/controller.py:327
+msgid ""
+"Please find below a copy of the new organization request sent to the system "
+"administrators. \n"
+"\n"
+" >> {}"
+msgstr ""
+
+#: ckanext/restricted/controller.py:349
+msgid "Request organization form is available to logged in users only."
+msgstr ""
+
+#: ckanext/restricted/logic.py:129
 msgid "Access granted to resource {}"
 msgstr ""
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:14
+#: ckanext/restricted/templates/organization/index.html:5
+msgid "Add Organization"
+msgstr ""
+
+#: ckanext/restricted/templates/organization/index.html:7
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:9
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:6
+msgid "Request Organization"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:22
+msgid "(Only accessible by users in your organisation)"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:26
+msgid "(Public)"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:31
+msgid "Accessible by specified "
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:31
+msgid "Access granted to organizations"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:31
+msgid "organisations"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:31
+msgid "and"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:31
+msgid "Access granted to users"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:31
+msgid "users"
+msgstr ""
+
+#: ckanext/restricted/templates/package/snippets/resource_item.html:37
 msgid "Unauthorized"
 msgstr ""
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:24
+#: ckanext/restricted/templates/package/snippets/resource_item.html:47
 #: ckanext/restricted/templates/restricted/restricted_request_access_base.html:3
 #: ckanext/restricted/templates/restricted/restricted_request_access_base.html:15
 msgid "Request Access"
 msgstr ""
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:30
+#: ckanext/restricted/templates/package/snippets/resource_item.html:53
 msgid "Log in"
 msgstr ""
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:30
+#: ckanext/restricted/templates/package/snippets/resource_item.html:53
 msgid "or"
 msgstr ""
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:30
+#: ckanext/restricted/templates/package/snippets/resource_item.html:53
 msgid "Register"
 msgstr ""
 
-#: ckanext/restricted/templates/package/snippets/resource_item.html:30
+#: ckanext/restricted/templates/package/snippets/resource_item.html:53
 msgid "to access resource"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_base.html:9
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:7
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:4
 msgid "Organizations"
 msgstr ""
 
@@ -128,10 +189,12 @@ msgid "Request Access to: "
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:29
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:56
 msgid "User"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:30
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:57
 msgid "User Mail"
 msgstr ""
 
@@ -164,37 +227,45 @@ msgid ""
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:51
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:79
 msgid "Send Request"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_form.html:54
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:82
 msgid "Cancel"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:4
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:14
 msgid "Request Access Form Sent"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:8
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:18
 msgid "Your request has been sent, please check your provided mail account."
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:10
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:20
 msgid ""
 "WARNING: There were problems sending your request, please contact the "
 "administrator providing the information below."
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:13
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:23
 msgid "Access Request Data"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:6
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:15
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:25
 msgid "User:"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:16
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:26
 msgid "User Mail:"
 msgstr ""
 
@@ -218,7 +289,88 @@ msgid "Message:"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/restricted_request_access_result.html:28
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:37
 msgid "Close"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:32
+msgid "What are Organizations?"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:36
+msgid ""
+" CKAN Organizations are used to create, manage and publish collections of "
+"datasets. Users can have different roles within an Organization, depending on"
+" their level of authorisation to create, edit and publish. "
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:43
+msgid ""
+" New organizations can only be created by system administrators. If you would"
+" like your organization to join the AIDS Data Repository, please submit a "
+"request via this form and a system administrator will contact you via email "
+"with any further queries. "
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:52
+msgid "Request a New Organization"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:58
+msgid "New Organization Name"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:58
+msgid "The name of the new organization."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:60
+msgid "New Organization Website"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:60
+msgid "e.g. https://unaids.org"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:62
+msgid "Organization Description"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:62
+msgid ""
+"A brief description of the new organisation (location, purpose, parent "
+"organizations, etc...)"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:63
+msgid "Reason for joining"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:63
+msgid ""
+"A brief explanation of why your organization would like to join the AIDS Data"
+" Repository, and what sort of data the organisation will share through the "
+"platform."
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_form.html:73
+msgid ""
+" By submitting this form you agree to abide by the terms and conditions of "
+"use for The AIDS Data Repository and also confirm that you are duly "
+"authorized by the organization in question to administer all of their affairs"
+" concerning The AIDS Data Repository. "
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:27
+msgid "Organization Name:"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:28
+msgid "Organization Description:"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/restricted_request_organization_result.html:29
+msgid "Reason for joining:"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:1
@@ -247,6 +399,7 @@ msgid ""
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:11
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:9
 #, python-format
 msgid ""
 "If you have any questions about how to proceed with this request, please "
@@ -254,12 +407,14 @@ msgid ""
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:13
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:11
 #: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:8
 #: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:6
 msgid "Best regards,"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:14
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:12
 #: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:9
 #: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:7
 #, python-format
@@ -267,16 +422,37 @@ msgid "%(site_title)s Administrator"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:17
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:15
 #: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:12
 #: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:10
 msgid "This is an automatically generated e-mail, please do not reply to it."
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_access_request.txt:19
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:16
 #: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:14
 #: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:12
 #, python-format
 msgid "Message sent from %(site_title)s (%(site_url)s)"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:1
+#, python-format
+msgid ""
+"%(user_name)s (%(user_email)s) has requested that you create a new "
+"organization for %(site_title)s:"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:3
+msgid "Name:"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:5
+msgid "Description:"
+msgstr ""
+
+#: ckanext/restricted/templates/restricted/emails/restricted_organization_request.txt:7
+msgid "Reason:"
 msgstr ""
 
 #: ckanext/restricted/templates/restricted/emails/restricted_user_allowed.txt:3
@@ -298,3 +474,16 @@ msgstr ""
 #: ckanext/restricted/templates/restricted/emails/restricted_user_registered.txt:3
 msgid "A new user registered, please review the information:"
 msgstr ""
+
+#: ckanext/restricted/templates/scheming/form_snippets/restricted_fields.html:22
+msgid "Level"
+msgstr ""
+
+#: ckanext/restricted/templates/scheming/form_snippets/restricted_fields.html:39
+msgid "Allowed Users"
+msgstr ""
+
+#: ckanext/restricted/templates/scheming/form_snippets/restricted_fields.html:55
+msgid "Allowed Organisations"
+msgstr ""
+
