@@ -19,7 +19,7 @@
 {% call form.select(
     'restricted_level',
     id='field-level',
-    label=h.scheming_language_text('Level'),
+    label=_('Level'),
     selected=restricted.get('level'),
     error=errors['level'],
     options=options,
@@ -36,7 +36,7 @@
 {% call form.input(
     user_field_name,
     id='field-' + user_field_name,
-    label=h.scheming_language_text('Allowed Users'),
+    label=_('Allowed Users'),
     value=restricted.get("allowed_users", field.get("default_users")),
     error=errors[user_field_name],
     classes=["control-medium"],
@@ -52,7 +52,7 @@
 {% call form.input(
     org_field_name,
     id='field-' + org_field_name,
-    label=h.scheming_language_text('Allowed Organisations'),
+    label=_('Allowed Organisations'),
     value=restricted.get("allowed_organizations", field.get("default_organizations")),
     error=errors[org_field_name],
     classes=["control-medium"],

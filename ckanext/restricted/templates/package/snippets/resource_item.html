@@ -28,7 +28,7 @@
         {% set org_string = "<br />".join(restricted.get("allowed_organizations", "None").split(",") + [pkg.organization.title]) %}
         {% set usr_string = "<br />".join(restricted.get("allowed_users", "None").split(",")) %}
 
-        {{_('Accsesible by specified ')}} <a href="#" data-module="restricted_popup" data-module-title="Access granted to organizations" data-module-content="{{org_string}}">organisations</a> and <a href="#" data-module="restricted_popup" data-module-title="Access granted to users" data-module-content="{{usr_string}}">users</a>.
+        {{_("Accessible by specified <a href='#' data-module='restricted_popup' data-module-title='Access granted to organizations' data-module-content='{}'>organisations</a> and <a href='#' data-module='restricted_popup' data-module-title='Access granted to users' data-module-content='{}'>users</a>.").format(org_string, usr_string)|safe}}
       {% endif %}
     {% endif %}
   {% endif %}
