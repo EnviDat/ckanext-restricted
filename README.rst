@@ -77,10 +77,12 @@ Requirements
 
 This extension has been oruginally developed for CKAN version 2.5.2 and is compatible up to 2.8.x.
 
-Recommends the following extensions (otherwise the configuration is more complicated):
+Requires the following extensions:
 * ckanext-scheming
 * ckanext-repeating
 * ckanext-composite
+
+YOu can find an alternative without scheming here https://github.com/olivierdalang/ckanext-restricted/commit/89693f5e4a2a4dedf2cada289d1bf46bd7991069 
 
 The resource access restriction level can be individualy defined for every package. This requires adding an extra field to package metadata with (some of) the possible values: "public",  "registered", "any_organization",  "same_organization" (as the package).
 
