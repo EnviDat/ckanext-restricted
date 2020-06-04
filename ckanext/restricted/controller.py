@@ -1,35 +1,28 @@
 # coding: utf8
 
 from __future__ import unicode_literals
-from ckan.common import _
-from ckan.common import request
-import ckan.lib.base as base
-from ckan.lib.base import render_jinja2
-import ckan.lib.captcha as captcha
-import ckan.lib.helpers as h
-import ckan.lib.mailer as mailer
-import ckan.lib.navl.dictization_functions as dictization_functions
-import ckan.logic as logic
-import ckan.model as model
-import ckan.plugins.toolkit as toolkit
 
-try:
-    # CKAN 2.7 and later
-    from ckan.common import config
-except ImportError:
-    # CKAN 2.6 and earlier
-    from pylons import config
+from ckan import logic, model
+from ckan.common import (
+    _,
+    config,
+    request,
+)
+from ckan.lib import (
+    base,
+    captcha,
+    helpers as h,
+    mailer,
+)
+from ckan.lib.navl.dictization_functions import unflatten
+from ckan.plugins import toolkit
+
+from logging import getLogger
 
 import simplejson as json
 
-from logging import getLogger
+
 log = getLogger(__name__)
-
-
-DataError = dictization_functions.DataError
-unflatten = dictization_functions.unflatten
-
-render = base.render
 
 
 class RestrictedController(toolkit.BaseController):
@@ -74,7 +67,7 @@ class RestrictedController(toolkit.BaseController):
                 'message': data.get('message', ''),
                 'admin_email_to': config.get('email_to', 'email_to_undefined')}
 
-            body = render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
+            body = base.render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
             subject = \
                 _('Access Request to resource {0} ({1}) from {2}').format(
                     data.get('resource_name', ''),
@@ -99,7 +92,7 @@ class RestrictedController(toolkit.BaseController):
 
             extra_vars['resource_link'] = '[...]'
             extra_vars['resource_edit_link'] = '[...]'
-            body = render_jinja2(
+            body = base.render_jinja2(
                 'restricted/emails/restricted_access_request.txt', extra_vars)
 
             body_user = _(
@@ -163,7 +156,7 @@ class RestrictedController(toolkit.BaseController):
 
         success = self._send_request_mail(data_dict)
 
-        return render(
+        return base.render(
             'restricted/restricted_request_access_result.html',
             extra_vars={'data': data_dict, 'pkg_dict': pkg, 'success': success})
 
@@ -227,7 +220,7 @@ class RestrictedController(toolkit.BaseController):
         extra_vars = {
             'pkg_dict': pkg, 'data': data,
             'errors': errors, 'error_summary': error_summary}
-        return render(
+        return base.render(
             'restricted/restricted_request_access_form.html',
             extra_vars=extra_vars)
 

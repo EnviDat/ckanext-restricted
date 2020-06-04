@@ -1,20 +1,21 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+
 from ckan.lib.plugins import DefaultTranslation
-import ckan.logic
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-from ckanext.restricted import action
-from ckanext.restricted import auth
-from ckanext.restricted import helpers
-from ckanext.restricted import logic
+
+from ckanext.restricted import (
+    action,
+    helpers,
+    logic,
+)
 
 from logging import getLogger
+
+
 log = getLogger(__name__)
-
-
-_get_or_bust = ckan.logic.get_or_bust
 
 
 class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
@@ -22,7 +23,6 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
-    plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
 
@@ -34,21 +34,14 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
     # IActions
     def get_actions(self):
-        return {'user_create': action.restricted_user_create_and_notify,
-                'resource_view_list': action.restricted_resource_view_list,
-                'package_show': action.restricted_package_show,
-                'resource_search': action.restricted_resource_search,
-                'package_search': action.restricted_package_search,
-                'restricted_check_access': action.restricted_check_access }
+        return {
+            'resource_search': action.restricted_resource_search,
+            'restricted_check_access': action.restricted_check_access
+        }
 
     # ITemplateHelpers
     def get_helpers(self):
         return {'restricted_get_user_id': helpers.restricted_get_user_id}
-
-    # IAuthFunctions
-    def get_auth_functions(self):
-        return {'resource_show': auth.restricted_resource_show,
-                'resource_view_show': auth.restricted_resource_show}
 
     # IRoutes
     def before_map(self, map_):

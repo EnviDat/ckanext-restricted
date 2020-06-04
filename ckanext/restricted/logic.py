@@ -1,23 +1,17 @@
 # coding: utf8
 
 from __future__ import unicode_literals
-import ckan.authz as authz
-from ckan.common import _
 
+from ckan import authz, logic
+from ckan.common import _, config
+from ckan.lib import mailer
 from ckan.lib.base import render_jinja2
-import ckan.lib.mailer as mailer
-import ckan.logic as logic
-import ckan.plugins.toolkit as toolkit
-import json
-
-try:
-    # CKAN 2.7 and later
-    from ckan.common import config
-except ImportError:
-    # CKAN 2.6 and earlier
-    from pylons import config
+from ckan.plugins import toolkit
 
 from logging import getLogger
+
+import json
+
 
 log = getLogger(__name__)
 
@@ -125,6 +119,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         'msg': ('Resource access restricted to same '
                 'organization ({}) members').format(pkg_organization_id)}
 
+
 def restricted_mail_allowed_user(user_id, resource):
     log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
     try:
@@ -170,6 +165,7 @@ def restricted_allowed_user_mail_body(user, resource):
 
     return render_jinja2(
         'restricted/emails/restricted_user_allowed.txt', extra_vars)
+
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
 
