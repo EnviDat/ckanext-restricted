@@ -2,9 +2,9 @@
 
 from __future__ import unicode_literals
 
+from ckan import plugins
 from ckan.lib.plugins import DefaultTranslation
-import ckan.plugins as plugins
-import ckan.plugins.toolkit as toolkit
+from ckan.plugins import toolkit
 
 from ckanext.restricted import (
     action,
@@ -36,12 +36,15 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def get_actions(self):
         return {
             'resource_search': action.restricted_resource_search,
-            'restricted_check_access': action.restricted_check_access
+            'restricted_check_access': action.restricted_check_access,
         }
 
     # ITemplateHelpers
     def get_helpers(self):
-        return {'restricted_get_user_id': helpers.restricted_get_user_id}
+        return {
+            'restricted_get_user_id': helpers.restricted_get_user_id,
+            'get_admin_emails': helpers.get_admin_emails,
+        }
 
     # IRoutes
     def before_map(self, map_):

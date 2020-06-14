@@ -17,9 +17,9 @@ from ckan.lib import (
 from ckan.lib.navl.dictization_functions import unflatten
 from ckan.plugins import toolkit
 
-from logging import getLogger
+from ckanext.restricted import helpers
 
-import simplejson as json
+from logging import getLogger
 
 
 log = getLogger(__name__)
@@ -65,7 +65,8 @@ class RestrictedController(toolkit.BaseController):
                 'resource_edit_link': config.get('ckan.site_url') + resource_edit_link,
                 'package_name': data.get('resource_name', ''),
                 'message': data.get('message', ''),
-                'admin_email_to': config.get('email_to', 'email_to_undefined')}
+                'admin_email_to': data.get('maintainer_email', 'Admin')
+            }
 
             body = base.render_jinja2('restricted/emails/restricted_access_request.txt', extra_vars)
             subject = \
@@ -225,34 +226,6 @@ class RestrictedController(toolkit.BaseController):
             extra_vars=extra_vars)
 
     def _get_contact_details(self, pkg_dict):
-        contact_email = ""
-        contact_name = ""
-        # Maintainer as Composite field
-        try:
-            contact_email = json.loads(
-                pkg_dict.get('maintainer', '{}')).get('email', '')
-            contact_name = json.loads(
-                pkg_dict.get('maintainer', '{}')).get('name', 'Dataset Maintainer')
-        except Exception:
-            pass
-        # Maintainer Directly defined
-        if not contact_email:
-            contact_email = pkg_dict.get('maintainer_email', '')
-            contact_name = pkg_dict.get('maintainer', 'Dataset Maintainer')
-        # 1st Author Directly defined
-        if not contact_email:
-            contact_email = pkg_dict.get('author_email', '')
-            contact_name = pkg_dict.get('author', '')
-        # First Author from Composite Repeating
-        if not contact_email:
-            try:
-                author = json.loads(pkg_dict.get('author'))[0]
-                contact_email = author.get('email', '')
-                contact_name = author.get('name', 'Dataset Maintainer')
-            except Exception:
-                pass
-        # CKAN instance Admin
-        if not contact_email:
-            contact_email = config.get('email_to', 'email_to_undefined')
-            contact_name = 'CKAN Admin'
+        contact_email = helpers.get_admin_emails(package_id=pkg_dict.get('id'))
+        contact_name = 'CKAN Admin'
         return {'contact_email': contact_email, 'contact_name': contact_name}
