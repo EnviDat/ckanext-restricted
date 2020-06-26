@@ -202,8 +202,7 @@ class RestrictedController(toolkit.BaseController):
                         break
                 else:
                     toolkit.abort(404, 'Dataset resource not found')
-                # get mail
-                contact_details = self._get_contact_details(pkg)
+
             except toolkit.ObjectNotFound:
                 toolkit.abort(404, _('Dataset not found'))
             except Exception as e:
@@ -213,10 +212,14 @@ class RestrictedController(toolkit.BaseController):
                 toolkit.abort(404, _('Unknown exception retrieving dataset for the form'))
 
             data['resource_name'] = resource_name
-            data['maintainer_email'] = contact_details.get('contact_email', '')
-            data['maintainer_name'] = contact_details.get('contact_name', '')
+
         else:
             pkg = data.get('pkg_dict', {})
+
+        # get mail
+        contact_details = self._get_contact_details(pkg)
+        data['maintainer_email'] = contact_details.get('contact_email', '')
+        data['maintainer_name'] = contact_details.get('contact_name', '')
 
         extra_vars = {
             'pkg_dict': pkg, 'data': data,
