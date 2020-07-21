@@ -8,6 +8,7 @@ from ckan.lib.base import render_jinja2
 from ckan.lib.mailer import mail_recipient
 from ckan.lib.mailer import MailerException
 import ckan.logic
+import ckan.plugins as p
 from ckan.logic.action.create import user_create
 from ckan.logic.action.get import package_search
 from ckan.logic.action.get import package_show
@@ -111,22 +112,31 @@ def restricted_package_show(context, data_dict):
     return (restricted_package_metadata)
 
 
+def _restricted_resource_list_accessible_by_user(context, resource_list):
+    restricted_resources_list = []
+    user_name = logic.restricted_get_username_from_context(context)
+    for resource in resource_list:
+        resource_dict = dict(resource)
+        package_dict = dict(id=resource_dict['package_id'])
+        if logic.restricted_check_user_resource_access(user_name, resource_dict, package_dict).get('success', False):
+            restricted_resources_list.append(resource_dict)
+
+    return restricted_resources_list
+
+
 @side_effect_free
 def restricted_resource_search(context, data_dict):
+    only_available = p.toolkit.asbool(data_dict.get('only_available', False))
+
     resource_search_result = resource_search(context, data_dict)
+    results = resource_search_result['results']
+    if only_available:
+        results = _restricted_resource_list_accessible_by_user(context, results)
+    results = _restricted_resource_list_hide_fields(context, results)
+    count = len(results)
 
-    restricted_resource_search_result = {}
-
-    for key, value in resource_search_result.items():
-        if key == 'results':
-            # restricted_resource_search_result[key] = \
-            #     _restricted_resource_list_url(context, value)
-            restricted_resource_search_result[key] = \
-                _restricted_resource_list_hide_fields(context, value)
-        else:
-            restricted_resource_search_result[key] = value
-
-    return restricted_resource_search_result
+    resource_search_result.update({'count': count, 'results': results})
+    return resource_search_result
 
 
 @side_effect_free
