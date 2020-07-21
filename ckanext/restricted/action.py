@@ -90,6 +90,7 @@ def restricted_resource_view_list(context, data_dict):
 
 @side_effect_free
 def restricted_package_show(context, data_dict):
+    only_available = p.toolkit.asbool(data_dict.get('only_available', False))
 
     package_metadata = package_show(context, data_dict)
 
@@ -106,8 +107,12 @@ def restricted_package_show(context, data_dict):
 
     # restricted_package_metadata['resources'] = _restricted_resource_list_url(
     #     context, restricted_package_metadata.get('resources', []))
-    restricted_package_metadata['resources'] = _restricted_resource_list_hide_fields(
-        context, restricted_package_metadata.get('resources', []))
+    resources = restricted_package_metadata.get('resources', [])
+    if only_available:
+        resources = _restricted_resource_list_accessible_by_user(context, resources)
+        restricted_package_metadata['num_resources'] = len(resources)
+    resources = _restricted_resource_list_hide_fields(context, resources)
+    restricted_package_metadata['resources'] = resources
 
     return (restricted_package_metadata)
 
@@ -141,6 +146,7 @@ def restricted_resource_search(context, data_dict):
 
 @side_effect_free
 def restricted_package_search(context, data_dict):
+    only_available = p.toolkit.asbool(data_dict.pop('only_available', False))
     package_search_result = package_search(context, data_dict)
 
     restricted_package_search_result = {}
@@ -150,7 +156,7 @@ def restricted_package_search(context, data_dict):
             restricted_package_search_result_list = []
             for package in value:
                 restricted_package_search_result_list.append(
-                    restricted_package_show(context, {'id': package.get('id')}))
+                    restricted_package_show(context, {'id': package.get('id'), 'only_available': only_available}))
             restricted_package_search_result[key] = \
                 restricted_package_search_result_list
         else:
