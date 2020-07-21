@@ -35,7 +35,8 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
                 'resource_view_list': action.restricted_resource_view_list,
                 'package_show': action.restricted_package_show,
                 'resource_search': action.restricted_resource_search,
-                'package_search': action.restricted_package_search}
+                'package_search': action.restricted_package_search,
+                'restricted_check_access': action.restricted_check_access }
 
     # ITemplateHelpers
     def get_helpers(self):
