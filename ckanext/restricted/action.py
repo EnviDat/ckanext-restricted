@@ -146,6 +146,7 @@ def restricted_resource_search(context, data_dict):
 
 @side_effect_free
 def restricted_package_search(context, data_dict):
+    # pop the param as ckan package search action doesn't support any extra parameters
     hide_inaccessible_resources = p.toolkit.asbool(data_dict.pop('hide_inaccessible_resources', False))
     package_search_result = package_search(context, data_dict)
 
