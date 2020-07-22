@@ -90,7 +90,7 @@ def restricted_resource_view_list(context, data_dict):
 
 @side_effect_free
 def restricted_package_show(context, data_dict):
-    only_available = p.toolkit.asbool(data_dict.get('only_available', False))
+    hide_inaccessible_resources = p.toolkit.asbool(data_dict.get('hide_inaccessible_resources', False))
 
     package_metadata = package_show(context, data_dict)
 
@@ -108,7 +108,7 @@ def restricted_package_show(context, data_dict):
     # restricted_package_metadata['resources'] = _restricted_resource_list_url(
     #     context, restricted_package_metadata.get('resources', []))
     resources = restricted_package_metadata.get('resources', [])
-    if only_available:
+    if hide_inaccessible_resources:
         resources = _restricted_resource_list_accessible_by_user(context, resources)
         restricted_package_metadata['num_resources'] = len(resources)
     resources = _restricted_resource_list_hide_fields(context, resources)
@@ -131,11 +131,11 @@ def _restricted_resource_list_accessible_by_user(context, resource_list):
 
 @side_effect_free
 def restricted_resource_search(context, data_dict):
-    only_available = p.toolkit.asbool(data_dict.get('only_available', False))
+    hide_inaccessible_resources = p.toolkit.asbool(data_dict.get('hide_inaccessible_resources', False))
 
     resource_search_result = resource_search(context, data_dict)
     results = resource_search_result['results']
-    if only_available:
+    if hide_inaccessible_resources:
         results = _restricted_resource_list_accessible_by_user(context, results)
     results = _restricted_resource_list_hide_fields(context, results)
     count = len(results)
@@ -146,7 +146,7 @@ def restricted_resource_search(context, data_dict):
 
 @side_effect_free
 def restricted_package_search(context, data_dict):
-    only_available = p.toolkit.asbool(data_dict.pop('only_available', False))
+    hide_inaccessible_resources = p.toolkit.asbool(data_dict.pop('hide_inaccessible_resources', False))
     package_search_result = package_search(context, data_dict)
 
     restricted_package_search_result = {}
@@ -156,7 +156,7 @@ def restricted_package_search(context, data_dict):
             restricted_package_search_result_list = []
             for package in value:
                 restricted_package_search_result_list.append(
-                    restricted_package_show(context, {'id': package.get('id'), 'only_available': only_available}))
+                    restricted_package_show(context, {'id': package.get('id'), 'hide_inaccessible_resources': hide_inaccessible_resources}))
             restricted_package_search_result[key] = \
                 restricted_package_search_result_list
         else:
