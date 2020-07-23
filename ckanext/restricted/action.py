@@ -148,6 +148,7 @@ def restricted_package_search(context, data_dict):
 
     return restricted_package_search_result
 
+
 @side_effect_free
 def restricted_check_access(context, data_dict):
 
