@@ -9,35 +9,14 @@ import ckan.logic as logic
 
 
 
-class TestRestrictedPlugin(object):
+class TestRestrictedPlugin(helpers.FunctionalTestBase):
     '''Tests for the ckanext.example_iauthfunctions.plugin module.
 
     Specifically tests that overriding parent auth functions will cause
     child auth functions to use the overridden version.
     '''
 
-    @classmethod
-    def setup_class(cls):
-        '''Nose runs this method once to setup our test class.'''
-        # Test code should use CKAN's plugins.load() function to load plugins
-        # to be tested.
-        ckan.plugins.load('restricted')
-
-    def teardown(self):
-        '''Nose runs this method after each test method in our test class.'''
-        # Rebuild CKAN's database after each test method, so that each test
-        # method runs with a clean slate.
-        model.repo.rebuild_db()
-
-    @classmethod
-    def teardown_class(cls):
-        '''Nose runs this method once after all the test methods in our class
-        have been run.
-
-        '''
-        # We have to unload the plugin we loaded, so it doesn't affect any
-        # tests that run after ours.
-        ckan.plugins.unload('restricted')
+    _load_plugins = ['restricted']
 
     def test_basic_access(self):
         '''Normally organization admins can delete resources
