@@ -2,16 +2,12 @@
 # encoding: utf-8
 from ckan.tests import helpers
 from nose.tools import assert_raises
-import ckan.model as model
-import ckan.plugins
 import ckan.tests.factories as factories
 import ckan.logic as logic
 
 
-
 class TestRestrictedPlugin(helpers.FunctionalTestBase):
     '''Tests for the ckanext.example_iauthfunctions.plugin module.
-
     Specifically tests that overriding parent auth functions will cause
     child auth functions to use the overridden version.
     '''

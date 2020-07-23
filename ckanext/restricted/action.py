@@ -157,7 +157,9 @@ def restricted_package_search(context, data_dict):
             restricted_package_search_result_list = []
             for package in value:
                 restricted_package_search_result_list.append(
-                    restricted_package_show(context, {'id': package.get('id'), 'hide_inaccessible_resources': hide_inaccessible_resources}))
+                    restricted_package_show(
+                        context, {'id': package.get('id'), 'hide_inaccessible_resources': hide_inaccessible_resources})
+                )
             restricted_package_search_result[key] = \
                 restricted_package_search_result_list
         else:
