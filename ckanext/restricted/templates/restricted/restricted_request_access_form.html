@@ -23,14 +23,27 @@
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
   {% block basic_fields %}
     <input id='field-package_name' name='package_name' type="hidden" value="{{ data.package_name }}" />
-    <input id='field-resource_name' name='resource_name' type="hidden" value="{{ data.resource_name }}" />
     <input id='field-maintainer_name' name='maintainer_name' type="hidden" value="{{ data.maintainer_name }}" />
+    <input id='field-resource_id' name='resource_id' type="hidden" value="{{ data.resource_id }}" />
     <input id='field-user_id' name='user_id' type="hidden" value="{{ data.user_id }}" />
     {{ restricted_input_disabled('user_name', id='field-user_name', label=_('User'), value=data.user_name, error=errors.user_name, classes=['control-full'] ) }}
     {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-full'] ) }}
     {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-full']) }}
-    {{ restricted_input_disabled('resource_id', id='field-resource_id', label=_('Resource'), value=data.resource_id, error=errors.resource_id, classes=['control-full']) }}
-    {{ form.select('maintainer_email', id='field-maintainer_email', label=_('Contact Email'), options=data.maintainer_email, selected=data.maintainer_email[0], error=errors.message, is_required=true)}}
+
+    {{ restricted_input_disabled('resource_name', id='field-resource_name', label=_('Resource'), value=data.resource_name, error=errors.resource_id, classes=['control-full']) }}
+
+    {{
+      form.select(
+        'maintainer_email',
+        id='field-maintainer_email',
+        label=_('Contact Email'),
+        options=data.maintainer_email,
+        selected=data.maintainer_email[0],
+        error=errors.maintainer_email,
+        is_required=true
+      )
+    }}
+
     {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc.)'), value='', error=errors.message, is_required = true) }}
     {% if g.recaptcha_publickey %}
       {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
