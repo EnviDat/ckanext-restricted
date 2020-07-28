@@ -4,6 +4,7 @@ python:
 - 2.7
 env:
 - CKANVERSION=2.8.2
+- CKANVERSION=2.8.5
 services:
 - postgresql
 - redis-server
@@ -15,6 +16,7 @@ after_success:
 - coveralls
 notifications:
   slack:
+    if: branch IN (master, development)
     on_success: change
     on_failure: always
     on_pull_requests: false
