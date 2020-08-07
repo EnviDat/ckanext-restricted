@@ -122,7 +122,7 @@ def _restricted_resource_list_accessible_by_user(context, resource_list):
     user_name = logic.restricted_get_username_from_context(context)
     for resource in resource_list:
         resource_dict = dict(resource)
-        package_dict = dict(id=resource_dict['package_id'])
+        package_dict = package_show(context, {'id': resource_dict['package_id']})
         if logic.restricted_check_user_resource_access(user_name, resource_dict, package_dict).get('success', False):
             restricted_resources_list.append(resource_dict)
 
