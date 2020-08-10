@@ -274,7 +274,7 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
         assert len(package['resources']) == 1
         assert package['resources'][0]['id'] == other_resource['id']
 
-    def test_org_member_see_resources_package_search(self):
+    def test_org_member_see_only_accessible_resources_in_package_search(self):
         """
         A bug was flagged where the hide_inaccessible_resources param in
         the package_search action was causing resources only to be visible to
@@ -292,7 +292,6 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
         dataset = factories.Dataset(owner_org=org['id'], private=False)
         resource = factories.Resource(
             package_id=dataset['id'],
-            name="resource",
             restricted=restricted
         )
         context = {
