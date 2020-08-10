@@ -273,3 +273,38 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
         assert package['num_resources'] == 1
         assert len(package['resources']) == 1
         assert package['resources'][0]['id'] == other_resource['id']
+
+    def test_org_member_see_only_accessible_resources_in_package_search(self):
+        """
+        A bug was flagged where the hide_inaccessible_resources param in
+        the package_search action was causing resources only to be visible to
+        organisation "editors" and "admins" .  Organisation "members" with read
+        but not write privileges could not see the resources in a
+        package_search action.  This test checks that org members can see their
+        resources in a package_search action with
+        hide_inaccessible_resources=True.
+        """
+        user = factories.User()
+        org = factories.Organization(
+            users=[{'name': user['id'], 'capacity': 'member'}]
+        )
+        restricted = '{{"level": "restricted", "allowed_organisations":[], "allowed_users":[]}}'
+        dataset = factories.Dataset(owner_org=org['id'], private=False)
+        resource = factories.Resource(
+            package_id=dataset['id'],
+            restricted=restricted
+        )
+        context = {
+            'ignore_auth': False,
+            'user': user['name']
+        }
+        package_search = helpers.call_action(
+            'package_search',
+            context,
+            q=dataset['title'],
+            hide_inaccessible_resources=True
+        )
+        package = package_search['results'][0]
+        assert package['num_resources'] == 1
+        assert len(package['resources']) == 1
+        assert package['resources'][0]['id'] == resource['id']
