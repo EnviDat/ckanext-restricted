@@ -9,6 +9,7 @@ from ckanext.restricted import action
 from ckanext.restricted import auth
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
+import ckanext.restricted.blueprints as blueprints
 
 from logging import getLogger
 log = getLogger(__name__)
@@ -23,7 +24,8 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IAuthFunctions)
-    plugins.implements(plugins.IRoutes, inherit=True)
+    # plugins.implements(plugins.IRoutes, inherit=True)
+    plugins.implements(plugins.IBlueprint, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
 
     # IConfigurer
@@ -51,13 +53,13 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
                 'resource_view_show': auth.restricted_resource_show}
 
     # IRoutes
-    def before_map(self, map_):
-        map_.connect(
-            'restricted_request_access',
-            '/dataset/{package_id}/restricted_request_access/{resource_id}',
-            controller='ckanext.restricted.controller:RestrictedController',
-            action='restricted_request_access_form')
-        return map_
+    # def before_map(self, map_):
+    #     map_.connect(
+    #         'restricted_request_access',
+    #         '/dataset/{package_id}/restricted_request_access/{resource_id}',
+    #         controller='ckanext.restricted.controller:RestrictedController',
+    #         action='restricted_request_access_form')
+    #     return map_
 
     # IResourceController
     def before_update(self, context, current, resource):
@@ -67,3 +69,6 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
         previous_value = context.get('__restricted_previous_value')
         logic.restricted_notify_allowed_users(previous_value, resource)
 
+    # IBlueprint
+    def get_blueprint(self):
+        return blueprints.get_blueprints(self.name, self.__module__)

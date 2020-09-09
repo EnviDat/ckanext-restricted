@@ -1,7 +1,7 @@
 {% extends "restricted/restricted_request_access_base.html" %}
 
 {% import 'macros/form.html' as form %}
-{% set action = c.form_action or '' %}
+{% set action = h.url_for('restricted.restricted_request_access', package_id=data.package_name, resource_id=data.resource_id) %}
 {% set license_title = pkg_dict.get('license_title', 'dataset license') %}
 {% set license_url = pkg_dict.get('license_url', '#') %}
 
@@ -48,10 +48,10 @@
         </p>
       {% endblock %}
       {% block confirm_button %}
-        <button class="btn btn-primary" type="submit" name="save"><i class="fa fa-icon fa-envelope-o"></i> {{ _('Send Request') }}</button>
+        <button class="btn btn-primary" type="submit" name="save" value="save"><i class="fa fa-icon fa-envelope-o"></i> {{ _('Send Request') }}</button>
       {% endblock %}
       {% block cancel_button %}
-        <a class="btn btn-danger" href="{% url_for controller='package', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>
+        <a class="btn btn-danger" href="{% url_for controller='dataset', action='read', id=data.package_id %}" data-module="cancel-action" >{{ _('Cancel') }}</a>
       {% endblock %}
     </div>
   {% endblock %}

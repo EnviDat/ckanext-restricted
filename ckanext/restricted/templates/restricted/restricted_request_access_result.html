@@ -24,8 +24,9 @@
   </article>
   {% block form_actions %}
   <div class="form-actions">
+    <br>
     {% block confirm_button %}
-    <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='package', action='read', id=pkg.name %}" data-module="cancel-action" >{{ _('Close') }}</a>
+    <a class="btn btn-primary pull-right btn-restricted" href="{% url_for controller='dataset', action='read', id=pkg.name %}" data-module="cancel-action" >{{ _('Close') }}</a>
     {% endblock %}
   </div>
   {% endblock %}
