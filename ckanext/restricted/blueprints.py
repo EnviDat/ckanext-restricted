@@ -142,8 +142,8 @@ def _send_request_mail(data):
             'message': data.get('message', ''),
             'admin_email_to': config.get('email_to', 'email_to_undefined')}
 
-        mail_template = 'restricted_access_request.txt'
-        body = _jinja2_render(mail_template, extra_vars)
+        mail_template = 'restricted/emails/restricted_access_request.txt'
+        body = render(mail_template, extra_vars)
 
         subject = \
             _('Access Request to resource {0} ({1}) from {2}').format(
@@ -170,7 +170,7 @@ def _send_request_mail(data):
 
         extra_vars['resource_link'] = '[...]'
         extra_vars['resource_edit_link'] = '[...]'
-        body = _jinja2_render('restricted_access_request.txt', extra_vars)
+        body = render('restricted/emails/restricted_access_request.txt', extra_vars)
 
         body_user = _(
             'Please find below a copy of the access '
@@ -270,8 +270,3 @@ def _get_contact_details(pkg_dict):
         contact_email = config.get('email_to', 'email_to_undefined')
         contact_name = 'CKAN Admin'
     return {'contact_email': contact_email, 'contact_name': contact_name}
-
-
-def _jinja2_render(mail_template, extra_vars):
-    flask_rendered_template = render_template(os.path.join('restricted/emails/', mail_template),**extra_vars)
-    return flask_rendered_template

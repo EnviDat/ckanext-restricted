@@ -4,23 +4,19 @@ from __future__ import unicode_literals
 import ckan.authz as authz
 from ckan.common import _
 
-from ckan.lib.base import render_jinja2
 import ckan.lib.mailer as mailer
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import json
 
-try:
-    # CKAN 2.7 and later
-    from ckan.common import config
-except ImportError:
-    # CKAN 2.6 and earlier
-    from pylons import config
+from ckan.common import config
+import ckan.lib.base as base
 
 from logging import getLogger
 
 log = getLogger(__name__)
 
+render = base.render
 
 def restricted_get_username_from_context(context):
     auth_user_obj = context.get('auth_user_obj', None)
@@ -152,12 +148,12 @@ def restricted_mail_allowed_user(user_id, resource):
 
     except Exception as e:
         log.warning(('restricted_mail_allowed_user: '
-                     'Failed to send mail to "{0}": {1}').format(user_id,e))
+                     'Failed to send mail to "{0}": {1}').format(user_id, e))
 
 
 def restricted_allowed_user_mail_body(user, resource):
     resource_link = toolkit.url_for(
-        controller='package', action='resource_read',
+        controller='dataset_resource', action='read',
         id=resource.get('package_id'), resource_id=resource.get('id'))
 
     extra_vars = {
@@ -168,8 +164,8 @@ def restricted_allowed_user_mail_body(user, resource):
         'resource_link': config.get('ckan.site_url') + resource_link,
         'resource_url': resource.get('url')}
 
-    return render_jinja2(
-        'restricted/emails/restricted_user_allowed.txt', extra_vars)
+    return render('restricted/emails/restricted_user_allowed.txt', extra_vars)
+
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
 
