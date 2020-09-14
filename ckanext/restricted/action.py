@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 import ckan.authz as authz
 from ckan.common import _
+import ckan.lib.base as base
 
 from ckan.lib.base import render_jinja2
 from ckan.lib.mailer import mail_recipient
@@ -23,10 +24,9 @@ from ckan.common import config
 from logging import getLogger
 log = getLogger(__name__)
 
-
 _get_or_bust = ckan.logic.get_or_bust
-
 NotFound = ckan.logic.NotFound
+render = base.render
 
 
 def restricted_user_create_and_notify(context, data_dict):
@@ -55,7 +55,7 @@ def restricted_user_create_and_notify(context, data_dict):
             'site_url': config.get('ckan.site_url'),
             'user_info': body_from_user_dict(user_dict)}
 
-        body = render_jinja2(
+        body = render(
             'restricted/emails/restricted_user_registered.txt', extra_vars)
 
         mail_recipient(name, email, subject, body)
@@ -64,7 +64,7 @@ def restricted_user_create_and_notify(context, data_dict):
         log.error('Cannot send mail after registration')
         log.error(mailer_exception)
 
-    return (user_dict)
+    return user_dict
 
 
 @side_effect_free
@@ -103,7 +103,7 @@ def restricted_package_show(context, data_dict):
     restricted_package_metadata['resources'] = _restricted_resource_list_hide_fields(
         context, restricted_package_metadata.get('resources', []))
 
-    return (restricted_package_metadata)
+    return restricted_package_metadata
 
 
 @side_effect_free
