@@ -41,3 +41,31 @@ ckan.module('restricted_hide', function ($) {
     }
   };
 });
+
+ckan.module('restricted_create_json', function ($) {
+  return {
+    initialize: function() {
+        $.proxyAll(this, /_on/);
+
+        function create_json(){
+          var restricted_json = {
+            allowed_organizations: $('#field-restricted_allowed_orgs').val(),
+            allowed_users: $('#field-restricted_allowed_users').val(),
+            level: $('#field-level').val()
+          };
+          $('#field-restricted').val(JSON.stringify(restricted_json));
+          $('#field-restricted_fields').val(JSON.stringify(restricted_json));
+        }
+        create_json()
+        $('#field-restricted_allowed_orgs').on('change', function(event){
+          create_json();
+        });
+        $('#field-restricted_allowed_users').on('change', function(event){
+          create_json();
+        });
+        $('#field-level').on('change', function(event){
+          create_json();
+        });
+    },
+  };
+});

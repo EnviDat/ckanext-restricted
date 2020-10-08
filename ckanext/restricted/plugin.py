@@ -15,6 +15,7 @@ _get_or_bust = ckan.logic.get_or_bust
 
 
 class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
+
     plugins.implements(plugins.ITranslation)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions)

@@ -7,7 +7,27 @@
     "values": {
       "validators": "ignore_missing",
       "form_snippet": "restricted_fields.html",
-      "display_snippet": "restricted_fields.html"
+      "display_snippet": "restricted_fields.html",
+      "default": "{\"level\": \"restricted\", \"allowed_users\": \"\", \"allowed_organizations\": \"unaids\"}",
+      "choices": [{
+          "value": "restricted",
+          "label": "Restricted to specified users and organizations"
+        },
+        {
+          "value": "public",
+          "label": "Public"
+        }
+      ],
+      "form_attrs_users": {
+        "data-module": "autocomplete",
+        "data-module-tags": "",
+        "data-module-source": "/api/2/util/user/autocomplete?q=?"
+      },
+      "form_attrs_orgs": {
+        "data-module": "autocomplete",
+        "data-module-tags": "",
+        "data-module-source": "/api/2/util/organization/autocomplete?q=?"
+      }
     }
   }]
 }

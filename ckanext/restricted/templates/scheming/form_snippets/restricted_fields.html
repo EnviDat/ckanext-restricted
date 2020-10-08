@@ -4,8 +4,10 @@
 
 <div class="composite-subfield-group" data-field="restricted" data-group-index="0">
 {% resource 'ckanext-restricted/restricted_ui.js' %}
+
 {%- set options=[] -%}
-{% set restricted = h.restricted_json_loads(data.get("restricted")) %}
+{% set restricted = h.restricted_json_loads(data.get("restricted", field.get("default"))) %}
+
 {%- for c in h.scheming_field_choices(field) -%}
   {%- if not form_restrict_choices_to or c.value in form_restrict_choices_to -%}
     {%- do options.append({
@@ -13,15 +15,17 @@
       'text': h.scheming_language_text(c.label) }) -%}
   {%- endif -%}
 {%- endfor -%}
+
 {%- if field.get('sorted_choices') -%}
   {%- set options = options|sort(case_sensitive=false, attribute='text') -%}
 {%- endif -%}
+
 {% call form.select(
-    'restricted_level',
+    '',
     id='field-level',
     label=_('Level'),
     selected=restricted.get('level'),
-    error=errors['level'],
+    error=errors['restricted'],
     options=options,
     classes=field.classes if 'classes' in field else ['control-medium'],
     attrs={"class": "form-control", "data-module": "restricted_hide"},
@@ -31,14 +35,12 @@
 {%- snippet 'scheming/form_snippets/help_text.html', field='level' -%}
 {% endcall %}
 
-
-{% set user_field_name = 'restricted_allowed_users' %}
 {% call form.input(
-    user_field_name,
-    id='field-' + user_field_name,
+    '',
+    id='field-restricted_allowed_users',
     label=_('Allowed Users'),
-    value=restricted.get("allowed_users", field.get("default_users")),
-    error=errors[user_field_name],
+    value=restricted.get("allowed_users"),
+    error=errors['restricted'],
     classes=["control-medium"],
     attrs=field.get("form_attrs_users", {}),
     is_required=False
@@ -47,14 +49,12 @@
 {%- snippet 'scheming/form_snippets/help_text.html', field='allowed_users' -%}
 {% endcall %}
 
-{% set org_field_name = 'restricted_allowed_orgs' %}
-
 {% call form.input(
-    org_field_name,
-    id='field-' + org_field_name,
+    '',
+    id='field-restricted_allowed_orgs',
     label=_('Allowed Organisations'),
-    value=restricted.get("allowed_organizations", field.get("default_organizations")),
-    error=errors[org_field_name],
+    value=restricted.get("allowed_organizations"),
+    error=errors['restricted'],
     classes=["control-medium"],
     attrs=field.get("form_attrs_orgs", {}),
     is_required=False
@@ -62,5 +62,13 @@
 %}
 {%- snippet 'scheming/form_snippets/help_text.html', field='allowed_users' -%}
 {% endcall %}
+
+<!-- Hidden input below holds the actual restricted field value for submission to the server
+     It is auto updated from the three inputs above using the restricted_create_json JS module. -->
+<input type='hidden'
+       id='field-restricted'
+       name='restricted'
+       value='{{data.get("restricted", field.get("default"))}}'
+       data-module='restricted_create_json'>
 </div>
 </fieldset>
