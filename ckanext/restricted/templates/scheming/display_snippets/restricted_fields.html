@@ -1,7 +1,3 @@
 {% set restricted = h.restricted_json_loads(data.get("restricted")) %}
-<h4> {{h.scheming_language_text('Level')}}: </h4>
-{{restricted.get('level')}}
-<h4> {{h.scheming_language_text('Allowed Users')}}</h4>
-{{restricted.get("allowed_users")}}
-<h4> {{h.scheming_language_text('Allowed Organisations')}}</h4>
-{{restricted.get("allowed_organizations")}}
+{% resource 'ckanext-restricted/restricted_ui.js' %}
+{% snippet 'restricted/restricted_string.html', res=data, pkg=h.get_package_from_id(data['package_id']) %}

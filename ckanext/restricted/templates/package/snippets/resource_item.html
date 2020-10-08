@@ -29,49 +29,9 @@
 </p>
 {% endif %}
 {% if can_edit %}
-  {% if "restricted" not in res  or pkg["private"] %}
-    {{_('(Only accessible by users in your organisation)')}}
-  {% else %}
-    {% set restricted = h.restricted_json_loads(res["restricted"]) %}
-    {% if restricted["level"] == "public" %}
-      <p class="description">
-        {{_('Public Resource')}}
-      </p>
-    {% else %}
-
-      {% set popup_link = "<a href='#' data-module='restricted_popup' data-module-title='{}' data-module-content='{}'>{}</a>" %}
-      {% set org_string = False %}
-      {% set usr_string = False %}
-
-      {% if restricted.get("allowed_organizations") %}
-        {% set organizations = restricted.get("allowed_organizations").split(",") %}
-        {% set title = _('Access granted to organizations') %}
-        {% set content = "<br />".join(organizations + [pkg.organization.name] ) %}
-        {% set org_string = popup_link.format(title, content, _('organizations')) %}
-      {% endif %}
-
-      {% if restricted.get("allowed_users") %}
-        {% set users = restricted.get("allowed_users").split(",") %}
-        {% set title = _('Access granted to users') %}
-        {% set content = "<br />".join(users) %}
-        {% set usr_string = popup_link.format(title, content, _('users')) %}
-      {% endif %}
-
-      <p class="description">
-        {% if org_string and usr_string %}
-          {{_("Access restricted to specific {organizations} and {users}.").format(organizations=org_string, users=usr_string)|safe }}
-        {% elif org_string %}
-          {{_("Access restricted to specific {organizations}").format(organizations=org_string)|safe }}
-        {% elif usr_string %}
-          {{_("Access restricted to {users}").format(users=usr_string)|safe }}
-        {% else %}
-          {% set organization_link = h.link_to(pkg.organization.title, h.url_for(controller="organization", action="read", id=pkg.organization.name)) %}
-          {{_("Access restricted to members of {organisation_name}").format(organisation_name=organization_link)|safe }}
-        {% endif %}
-      </p>
-
-    {% endif %}
-  {% endif %}
+  <p class="description">
+      {% include 'restricted/restricted_string.html' %}
+  </p>
 {% endif %}
 {% endblock %}
 {% block resource_item_explore %}
