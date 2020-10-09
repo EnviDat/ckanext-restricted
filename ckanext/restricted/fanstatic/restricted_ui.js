@@ -50,7 +50,6 @@ ckan.module('restricted_create_json', function ($) {
             level: $('#field-level').val()
           };
           $('#field-restricted').val(JSON.stringify(restricted_json));
-          $('#field-restricted_fields').val(JSON.stringify(restricted_json));
         }
         create_json()
         $('#field-restricted_allowed_orgs').on('change', function(event){
