@@ -15,6 +15,7 @@ _get_or_bust = ckan.logic.get_or_bust
 
 
 class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
+
     plugins.implements(plugins.ITranslation)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions)
@@ -41,6 +42,7 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # ITemplateHelpers
     def get_helpers(self):
         return {'restricted_get_user_id': helpers.restricted_get_user_id,
+                'get_package_from_id': helpers.get_package_from_id,
                 'restricted_json_loads': load_json}
 
     # IAuthFunctions

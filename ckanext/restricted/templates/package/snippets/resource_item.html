@@ -17,40 +17,36 @@
       {{ h.resource_display_name(res) | truncate(50) }}<span class="format-label" property="dc:format" data-format="{{ resource_type }}">{{ h.get_translated(res, 'format') }}</span>
       {{ h.popular('views', res.tracking_summary.total, min=10) }}
     </a>
-  {% if can_edit %}
-    {% if "restricted" not in res  or pkg["private"] %}
-      {{_('(Only accessible by users in your organisation)')}}
-    {% else %}
-      {% set restricted = h.restricted_json_loads(res["restricted"]) %}
-      {% if restricted["level"] == "public" %}
-        {{_('(Public)')}}
-      {% else %}
-        {% set org_string = "<br />".join(restricted.get("allowed_organizations", "None").split(",") + [pkg.organization.title]) %}
-        {% set usr_string = "<br />".join(restricted.get("allowed_users", "None").split(",")) %}
-
-        {{_("Accessible by specified <a href='#' data-module='restricted_popup' data-module-title='Access granted to organizations' data-module-content='{}'>organisations</a> and <a href='#' data-module='restricted_popup' data-module-title='Access granted to users' data-module-content='{}'>users</a>.").format(org_string, usr_string)|safe}}
-      {% endif %}
-    {% endif %}
-  {% endif %}
   {% else %}
   <span class="restricted-item">
     <a class="heading restricted-item" disabled="true" href="#" title="{{ res.name or res.description }}">{{ h.resource_display_name(res) | truncate(35) }} {{ _('Unauthorized') }} <span class="format-label" property="dc:format" data-format="{{ resource_type }}">{{ res.format }}</span>{{ h.popular('views', res.tracking_summary.total, min=10) }}</a></span>
   {% endif %}
 {% endblock %}
-
+{% block resource_item_description %}
+{% if res.description %}
+<p class="description">
+  {{ h.markdown_extract(h.get_translated(res, 'description'), extract_length=80) }}
+</p>
+{% endif %}
+{% if can_edit %}
+  <p class="description">
+      {% include 'restricted/restricted_string.html' %}
+  </p>
+{% endif %}
+{% endblock %}
 {% block resource_item_explore %}
   {% if authorized %}
     {{ super() }}
   {% else %}
     {% if user_id %}
   <div class="dropdown btn-group">
-    <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="fa fa-icon fa-unlock-alt" style="margin-right: 5px;"></i>{{ _('Request Access')}}</a>
+    <a href="{{ h.url_for('restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" class="btn"><i class="fa fa-icon fa-unlock-alt" style="margin-right: 5px;"></i>{{ _('Request Access') }}</a>
   </div>
     {% else %}
   <div class="dropdown btn-group restricted-link">
     <i class="fa fa-icon fa-user"></i>
       {% block resource_item_unauthorized %}
-    <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _('or') }} <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register')}}</a> {{ _('to access resource')}}
+    <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name) }}" >{{ _('Log in') }}</a> {{ _('or') }} <a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Register') }}</a> {{ _('to access resource')}}
     {% endblock %}
   </div>
   {% endif%}
