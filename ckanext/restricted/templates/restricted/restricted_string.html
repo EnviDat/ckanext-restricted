@@ -22,17 +22,17 @@
     {% set usr_string = False %}
 
     {% if restricted.get("allowed_organizations") %}
-      {% set organizations = restricted.get("allowed_organizations").split(",") %}
+      {% set organizations = (restricted.get("allowed_organizations").split(",") + [pkg.organization.name])|unique|list %}
       {% set organizations_popup_title = _('Access granted to organizations') %}
-      {% set organizations_popup_content = "<br />".join(organizations + [pkg.organization.name] ) %}
-      {% set organizations_popup = popup_link.format(title, content, _('organizations')) %}
+      {% set organizations_popup_content = "<br />".join(organizations ) %}
+      {% set organizations_popup = popup_link.format(organizations_popup_title, organizations_popup_content, _('organizations')) %}
     {% endif %}
 
     {% if restricted.get("allowed_users") %}
       {% set users = restricted.get("allowed_users").split(",") %}
       {% set users_popup_title = _('Access granted to users') %}
       {% set users_popup_content = "<br />".join(users) %}
-      {% set users_popup = popup_link.format(title, content, _('users')) %}
+      {% set users_popup = popup_link.format(users_popup_title, users_popup_content, _('users')) %}
     {% endif %}
 
     {% if organizations_popup and users_popup %}
