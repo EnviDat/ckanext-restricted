@@ -9,6 +9,8 @@ from ckan.lib.base import render_snippet
 from pprint import pformat
 from ckanext.restricted.tests.mock_pylons_request import mock_pylons_request
 
+log = logging.getLogger(__name__)
+
 
 class TestRestrictedPlugin(helpers.FunctionalTestBase):
     '''Tests for the ckanext.example_iauthfunctions.plugin module.
@@ -368,7 +370,7 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource1,
                 pkg=dataset
             )
-            logging.debug(pformat(html1))
+            log.debug(pformat(html1))
             expected = (
                 "Access restricted to specific <a href='#' data-module"
                 "='restricted_popup' data-module-title='Access granted to "
@@ -382,7 +384,7 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource2,
                 pkg=dataset
             )
-            logging.debug(pformat(html2))
+            log.debug(pformat(html2))
             expected = (
                 "Access restricted to specific <a href='#' "
                 "data-module='restricted_popup' data-module-title='Access "
@@ -396,7 +398,7 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource3,
                 pkg=dataset
             )
-            logging.debug(pformat(html3))
+            log.debug(pformat(html3))
             expected = (
                 "Access restricted to specific <a href='#' "
                 "data-module='restricted_popup' data-module-title='Access "
@@ -413,7 +415,7 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource4,
                 pkg=dataset
             )
-            logging.debug(pformat(html4))
+            log.debug(pformat(html4))
             expected = (
                 'Access restricted to members of <a href="/organization/'
                 '{}">{}</a>'.format(org['name'], org['title'])
