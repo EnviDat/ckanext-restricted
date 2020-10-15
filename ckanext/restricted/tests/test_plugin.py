@@ -4,6 +4,12 @@ from ckan.tests import helpers
 from nose.tools import assert_raises
 import ckan.tests.factories as factories
 import ckan.logic as logic
+import logging
+from ckan.lib.base import render_snippet
+from pprint import pformat
+from ckanext.restricted.tests.mock_pylons_request import mock_pylons_request
+
+log = logging.getLogger(__name__)
 
 
 class TestRestrictedPlugin(helpers.FunctionalTestBase):
@@ -308,3 +314,110 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
         assert package['num_resources'] == 1
         assert len(package['resources']) == 1
         assert package['resources'][0]['id'] == resource['id']
+
+    def test_restricted_string_snippet(self):
+        """
+        """
+        sysadmin = factories.Sysadmin()
+        org = factories.Organization(
+            users=[{'name': sysadmin['id'], 'capacity': 'admin'}]
+        )
+        dataset = factories.Dataset(owner_org=org['id'])
+
+        restricted1 = """{
+            "level": "restricted",
+            "allowed_organizations": "fjelltopp,unaids,fjelltopp",
+            "allowed_users":""
+        }"""
+        resource1 = factories.Resource(
+            package_id=dataset['id'],
+            restricted=restricted1
+        )
+
+        restricted2 = """{
+            "level": "restricted",
+            "allowed_organizations": "",
+            "allowed_users":"test_user_0,test_user_1"
+        }"""
+        resource2 = factories.Resource(
+            package_id=dataset['id'],
+            restricted=restricted2
+        )
+
+        restricted3 = """{
+            "level": "restricted",
+            "allowed_organizations": "fjelltopp,unaids,fjelltopp",
+            "allowed_users":"test_user_0,test_user_1"
+        }"""
+        resource3 = factories.Resource(
+            package_id=dataset['id'],
+            restricted=restricted3
+        )
+
+        restricted4 = """{
+            "level": "restricted",
+            "allowed_organizations": "",
+            "allowed_users":""
+        }"""
+        resource4 = factories.Resource(
+            package_id=dataset['id'],
+            restricted=restricted4
+        )
+
+        with mock_pylons_request():
+            html1 = render_snippet(
+                'restricted/restricted_string.html',
+                res=resource1,
+                pkg=dataset
+            )
+            log.debug(pformat(html1))
+            expected = (
+                "Access restricted to specific <a href='#' data-module"
+                "='restricted_popup' data-module-title='Access granted to "
+                "organizations' data-module-content='fjelltopp<br />unaids"
+                "<br />" + org['name'] + "'>organizations</a>"
+            )
+            assert expected in html1
+
+            html2 = render_snippet(
+                'restricted/restricted_string.html',
+                res=resource2,
+                pkg=dataset
+            )
+            log.debug(pformat(html2))
+            expected = (
+                "Access restricted to specific <a href='#' "
+                "data-module='restricted_popup' data-module-title='Access "
+                "granted to users' data-module-content='test_user_0<br />"
+                "test_user_1'>users</a>"
+            )
+            assert expected in html2
+
+            html3 = render_snippet(
+                'restricted/restricted_string.html',
+                res=resource3,
+                pkg=dataset
+            )
+            log.debug(pformat(html3))
+            expected = (
+                "Access restricted to specific <a href='#' "
+                "data-module='restricted_popup' data-module-title='Access "
+                "granted to organizations' data-module-content='fjelltopp<br />"
+                "unaids<br />" + org['name'] + "'>organizations</a> and "
+                "<a href='#' data-module='restricted_popup' "
+                "data-module-title='Access granted to users' "
+                "data-module-content='test_user_0<br />test_user_1'>users</a>."
+            )
+            assert expected in html3
+
+            html4 = render_snippet(
+                'restricted/restricted_string.html',
+                res=resource4,
+                pkg=dataset
+            )
+            log.debug(pformat(html4))
+            expected = (
+                'Access restricted to members of <a href="/organization/'
+                '{}">{}</a>'.format(org['name'], org['title'])
+            )
+            assert expected in html4

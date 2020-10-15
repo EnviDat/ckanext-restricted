@@ -6,6 +6,7 @@ echo "This is travis-build.bash..."
 echo "Installing the packages that CKAN requires..."
 sudo apt-get update -qq
 sudo apt-get install solr-jetty
+pip install --user --upgrade pip
 
 echo "Installing CKAN and its Python dependencies..."
 git clone https://github.com/ckan/ckan
@@ -57,6 +58,7 @@ cd -
 
 echo "Installing ckanext-restricted and its requirements..."
 sudo python setup.py develop
+pip install --user -r requirements.txt
 pip install --user -r dev-requirements.txt
 
 echo "Moving test.ini into a subdir..."
