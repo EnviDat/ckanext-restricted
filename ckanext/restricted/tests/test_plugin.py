@@ -3,12 +3,12 @@
 from ckan.tests import helpers
 from nose.tools import assert_raises
 import ckan.tests.factories as factories
-from ckan.lib.helpers import url_for
 import ckan.logic as logic
 import logging
-from ckanext.scheming.tests.mock_pylons_request import mock_pylons_request
 from ckan.lib.base import render_snippet
 from pprint import pformat
+from ckanext.restricted.tests.mock_pylons_request import mock_pylons_request
+
 
 class TestRestrictedPlugin(helpers.FunctionalTestBase):
     '''Tests for the ckanext.example_iauthfunctions.plugin module.
@@ -322,25 +322,41 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
         )
         dataset = factories.Dataset(owner_org=org['id'])
 
-        restricted1 = '{"level": "restricted", "allowed_organizations": "fjelltopp, unaids, fjelltopp", "allowed_users":""}'
+        restricted1 = """{
+            "level": "restricted",
+            "allowed_organizations": "fjelltopp,unaids,fjelltopp",
+            "allowed_users":""
+        }"""
         resource1 = factories.Resource(
             package_id=dataset['id'],
             restricted=restricted1
         )
 
-        restricted2 = '{"level": "restricted", "allowed_organizations": "", "allowed_users":"test_user_0, test_user_1"}'
+        restricted2 = """{
+            "level": "restricted",
+            "allowed_organizations": "",
+            "allowed_users":"test_user_0,test_user_1"
+        }"""
         resource2 = factories.Resource(
             package_id=dataset['id'],
             restricted=restricted2
         )
 
-        restricted3 = '{"level": "restricted", "allowed_organizations": "fjelltopp, unaids, fjelltopp", "allowed_users":"test_user_0, test_user_1"}'
+        restricted3 = """{
+            "level": "restricted",
+            "allowed_organizations": "fjelltopp,unaids,fjelltopp",
+            "allowed_users":"test_user_0,test_user_1"
+        }"""
         resource3 = factories.Resource(
             package_id=dataset['id'],
             restricted=restricted3
         )
 
-        restricted4 = '{"level": "restricted", "allowed_organizations": "", "allowed_users":""}'
+        restricted4 = """{
+            "level": "restricted",
+            "allowed_organizations": "",
+            "allowed_users":""
+        }"""
         resource4 = factories.Resource(
             package_id=dataset['id'],
             restricted=restricted4
@@ -352,11 +368,12 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource1,
                 pkg=dataset
             )
+            logging.debug(pformat(html1))
             expected = (
                 "Access restricted to specific <a href='#' data-module"
                 "='restricted_popup' data-module-title='Access granted to "
-                "organizations' data-module-content='fjelltopp<br /> unaids"
-                "<br /> fjelltopp<br />test_org_00'>organizations</a>"
+                "organizations' data-module-content='fjelltopp<br />unaids"
+                "<br />" + org['name'] + "'>organizations</a>"
             )
             assert expected in html1
 
@@ -365,10 +382,11 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource2,
                 pkg=dataset
             )
+            logging.debug(pformat(html2))
             expected = (
                 "Access restricted to specific <a href='#' "
                 "data-module='restricted_popup' data-module-title='Access "
-                "granted to users' data-module-content='test_user_0<br /> "
+                "granted to users' data-module-content='test_user_0<br />"
                 "test_user_1'>users</a>"
             )
             assert expected in html2
@@ -378,15 +396,15 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource3,
                 pkg=dataset
             )
-            logging.warning(pformat(html3))
+            logging.debug(pformat(html3))
             expected = (
                 "Access restricted to specific <a href='#' "
                 "data-module='restricted_popup' data-module-title='Access "
-                "granted to organizations' data-module-content='fjelltopp<br /> "
-                "unaids<br /> fjelltopp<br />test_org_00'>organizations</a> and "
+                "granted to organizations' data-module-content='fjelltopp<br />"
+                "unaids<br />" + org['name'] + "'>organizations</a> and "
                 "<a href='#' data-module='restricted_popup' "
                 "data-module-title='Access granted to users' "
-                "data-module-content='test_user_0<br /> test_user_1'>users</a>."
+                "data-module-content='test_user_0<br />test_user_1'>users</a>."
             )
             assert expected in html3
 
@@ -395,9 +413,9 @@ class TestRestrictedPlugin(helpers.FunctionalTestBase):
                 res=resource4,
                 pkg=dataset
             )
-            logging.warning(pformat(html4))
+            logging.debug(pformat(html4))
             expected = (
                 'Access restricted to members of <a href="/organization/'
-                'test_org_00">Test Organization</a>'
+                '{}">{}</a>'.format(org['name'], org['title'])
             )
             assert expected in html4
