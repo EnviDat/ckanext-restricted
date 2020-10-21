@@ -18,7 +18,7 @@ from ckan.logic import side_effect_free
 from ckanext.restricted import auth
 from ckanext.restricted import logic
 import json
-
+import copy
 from ckan.common import config
 
 from logging import getLogger
@@ -130,12 +130,15 @@ def restricted_package_search(context, data_dict):
 
     restricted_package_search_result = {}
 
+    package_show_context = context.copy()
+    package_show_context['with_capacity'] = False
+
     for key, value in package_search_result.items():
         if key == 'results':
             restricted_package_search_result_list = []
             for package in value:
                 restricted_package_search_result_list.append(
-                    restricted_package_show(context, {'id': package.get('id')}))
+                    restricted_package_show(package_show_context, {'id': package.get('id')}))
             restricted_package_search_result[key] = \
                 restricted_package_search_result_list
         else:
