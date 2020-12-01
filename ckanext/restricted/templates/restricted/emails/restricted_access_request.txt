@@ -1,13 +1,13 @@
 {% trans %}Dear{% endtrans %} {{ maintainer_name }},
 
 {% trans %}A user has requested access to your data in {{ site_title }}:{% endtrans %}
-* {% trans %}Resource:{% endtrans %} {{ resource_name }} ({{ resource_link }})
+* {% trans %}Resource:{% endtrans %} {{ resource_name }} ({{ resource_link|safe }})
 * {% trans %}Dataset:{% endtrans %} {{ package_name }}
 * {% trans %}User:{% endtrans %} {{ user_name }} ({{ user_email }})
 * {% trans %}Message:{% endtrans %} {{ message }}
 
 {% trans %}You can allow this user to access you resource by adding {{ user_id }} to the list of allowed users.{% endtrans %}
-{% trans %}If you have editor rights, you can edit the resource in this link: {{ resource_edit_link }}.{% endtrans %}
+{% trans %}If you have editor rights, you can edit the resource in this link{% endtrans %}: {{ resource_edit_link|safe }}.
 {% trans %}If you have any questions about how to proceed with this request, please contact the {{ site_title }} support at {{ admin_email_to }}.{% endtrans %}
 
 {% trans %}Best regards,{% endtrans %}
