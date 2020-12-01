@@ -3,7 +3,7 @@
 {% trans %}You have requested access on {{ site_title }} to the resource: {{ resource_name }}.{% endtrans %}
 {% trans %}The contact person of the package has granted you access.{% endtrans %}
 
-{% trans %}Please click the following link: {{ resource_link }}{% endtrans %}
+{% trans %}Please click the following link{% endtrans %}: {{ resource_link|safe }}
 
 {% trans %}Best regards,{% endtrans %}
 {% trans %}{{ site_title }} Administrator{% endtrans %}
