@@ -121,7 +121,10 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         'msg': ('Resource access restricted to same '
                 'organization ({}) members').format(pkg_organization_id)}
 
+
 def restricted_mail_allowed_user(user_id, resource):
+    if not user_id:
+        return
     log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
     try:
         # Get user information

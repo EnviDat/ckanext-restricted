@@ -9,6 +9,7 @@ from ckanext.restricted import action
 from ckanext.restricted import auth
 from ckanext.restricted import helpers
 from ckanext.restricted import logic
+from ckanext.restricted import validation
 import ckanext.restricted.blueprints as blueprints
 
 from logging import getLogger
@@ -27,6 +28,8 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IBlueprint, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
+    plugins.implements(plugins.IValidators)
+
 
     # IConfigurer
     def update_config(self, config_):
@@ -72,3 +75,7 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # IBlueprint
     def get_blueprint(self):
         return blueprints.get_blueprints(self.name, self.__module__)
+
+    # IValidators
+    def get_validators(self):
+        return {'restricted_username_from_mail': validation.restricted_username_from_mail}
