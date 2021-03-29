@@ -16,7 +16,12 @@ def restricted_username_from_mail(field, schema):
         """
           replace the email entered with an username
         """
-        restricted_data = json.loads(data.get(key, '{}'))
+        restricted_data = {}
+        try:
+            restricted_data = json.loads(data.get(key, '{}'))
+        except json.JSONDecodeError as e:
+            logger.warning('restricted_username_from_mail: issues parsing data: "{0}", ERROR: {1}'.format(data, e))
+
 
         if restricted_data.get('allowed_users'):
             allowed_users = restricted_data['allowed_users'].split(',')
