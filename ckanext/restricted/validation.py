@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @scheming_validator
 def restricted_username_from_mail(field, schema):
     def validator(key, data, errors, context):
@@ -21,7 +22,6 @@ def restricted_username_from_mail(field, schema):
             restricted_data = json.loads(data.get(key, '{}'))
         except json.JSONDecodeError as e:
             logger.warning('restricted_username_from_mail: issues parsing data: "{0}", ERROR: {1}'.format(data, e))
-
 
         if restricted_data.get('allowed_users'):
             allowed_users = restricted_data['allowed_users'].split(',')
@@ -45,8 +45,9 @@ def restricted_username_from_mail(field, schema):
 
     return validator
 
+
 def _restricted_user_search(querystr):
-    '''Search name, fullname, email. '''
+    """ Search name, fullname, email. """
     query = meta.Session.query(model.User)
     qstr = '%' + querystr + '%'
     filters = [

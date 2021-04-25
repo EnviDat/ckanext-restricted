@@ -1,0 +1,38 @@
+{% ckan_extends %}
+
+{% set isEditor = h.check_access('package_update', {'id':pkg.id }) %}
+
+{% block resource_read_url %}
+    {% set authorized = h.check_access('resource_show', {'id': res.id, 'resource': res }) %}
+    {% if authorized %}
+        {% if res.url and h.is_url(res.url) %}
+          <p class="text-muted ellipsis">{{ _('URL:') }} <a class="resource-url-analytics" href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></p>
+        {% elif res.url %}
+          <p class="text-muted break-word">{{ _('URL:') }} {{ res.url }}</p>
+        {% endif %}
+    {% else %}
+        <p style="color:grey;"> {{ _('Resource URL restricted, please request access on the dataset page: ') }} <a href="{{ h.url_for('dataset.read', id=pkg.name) }}" title="{{ pkg.title }}">{{ pkg.title }}</a> </p>
+    {% endif %}
+{% endblock %}
+
+{%- block resource_fields -%}
+  {%- for field in schema.resource_fields -%}
+    {%- if field.field_name not in exclude_fields
+        and field.display_snippet is not none -%}
+      <tr>
+        <th scope="row">
+          {{- h.scheming_language_text(field.label) -}}
+        </th>
+        <td>
+            {% if field.field_name != 'restricted' or isEditor %}
+              {%- snippet 'scheming/snippets/display_field.html',
+                  field=field, data=res, entity_type='dataset',
+                  object_type=dataset_type -%}
+            {% else %}
+                Restricted info only available to editors
+            {% endif %}
+        </td>
+      </tr>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endblock -%}

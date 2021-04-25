@@ -18,6 +18,7 @@ log = getLogger(__name__)
 
 render = base.render
 
+
 def restricted_get_username_from_context(context):
     auth_user_obj = context.get('auth_user_obj', None)
     user_name = ''
@@ -171,7 +172,6 @@ def restricted_allowed_user_mail_body(user, resource):
 
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
-
     def _safe_json_loads(json_string, default={}):
         try:
             return json.loads(json_string)
