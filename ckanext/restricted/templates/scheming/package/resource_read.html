@@ -36,3 +36,14 @@
     {%- endif -%}
   {%- endfor -%}
 {%- endblock -%}
+
+{% block download_resource_button_action %}
+    {% set authorized = h.check_access('resource_show', {'id': res.id, 'resource': res }) %}
+    {% if authorized %}
+        <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}" download="">
+          <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
+    {% else %}
+        <a class="btn btn-primary" href="javascript:void(0)" disabled="">
+          <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
+    {% endif %}
+{% endblock %}
