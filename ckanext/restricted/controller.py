@@ -229,6 +229,8 @@ class RestrictedController(toolkit.BaseController):
             extra_vars=extra_vars)
 
     def _get_contact_details(self, pkg_dict):
-        contact_email = helpers.get_admin_emails(package_id=pkg_dict.get('id'))
+        contact_email = helpers.get_maintainer_email(
+            package_id=pkg_dict.get('id'))
         contact_name = 'CKAN Admin'
         return {'contact_email': contact_email, 'contact_name': contact_name}
+

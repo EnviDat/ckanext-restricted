@@ -1,6 +1,6 @@
 # coding: utf8
 from ckan import model
-from ckan.common import c
+from ckan.common import c, config
 from ckan.plugins import toolkit
 
 from logging import getLogger
@@ -63,3 +63,23 @@ def get_admin_emails(org_id=None, package_id=None):
     emails = [{'value': str(user.email), 'text': str(user.email)} for user in users_to_show]
 
     return emails
+
+
+def get_maintainer_email(org_id=None, package_id=None):
+    if package_id and not org_id:
+        package = toolkit.get_action('package_show') \
+            ({'ignore_auth': True}, {'id': package_id})
+        org_id = package['owner_org']
+
+    org = toolkit.get_action('organization_show')(
+        {'ignore_auth': True}, {'id': org_id})
+
+    maintainer_email = org.get(
+        'maintainer_email',
+        config.get('ckan.sysadmin_email')
+    )
+
+    return [{
+        'value': str(maintainer_email),
+        'text': str(maintainer_email),
+    }]
