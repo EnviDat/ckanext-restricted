@@ -132,8 +132,6 @@ def _send_request_mail(data):
             id=data.get('package_name'),
             resource_id=data.get('resource_id'))
 
-        print(str(data.get('user_supervisor', '')))
-
         extra_vars = {
             'site_title': config.get('ckan.site_title'),
             'site_url': config.get('ckan.site_url'),
@@ -164,7 +162,8 @@ def _send_request_mail(data):
 
             'admin_email_to': config.get('email_to', 'email_to_undefined')
             }
-        extra_vars['data'] = json.dumps(extra_vars, ensure_ascii=False)
+        data_tag = '[%DATA%]'
+        extra_vars['data'] = "{0}\n{1}\n{2}".format(data_tag,json.dumps(extra_vars, ensure_ascii=False), data_tag)
 
         mail_template = 'restricted/emails/restricted_access_request.txt'
         body = render(mail_template, extra_vars)
@@ -194,6 +193,7 @@ def _send_request_mail(data):
 
         extra_vars['resource_link'] = '[...]'
         extra_vars['resource_edit_link'] = '[...]'
+        extra_vars['data'] = ''
         body = render('restricted/emails/restricted_access_request.txt', extra_vars)
 
         body_user = _(

@@ -18,9 +18,7 @@
 {% trans %}Best regards,{% endtrans %}
 {% trans %}{{ site_title }} Administrator{% endtrans %}
 
------------------ FORM DATA BEGIN ----------------
 {{ data | safe }}
------------------ FORM DATA END ----------------
 
 {% trans %}This is an automatically generated e-mail, please do not reply to it.{% endtrans %}
 
