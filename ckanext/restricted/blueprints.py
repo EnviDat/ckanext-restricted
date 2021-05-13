@@ -15,7 +15,7 @@ import os
 import simplejson as json
 
 from flask import Blueprint, request, render_template
-
+from datetime import datetime
 
 from logging import getLogger
 
@@ -70,10 +70,12 @@ def restricted_request_access_form(package_id, resource_id, data=None, errors=No
     if not data:
         data['package_id'] = package_id
         data['resource_id'] = resource_id
+        data['datetime'] = datetime.now()
 
         try:
             user = toolkit.get_action('user_show')(context, {'id': user_id})
             data['user_id'] = user_id
+            data['user_username'] = user.get('name', user_id)
             data['user_name'] = user.get('display_name', user_id)
             data['user_email'] = user.get('email', '')
 
@@ -81,6 +83,8 @@ def restricted_request_access_form(package_id, resource_id, data=None, errors=No
 
             pkg = toolkit.get_action('package_show')(context, {'id': package_id})
             data['package_name'] = pkg.get('name')
+            data['package_id'] = pkg.get('id')
+            data['package_url'] = pkg.get('url')
             resources = pkg.get('resources', [])
             for resource in resources:
                 if resource['id'] == resource_id:
@@ -128,19 +132,39 @@ def _send_request_mail(data):
             id=data.get('package_name'),
             resource_id=data.get('resource_id'))
 
+        print(str(data.get('user_supervisor', '')))
+
         extra_vars = {
             'site_title': config.get('ckan.site_title'),
             'site_url': config.get('ckan.site_url'),
+
             'maintainer_name': data.get('maintainer_name', 'Maintainer'),
+            'maintainer_email': data.get('maintainer_email', ''),
+
             'user_id': data.get('user_id', 'the user id'),
+            'user_username': data.get('user_username', ''),
             'user_name': data.get('user_name', ''),
             'user_email': data.get('user_email', ''),
+            'user_organization': data.get('user_organization', ''),
+            'user_supervisor': data.get('user_supervisor', ''),
+
             'resource_name': data.get('resource_name', ''),
+            'resource_id': data.get('resource_id', ''),
             'resource_link': config.get('ckan.site_url') + resource_link,
             'resource_edit_link': config.get('ckan.site_url') + resource_edit_link,
-            'package_name': data.get('resource_name', ''),
-            'message': data.get('message', ''),
-            'admin_email_to': config.get('email_to', 'email_to_undefined')}
+            'package_name': data.get('package_name', ''),
+            'package_id': data.get('package_id', ''),
+
+            'project_title': data.get('project_title', ''),
+            'project_description': data.get('project_description', ''),
+            'project_duration': data.get('project_duration', ''),
+            'project_purpose': data.get('project_purpose', ''),
+
+            'datetime': data.get('datetime', ''),
+
+            'admin_email_to': config.get('email_to', 'email_to_undefined')
+            }
+        extra_vars['data'] = json.dumps(extra_vars, ensure_ascii=False)
 
         mail_template = 'restricted/emails/restricted_access_request.txt'
         body = render(mail_template, extra_vars)
@@ -218,10 +242,18 @@ def _send_request(context):
     errors = {}
     error_summary = {}
 
-    if (data_dict['message'] == ''):
-        msg = _('Missing Value')
-        errors['message'] = [msg]
-        error_summary['message'] = msg
+    required_fields = ['user_name', 'user_organization', 'project_title', 'project_purpose']
+
+    for required_field in required_fields:
+        if data_dict[required_field] == '':
+            msg = _('Missing Value')
+            errors[required_field] = [msg]
+            error_summary[required_field] = msg
+
+    if data_dict.get('disclaimer') != 'disclaimer-ok':
+        msg = _('Missing Check Data Handling Disclaimer')
+        errors['disclaimer'] = [msg]
+        error_summary['disclaimer'] = msg
 
     if len(errors) > 0:
         return restricted_request_access_form(

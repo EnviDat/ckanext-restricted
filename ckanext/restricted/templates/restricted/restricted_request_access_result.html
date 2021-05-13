@@ -5,20 +5,28 @@
   <article class="module">
     <div class="module-content">
       {% if success %}
-      <p>{{ _('Your request has been sent, please check your provided mail account.') }}</p>
+      <p>{{ _('Your request has been sent, please check your provided mail account. Please check your request details below.') }}</p>
       {% else %}
       <p>{{ _('WARNING: There were problems sending your request, please contact the administrator providing the information below.') }}</p>
       {% endif %}
       <div class="restricted-request-summary" >
-        <h4>{{ _('Access Request Data') }}</h4>
+        <h4>{{ _('Access Request Data Summary') }}</h4>
         <ul>
           <li><b>{{ _('User:') }}</b> {{ data.get('user_name') }}</li>
           <li><b>{{ _('User Mail:') }}</b> {{ data.get('user_email') }}</li>
+          <li><b>{{ _('User Organization:') }}</b> {{ data.get('user_organization') }}</li>
+          <li><b>{{ _('Additional Contact:') }}</b> {{ data.get('user_supervisor') }}</li>
+
+          <li><b>{{ _('Project Title:') }}</b> {{ data.get('project_title') }}</li>
+          <li><b>{{ _('Project Description:') }}</b> {{ data.get('project_description') }}</li>
+          <li><b>{{ _('Project Purpose:') }}</b> {{ data.get('project_purpose') }}</li>
+          <li><b>{{ _('Project Finalization:') }}</b> {{ data.get('project_duration') }}</li>
+
           <li><b>{{ _('Dataset:') }}</b> {{ data.get('package_id') }}</li>
           <li><b>{{ _('Resource:') }}</b> {{ data.get('resource_id') }}</li>
           <li><b>{{ _('Contact Email:') }}</b> {{ data.get('maintainer_email') }}</li>
-          <li><b>{{ _('Message:') }}</b> {{ data.get('message') }}</li>
         </ul>
+        <p><i>Access requested at {{ data.get('datetime') }}</i></p>
       </div>
     </div>
   </article>

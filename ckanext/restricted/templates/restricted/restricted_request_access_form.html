@@ -13,29 +13,55 @@
 {% macro restricted_input_disabled(name, id='', label='', value='', placeholder='', type='text', error="", classes=[], attrs={}, is_required=false) %}
   {%- set extra_html = caller() if caller -%}
   {% call form.input_block(id or name, label or name, error, classes, extra_html=extra_html, is_required=is_required) %}
-  <input id="{{ id or name }}" type="{{ type }}" name="{{ name }}" value="{{ value | empty_and_escape }}" placeholder="{{ placeholder }}" {{ form.attributes(attrs) }} readonly="readonly" />
+  <input id="{{ id or name }}" type="{{ type }}" class="form-control" name="{{ name }}" value="{{ value | empty_and_escape }}" placeholder="{{ placeholder }}" {{ form.attributes(attrs) }} readonly="readonly" />
   {% endcall %}
 {% endmacro %}
 
 {% block primary_content_inner %}
   <h2>{{ _('Request Access to: ') }} {{ data.resource_name }}</h2>
+  <h4> Dataset ID: {{ data.package_id }}, Resource ID: {{ data.resource_id }}</h4>
+  <p>{{ data.datetime }}</p>
   <form id="restricted-request-access" class="dataset-form form-horizontal" method="post" action="{{ action }}" >
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
   {% block basic_fields %}
+
+    {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-full'] ) }}
+
+    {{ form.input('user_name', id='field-user_name', label=_('Full Name'), value=data.user_name, placeholder='Full name of the person requesting access', type='text', error=errors.user_name, classes=['control-full'], is_required = true ) }}
+    {{ form.input('user_organization', id='field-user_organization', label=_('Organization'), value=data.user_organization, placeholder='Institution, company, institute research group and/or department', type='text', error=errors.user_organization, classes=['control-full'], is_required = true ) }}
+    {{ form.input('user_supervisor', id='field-user_supervisor', label=_('Additional Contact Point'), value=data.user_supervisor, placeholder='Full name and email of your supervisor, manager or PI', type='text', error=errors.user_supervisor, classes=['control-full'] ) }}
+
+    {{ form.input('project_title', id='field-project_title', label=_('Project Title'), value=data.project_title, placeholder='Research project', type='text', error=errors.project_title, classes=['control-full'], is_required = true) }}
+    {{ form.markdown('project_description', id='field-project_description', label=_('Project Description'), placeholder=_('Description of the project including link'), value=data.project_description, error=errors.project_description) }}
+    {{ form.input('project_duration', id='field-project_duration', label=_('Estimated Project Finalization'), value=data.project_duration, type='date', error=errors.project_duration, classes=['control-full'] ) }}
+    {{ form.markdown('project_purpose', id='field-project_purpose', label=_('Purpose'), placeholder=_('Methods, planned publication, etc'), value=data.project_purpose, error=errors.project_purpose, is_required = true) }}
+
+    {{ restricted_input_disabled('maintainer_email', label=_('Data Owner Email'), id='field-maintainer_email', value=data.maintainer_email, error=errors.maintainer_email, classes=['control-full']) }}
+
     <input id='field-package_name' name='package_name' type="hidden" value="{{ data.package_name }}" />
+    <input id='field-package_id' name='package_id' type="hidden" value="{{ data.package_id }}" />
     <input id='field-resource_name' name='resource_name' type="hidden" value="{{ data.resource_name }}" />
+    <input id='field-resource_id' name='resource_id' type="hidden" value="{{ data.resource_id }}" />
     <input id='field-maintainer_name' name='maintainer_name' type="hidden" value="{{ data.maintainer_name }}" />
     <input id='field-user_id' name='user_id' type="hidden" value="{{ data.user_id }}" />
-    {{ restricted_input_disabled('user_name', id='field-user_name', label=_('User'), value=data.user_name, error=errors.user_name, classes=['control-full'] ) }}
-    {{ restricted_input_disabled('user_email', id='field-user-email', label=_('User Mail'), value=data.user_email, error=errors.user_email, classes=['control-full'] ) }}
-    {{ restricted_input_disabled('package_id', id='field-package_id', label=_('Dataset'), value=data.package_id, error=errors.package_id, classes=['control-full']) }}
-    {{ restricted_input_disabled('resource_id', id='field-resource_id', label=_('Resource'), value=data.resource_id, error=errors.resource_id, classes=['control-full']) }}
-    {{ restricted_input_disabled('maintainer_email', label=_('Contact Email'), id='field-maintainer_email', value=data.maintainer_email, error=errors.maintainer_email, classes=['control-full']) }}
-    {{ form.markdown('message', id='field-message', label=_('Message'), placeholder=_('Message to request data (project, research group, planned usage, etc.)'), value='', error=errors.message, is_required = true) }}
+    <input id='field-user_username' name='user_username' type="hidden" value="{{ data.user_username }}" />
+
+    {% if data.datetime is string %}
+    <input id='field-datetime' name='datetime' type="hidden" value="{{ data.datetime }}" />
+    {% else %}
+    <input id='field-datetime' name='datetime' type="hidden" value="{{ h.render_datetime(data.datetime, date_format='%Y-%m-%dT%H:%M:%S%z') }}" />
+    {% endif %}
+
+    {{ form.checkbox('disclaimer', id='field-disclaimer', label=_('I agree that the above information is sent to the data owner'), value='disclaimer-ok', error=errors.disclaimer) }}
+    <p class="action-info small">
+      {% trans %} Please contact the data owner for their privacy policy regarding the handling of your data {% endtrans %}
+    </p>
+
     {% if g.recaptcha_publickey %}
       {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
       <!-- <div class="g-recaptcha" data-sitekey="{{ g.recaptcha_publickey }}"></div> -->
     {% endif %}
+
   {% endblock %}
   {% block form_actions %}
     <div class="form-actions">

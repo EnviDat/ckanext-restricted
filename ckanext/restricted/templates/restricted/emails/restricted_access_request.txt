@@ -4,7 +4,12 @@
 * {% trans %}Resource:{% endtrans %} {{ resource_name }} ({{ resource_link|safe }})
 * {% trans %}Dataset:{% endtrans %} {{ package_name }}
 * {% trans %}User:{% endtrans %} {{ user_name }} ({{ user_email }})
-* {% trans %}Message:{% endtrans %} {{ message }}
+* {% trans %}Organization:{% endtrans %} {{ user_organization }}
+* {% trans %}Additional Contact:{% endtrans %} {{ user_supervisor }}
+* {% trans %}Project Title:{% endtrans %} {{ project_title }}
+* {% trans %}Project Description:{% endtrans %} {{ project_description }}
+* {% trans %}Project Finalization:{% endtrans %} {{ project_duration }}
+* {% trans %}Project Purpose:{% endtrans %} {{ project_purpose }}
 
 {% trans %}You can allow this user to access you resource by adding {{ user_id }} to the list of allowed users.{% endtrans %}
 {% trans %}If you have editor rights, you can edit the resource in this link{% endtrans %}: {{ resource_edit_link|safe }}.
@@ -13,6 +18,9 @@
 {% trans %}Best regards,{% endtrans %}
 {% trans %}{{ site_title }} Administrator{% endtrans %}
 
+----------------- FORM DATA BEGIN ----------------
+{{ data | safe }}
+----------------- FORM DATA END ----------------
 
 {% trans %}This is an automatically generated e-mail, please do not reply to it.{% endtrans %}
 
