@@ -20,7 +20,6 @@
 {% block primary_content_inner %}
   <h2>{{ _('Request Access to: ') }} {{ data.resource_name }}</h2>
   <h4> Dataset ID: {{ data.package_id }}, Resource ID: {{ data.resource_id }}</h4>
-  <p>{{ data.datetime }}</p>
   <form id="restricted-request-access" class="dataset-form form-horizontal" method="post" action="{{ action }}" >
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
   {% block basic_fields %}
@@ -47,14 +46,14 @@
     <input id='field-user_username' name='user_username' type="hidden" value="{{ data.user_username }}" />
 
     {% if data.datetime is string %}
-    <input id='field-datetime' name='datetime' type="hidden" value="{{ data.datetime }}" />
+      <input id='field-datetime' name='datetime' type="hidden" value="{{ data.datetime }}" />
     {% else %}
-    <input id='field-datetime' name='datetime' type="hidden" value="{{ h.render_datetime(data.datetime, date_format='%Y-%m-%dT%H:%M:%S%z') }}" />
+      <input id='field-datetime' name='datetime' type="hidden" value="{{ h.render_datetime(data.datetime, date_format='%Y-%m-%dT%H:%M:%S%z') }}" />
     {% endif %}
 
     {{ form.checkbox('disclaimer', id='field-disclaimer', label=_('I agree that the above information is sent to the data owner'), value='disclaimer-ok', error=errors.disclaimer) }}
     <p class="action-info small">
-      {% trans %} Please contact the data owner for their privacy policy regarding the handling of your data {% endtrans %}
+      {% trans %} Please contact the data owner for their privacy policy regarding the handling of your personal information. {% endtrans %}
     </p>
 
     {% if g.recaptcha_publickey %}
@@ -63,6 +62,7 @@
     {% endif %}
 
   {% endblock %}
+
   {% block form_actions %}
     <div class="form-actions">
       {% block disclaimer %}

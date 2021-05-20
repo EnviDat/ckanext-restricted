@@ -85,7 +85,9 @@ def restricted_request_access_form(package_id, resource_id, data=None, errors=No
             data['package_name'] = pkg.get('name')
             data['package_id'] = pkg.get('id')
             data['package_url'] = pkg.get('url')
+
             resources = pkg.get('resources', [])
+
             for resource in resources:
                 if resource['id'] == resource_id:
                     resource_name = resource['name']
@@ -176,7 +178,23 @@ def _send_request_mail(data):
 
         email_dict = {
             data.get('maintainer_email'): extra_vars.get('maintainer_name'),
-            extra_vars.get('admin_email_to'): '{} Admin'.format(extra_vars.get('site_title'))}
+            extra_vars.get('admin_email_to'): '{0} Admin'.format(extra_vars.get('site_title'))}
+
+        # add data managers from the organization to mailing recipients
+        try:
+            dataset_organization = data.get('package_org')
+
+            organization = toolkit.get_action('organization_show')({'ignore_auth': True}, {'id': dataset_organization})
+            organization_admins = {u.get('name'): u.get('display_name', u.get('name')) for u in organization.get('users', []) if u.get('capacity') == 'admin'
+                               and not u.get('sysadmin')}
+
+            for name, display_name in organization_admins.items():
+                organization_admin = model.User.get(name)
+                if organization_admin.email and organization_admin.email not in email_dict.keys():
+                    email_dict[organization_admin.email] = display_name
+
+        except Exception as e:
+            log.error("Error retrieving the data managers: {0}".format(e))
 
         headers = {
             'CC': ",".join(email_dict.keys()),
@@ -263,6 +281,7 @@ def _send_request(context):
             package_id=data_dict.get('package-name'),
             resource_id=data_dict.get('resource'))
 
+    data_dict['package_org'] = pkg.get('organization', {}).get('name')
     success = _send_request_mail(data_dict)
 
     return render(

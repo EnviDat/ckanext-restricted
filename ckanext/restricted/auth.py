@@ -12,6 +12,8 @@ log = getLogger(__name__)
 
 @toolkit.auth_allow_anonymous_access
 def restricted_resource_show(context, data_dict=None):
+    if context.get('ignore_auth'):
+        return {'success': True}
 
     # Ensure user who can edit the package can see the resource
     resource = data_dict.get('resource', context.get('resource', {}))
@@ -23,7 +25,7 @@ def restricted_resource_show(context, data_dict=None):
     if authz.is_authorized(
             'package_update', context,
             {'id': resource.get('package_id')}).get('success'):
-        return ({'success': True})
+        return {'success': True}
 
     user_name = logic.restricted_get_username_from_context(context)
 
