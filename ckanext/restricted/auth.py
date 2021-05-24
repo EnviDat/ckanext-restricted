@@ -22,6 +22,7 @@ def restricted_resource_show(context, data_dict=None):
     if type(resource) is not dict:
         resource = resource.as_dict()
 
+    # if user has rights to edit package return true
     if authz.is_authorized(
             'package_update', context,
             {'id': resource.get('package_id')}).get('success'):
@@ -34,6 +35,14 @@ def restricted_resource_show(context, data_dict=None):
         model = context['model']
         package = model.Package.get(resource.get('package_id'))
         package = package.as_dict()
+
+    # if resource is not in the list, resource was deleted
+    # let CKAN auth check access if that is the case (it will return not found)
+    package_resources = [res.get("id") for res in package.get('resources', [])]
+    resource_id = resource.get('id')
+    if resource_id not in package_resources:
+        log.debug("restricted_resource_show: resource {0} not in package list".format(resource_id))
+        return {'success': True}
 
     return (logic.restricted_check_user_resource_access(
         user_name, resource, package))
