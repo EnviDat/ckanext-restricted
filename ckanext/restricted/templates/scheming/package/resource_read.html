@@ -17,11 +17,13 @@
                 <a href="{{ h.url_for('restricted.restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" title="{{ _('Request Access') }}">{{ _('Request Access') }}</a>
             </p>
         {% else %}
+            {% block resource_item_unauthorized %}
             <p style="color:grey;"> {{ _('Resource URL restricted: ') }}
                 <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name+'/resource/'+res.id) }}" >{{ _('Log in') }}</a>
                 {{ _('or') }}
                 <a href="{{ h.url_for(controller='user', action='register', came_from='/dataset/'+pkg.name+'/resource/'+res.id) }}" >{{ _('Register')}}</a> {{ _('to access resource')}}
             </p>
+            {% endblock %}
         {% endif%}
     {% endif %}
 {% endblock %}
