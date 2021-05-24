@@ -1,6 +1,7 @@
 {% ckan_extends %}
 
 {% set isEditor = h.check_access('package_update', {'id':pkg.id }) %}
+{% set user_id = h.restricted_get_user_id() %}
 
 {% block resource_read_url %}
     {% set authorized = h.check_access('resource_show', {'id': res.id, 'resource': res }) %}
@@ -11,7 +12,17 @@
           <p class="text-muted break-word">{{ _('URL:') }} {{ res.url }}</p>
         {% endif %}
     {% else %}
-        <p style="color:grey;"> {{ _('Resource URL restricted, please request access on the dataset page: ') }} <a href="{{ h.url_for('dataset.read', id=pkg.name) }}" title="{{ pkg.title }}">{{ pkg.title }}</a> </p>
+        {% if user_id %}
+            <p style="color:grey;"> {{ _('Resource URL restricted: ') }}
+                <a href="{{ h.url_for('restricted.restricted_request_access', package_id=pkg.name, resource_id=res.id) }}" title="{{ _('Request Access') }}">{{ _('Request Access') }}</a>
+            </p>
+        {% else %}
+            <p style="color:grey;"> {{ _('Resource URL restricted: ') }}
+                <a href="{{ h.url_for(controller='user', action='login', came_from='/dataset/'+pkg.name+'/resource/'+res.id) }}" >{{ _('Log in') }}</a>
+                {{ _('or') }}
+                <a href="{{ h.url_for(controller='user', action='register', came_from='/dataset/'+pkg.name+'/resource/'+res.id) }}" >{{ _('Register')}}</a> {{ _('to access resource')}}
+            </p>
+        {% endif%}
     {% endif %}
 {% endblock %}
 
