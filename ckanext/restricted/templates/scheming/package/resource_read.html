@@ -6,11 +6,7 @@
 {% block resource_read_url %}
     {% set authorized = h.check_access('resource_show', {'id': res.id, 'resource': res }) %}
     {% if authorized %}
-        {% if res.url and h.is_url(res.url) %}
-          <p class="text-muted ellipsis">{{ _('URL:') }} <a class="resource-url-analytics" href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></p>
-        {% elif res.url %}
-          <p class="text-muted break-word">{{ _('URL:') }} {{ res.url }}</p>
-        {% endif %}
+        {{ super() }}
     {% else %}
         {% if user_id %}
             <p style="color:grey;"> {{ _('Resource URL restricted: ') }}
@@ -53,8 +49,7 @@
 {% block download_resource_button_action %}
     {% set authorized = h.check_access('resource_show', {'id': res.id, 'resource': res }) %}
     {% if authorized %}
-        <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}" download="">
-          <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
+        {{ super() }}
     {% else %}
         <a class="btn btn-primary" href="javascript:void(0)" disabled="">
           <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
